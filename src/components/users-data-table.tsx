@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -52,6 +51,7 @@ import { useToast } from "@/hooks/use-toast";
 import { DashboardHeader } from "./dashboard-header";
 import { Card, CardContent } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { roles } from "@/lib/mock-data";
 
 type User = {
   id: string;
@@ -64,7 +64,7 @@ type User = {
 const userSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
-  role: z.enum(["Administrator", "Manager", "Viewer"]),
+  role: z.enum(Object.keys(roles) as [string, ...string[]]),
 });
 
 export function UsersDataTable({ initialUsers }: { initialUsers: User[] }) {
@@ -72,15 +72,16 @@ export function UsersDataTable({ initialUsers }: { initialUsers: User[] }) {
   const [users, setUsers] = useState(initialUsers);
   const [isSheetOpen, setSheetOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const roleNames = Object.keys(roles);
 
   const form = useForm<z.infer<typeof userSchema>>({
     resolver: zodResolver(userSchema),
-    defaultValues: { name: "", email: "", role: "Viewer" },
+    defaultValues: { name: "", email: "", role: "Basic User" },
   });
 
   const handleAddNew = () => {
     setEditingUser(null);
-    form.reset({ name: "", email: "", role: "Viewer" });
+    form.reset({ name: "", email: "", role: "Basic User" });
     setSheetOpen(true);
   };
 
@@ -211,9 +212,9 @@ export function UsersDataTable({ initialUsers }: { initialUsers: User[] }) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Administrator">Administrator</SelectItem>
-                        <SelectItem value="Manager">Manager</SelectItem>
-                        <SelectItem value="Viewer">Viewer</SelectItem>
+                        {roleNames.map(role => (
+                          <SelectItem key={role} value={role}>{role}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />

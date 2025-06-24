@@ -1,8 +1,28 @@
 "use client";
 
-import { Bar, BarChart, CartesianGrid, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
+import {
+  Area,
+  AreaChart as RechartsAreaChart,
+  CartesianGrid,
+  Pie,
+  PieChart,
+  XAxis,
+} from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 import { monthlyRevenueData, userAcquisitionData } from "@/lib/mock-data";
 
 const revenueChartConfig = {
@@ -36,37 +56,69 @@ const acquisitionChartConfig = {
 
 export function DashboardCharts() {
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
-      <Card className="lg:col-span-4">
+    <div className="grid gap-6 md:grid-cols-2">
+      <Card>
         <CardHeader>
           <CardTitle className="font-headline">Monthly Revenue</CardTitle>
+          <CardDescription>
+            A look at the revenue generated over the last 6 months.
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <ChartContainer config={revenueChartConfig} className="h-64 w-full">
-            <ResponsiveContainer>
-              <BarChart data={monthlyRevenueData}>
-                <CartesianGrid vertical={false} />
-                <XAxis dataKey="month" tickLine={false} tickMargin={10} axisLine={false} />
-                <YAxis tickLine={false} axisLine={false} tickMargin={10} />
-                <Tooltip cursor={false} content={<ChartTooltipContent />} />
-                <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
-              </BarChart>
-            </ResponsiveContainer>
+          <ChartContainer config={revenueChartConfig} className="h-[250px] w-full">
+            <RechartsAreaChart
+              accessibilityLayer
+              data={monthlyRevenueData}
+              margin={{
+                left: 12,
+                right: 12,
+              }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                tickFormatter={(value) => value.slice(0, 3)}
+              />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent indicator="dot" />}
+              />
+              <Area
+                dataKey="revenue"
+                type="natural"
+                fill="var(--color-revenue)"
+                fillOpacity={0.4}
+                stroke="var(--color-revenue)"
+              />
+            </RechartsAreaChart>
           </ChartContainer>
         </CardContent>
       </Card>
-      <Card className="lg:col-span-3">
+      <Card>
         <CardHeader>
           <CardTitle className="font-headline">User Acquisition</CardTitle>
+          <CardDescription>
+            Breakdown of new users by acquisition channel.
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <ChartContainer config={acquisitionChartConfig} className="h-64 w-full">
-            <ResponsiveContainer>
-              <PieChart>
-                <Tooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-                <Pie data={userAcquisitionData} dataKey="value" nameKey="name" innerRadius={60} strokeWidth={5} />
-              </PieChart>
-            </ResponsiveContainer>
+          <ChartContainer
+            config={acquisitionChartConfig}
+            className="mx-auto aspect-square h-[250px]"
+          >
+            <PieChart>
+              <ChartTooltip
+                content={<ChartTooltipContent nameKey="name" hideLabel />}
+              />
+              <Pie data={userAcquisitionData} dataKey="value" nameKey="name" />
+               <ChartLegend
+                content={<ChartLegendContent nameKey="name" />}
+                className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
+              />
+            </PieChart>
           </ChartContainer>
         </CardContent>
       </Card>

@@ -5,12 +5,12 @@ import type { LucideIcon } from "lucide-react";
 interface StatCardProps {
   title: string;
   value: string;
-  change: string;
+  change?: string;
   icon: LucideIcon;
 }
 
 export function StatCard({ title, value, change, icon: Icon }: StatCardProps) {
-  const isPositive = change.startsWith("+");
+  const isPositive = change?.startsWith("+");
   const changeColor = isPositive ? "text-green-500" : "text-red-500";
 
   return (
@@ -21,9 +21,11 @@ export function StatCard({ title, value, change, icon: Icon }: StatCardProps) {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">{value}</div>
-        <p className={cn("text-xs text-muted-foreground", changeColor)}>
-          {change} from last month
-        </p>
+        {change && (
+            <p className={cn("text-xs text-muted-foreground", changeColor)}>
+                {change}
+            </p>
+        )}
       </CardContent>
     </Card>
   );

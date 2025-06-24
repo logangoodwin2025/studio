@@ -10,6 +10,9 @@ import {
   LogOut,
   MoreVertical,
   ChevronDown,
+  Landmark,
+  Megaphone,
+  Wrench,
 } from "lucide-react";
 
 import {
@@ -25,7 +28,6 @@ import {
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Logo } from "@/components/icons";
-import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,7 +39,10 @@ import {
 import { Button } from "@/components/ui/button";
 
 const navItems = [
-  { href: "/dashboard", icon: LayoutGrid, label: "Dashboard" },
+  { href: "/dashboard", icon: LayoutGrid, label: "CEO Dashboard" },
+  { href: "/finance", icon: Landmark, label: "Finance" },
+  { href: "/sales-marketing", icon: Megaphone, label: "Sales & Marketing" },
+  { href: "/operations", icon: Wrench, label: "Operations" },
   { href: "/users", icon: Users, label: "Users" },
   { href: "/roles", icon: ShieldCheck, label: "Roles" },
   { href: "/reports", icon: FileBarChart2, label: "Reports" },

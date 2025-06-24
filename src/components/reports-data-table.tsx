@@ -24,7 +24,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { DashboardHeader } from "./dashboard-header";
 import { Card, CardContent } from "./ui/card";
-import { useToast } from "./ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 type Report = {
   id: string;

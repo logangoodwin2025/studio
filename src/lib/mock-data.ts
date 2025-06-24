@@ -3,61 +3,72 @@ export const userList = [
     id: "usr_1",
     name: "Alice Johnson",
     email: "alice.j@innovate.inc",
-    role: "Administrator",
+    role: "Company Admin",
     avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
   },
   {
     id: "usr_2",
     name: "Bob Williams",
     email: "bob.w@innovate.inc",
-    role: "Manager",
+    role: "Finance Team",
     avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
   },
   {
     id: "usr_3",
     name: "Charlie Brown",
     email: "charlie.b@innovate.inc",
-    role: "Viewer",
+    role: "Sales & Marketing",
     avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
   },
   {
     id: "usr_4",
     name: "Diana Prince",
     email: "diana.p@innovate.inc",
-    role: "Manager",
+    role: "Operations Team",
     avatar: "https://i.pravatar.cc/150?u=a048581f4e29026701d",
   },
   {
     id: "usr_5",
     name: "Ethan Hunt",
     email: "ethan.h@innovate.inc",
-    role: "Viewer",
+    role: "Basic User",
     avatar: "https://i.pravatar.cc/150?u=a092581f4e29026703d",
+  },
+  {
+    id: "usr_6",
+    name: "Frank Castle",
+    email: "frank.c@innovate.inc",
+    role: "CEO/Executive",
+    avatar: "https://i.pravatar.cc/150?u=ceo",
+  },
+  {
+    id: "usr_7",
+    name: "Grace Lee",
+    email: "grace.l@innovate.inc",
+    role: "Platform Super Admin",
+    avatar: "https://i.pravatar.cc/150?u=super",
   },
 ];
 
-export const roles = {
-  Administrator: [
-    "View Dashboard", "Manage Users", "Manage Roles", "Generate Reports", "Full Access",
-  ],
-  Manager: [
-    "View Dashboard", "Manage Users", "Generate Reports",
-  ],
-  Viewer: [
-    "View Dashboard", "Generate Reports",
-  ],
-};
-
 export const allPermissions = [
-  "View Dashboard",
-  "Manage Users",
-  "Manage Roles",
-  "Generate Reports",
-  "Full Access",
-  "View Financials",
-  "Edit Settings",
-  "Export Data",
+  "Manages tenant accounts",
+  "Manages organization settings and users",
+  "Access to all dashboards and reports",
+  "Access to financial metrics",
+  "Access to sales/marketing data",
+  "Access to operational data",
+  "Limited view-only access",
 ];
+
+export const roles: Record<string, string[]> = {
+  "Platform Super Admin": ["Manages tenant accounts"],
+  "Company Admin": ["Manages organization settings and users"],
+  "CEO/Executive": ["Access to all dashboards and reports"],
+  "Finance Team": ["Access to financial metrics"],
+  "Sales & Marketing": ["Access to sales/marketing data"],
+  "Operations Team": ["Access to operational data"],
+  "Basic User": ["Limited view-only access"],
+};
 
 export const monthlyRevenueData = [
   { month: "Jan", revenue: 4000 }, { month: "Feb", revenue: 3000 },
