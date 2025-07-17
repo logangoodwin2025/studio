@@ -61,7 +61,7 @@ function Header({ companySlug }: { companySlug: string }) {
         <div className="flex items-center gap-2">
             <h1 className="font-bold text-lg font-headline flex items-center gap-2">
               <Building className="h-5 w-5 text-muted-foreground"/>
-              <span>Innovate Inc.</span>
+              <span>TechCorp Solutions</span>
             </h1>
         </div>
 

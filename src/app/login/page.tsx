@@ -21,7 +21,7 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (email === "finance@techcorp.com" && password === "finance@techcorp123") {
-      router.push("/innovate-inc/dashboard");
+      router.push("/techcorp-solutions/dashboard");
     } else {
       toast({
         variant: "destructive",
@@ -39,7 +39,7 @@ export default function LoginPage() {
             <Logo className="h-10 w-10 text-primary" />
           </div>
           <CardTitle className="font-headline text-2xl">CEO Dashboard</CardTitle>
-          <p className="text-sm text-muted-foreground">for Innovate Inc.</p>
+          <p className="text-sm text-muted-foreground">for TechCorp Solutions</p>
           <CardDescription className="pt-2">Enter your credentials to access your dashboard</CardDescription>
         </CardHeader>
         <CardContent>

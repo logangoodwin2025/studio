@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { Logo } from "@/components/icons";
 
 const companies = [
-  { name: "Innovate Inc.", slug: "innovate-inc", description: "Pioneering the future of technology." },
+  { name: "TechCorp Solutions", slug: "techcorp-solutions", description: "Pioneering the future of technology." },
   { name: "QuantumLeap Corp.", slug: "quantumleap-corp", description: "Advancing quantum computing solutions." },
   { name: "Synergy Solutions", slug: "synergy-solutions", description: "Integrating systems for optimal performance." },
 ];
