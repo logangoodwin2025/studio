@@ -3,9 +3,14 @@
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-export function PeriodPicker() {
+interface PeriodPickerProps {
+    value: string;
+    onValueChange: (value: string) => void;
+}
+
+export function PeriodPicker({ value, onValueChange }: PeriodPickerProps) {
   return (
-    <Tabs defaultValue="M" className="w-[400px]">
+    <Tabs value={value} onValueChange={onValueChange} className="w-[400px]">
       <TabsList className="grid w-full grid-cols-4 h-9">
         <TabsTrigger value="D" className="text-xs">Daily</TabsTrigger>
         <TabsTrigger value="W" className="text-xs">Weekly</TabsTrigger>
