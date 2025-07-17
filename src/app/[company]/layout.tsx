@@ -14,6 +14,7 @@ import {
   Shield,
   Bell,
   Building,
+  History,
 } from "lucide-react";
 
 import {
@@ -46,11 +47,11 @@ import { FinancialDataProvider } from "@/context/financial-data-context";
 const navItems = {
   DASHBOARDS: [
     { href: "/financial-dashboard", icon: DollarSign, label: "Financial Dashboard" },
+    { href: "/recent-activity", icon: History, label: "Recent Activity" },
   ],
   "DATA & REPORTS": [
       { href: "/data-entry", icon: ClipboardPlus, label: "Data Entry" },
       { href: "/reports", icon: FileBarChart2, label: "Reports" },
-      { href: "/alerts", icon: Bell, label: "Alerts" },
   ],
 };
 
