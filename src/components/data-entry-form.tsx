@@ -56,14 +56,14 @@ const dataEntrySchema = z.object({
 type DataEntryFormValues = z.infer<typeof dataEntrySchema>;
 
 const defaultValues: Partial<DataEntryFormValues> = {
-  revenue: undefined,
-  grossProfit: undefined,
-  netIncome: undefined,
-  expenses: undefined,
-  cashFlow: undefined,
-  ebitda: undefined,
-  customerLtv: undefined,
-  customerCac: undefined,
+  revenue: '' as any,
+  grossProfit: '' as any,
+  netIncome: '' as any,
+  expenses: '' as any,
+  cashFlow: '' as any,
+  ebitda: '' as any,
+  customerLtv: '' as any,
+  customerCac: '' as any,
 };
 
 export function DataEntryForm() {
@@ -81,16 +81,12 @@ export function DataEntryForm() {
     const rev = typeof revenue === 'number' ? revenue : 0;
     const exp = typeof expenses === 'number' ? expenses : 0;
     
-    // Auto-calculate Gross Profit (assuming it's the same as revenue for simplicity here)
     form.setValue("grossProfit", rev, { shouldValidate: true });
-    
-    // Auto-calculate Net Income
     form.setValue("netIncome", rev - exp, { shouldValidate: true });
 
   }, [revenue, expenses, form]);
 
   const onSubmit = (data: DataEntryFormValues) => {
-    // For now, we'll use the 'from' date as the period date.
     const recordToSave = {
         ...data,
         period: data.period.from!,
@@ -101,6 +97,15 @@ export function DataEntryForm() {
       description: "Financial metrics have been successfully saved.",
     });
     form.reset(defaultValues);
+  };
+
+  const handleNumericChange = (e: React.ChangeEvent<HTMLInputElement>, field: any) => {
+    const value = e.target.value;
+    if (value === '') {
+      field.onChange('');
+    } else {
+      field.onChange(Number(value));
+    }
   };
 
   return (
@@ -174,7 +179,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Total Revenue ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 670000" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : +e.target.value)} />
+                        <Input type="number" placeholder="e.g., 670000" {...field} onChange={e => handleNumericChange(e, field)} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -187,7 +192,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Total Expenses ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 410000" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : +e.target.value)} />
+                        <Input type="number" placeholder="e.g., 410000" {...field} onChange={e => handleNumericChange(e, field)} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -200,7 +205,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Gross Profit ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="Auto-calculated" {...field} readOnly className="bg-muted/50" />
+                        <Input type="number" placeholder="Auto-calculated" {...field} value={field.value || ''} readOnly className="bg-muted/50" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -213,7 +218,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Net Income ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="Auto-calculated" {...field} readOnly className="bg-muted/50" />
+                        <Input type="number" placeholder="Auto-calculated" {...field} value={field.value || ''} readOnly className="bg-muted/50" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -226,7 +231,7 @@ export function DataEntryForm() {
                     <FormItem>
                         <FormLabel>EBITDA ($)</FormLabel>
                         <FormControl>
-                        <Input type="number" placeholder="e.g., 285000" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : +e.target.value)} />
+                        <Input type="number" placeholder="e.g., 285000" {...field} onChange={e => handleNumericChange(e, field)} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -239,7 +244,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Operating Cash Flow ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 195000" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : +e.target.value)} />
+                        <Input type="number" placeholder="e.g., 195000" {...field} onChange={e => handleNumericChange(e, field)} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -260,7 +265,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Customer Lifetime Value (LTV) ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 45200" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : +e.target.value)} />
+                        <Input type="number" placeholder="e.g., 45200" {...field} onChange={e => handleNumericChange(e, field)} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -273,7 +278,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Customer Acquisition Cost (CAC) ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 2850" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : +e.target.value)} />
+                        <Input type="number" placeholder="e.g., 2850" {...field} onChange={e => handleNumericChange(e, field)} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
