@@ -2,8 +2,9 @@
 "use client"
 
 import { format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
+import { Calendar as CalendarIcon, Check } from "lucide-react"
 import type { DateRange } from "react-day-picker"
+import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -12,6 +13,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  PopoverClose
 } from "@/components/ui/popover"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { Period } from "@/app/[company]/financial-dashboard/page"
@@ -31,15 +33,30 @@ export function PeriodPicker({
     onDateRangeChange,
     className
 }: PeriodPickerProps) {
+  const [popoverOpen, setPopoverOpen] = React.useState(false);
+  const [localDateRange, setLocalDateRange] = React.useState(dateRange);
 
-  const handleDateRangeSelect = (newDateRange: DateRange | undefined) => {
-    onDateRangeChange(newDateRange);
+  React.useEffect(() => {
+    setLocalDateRange(dateRange);
+  }, [dateRange]);
+
+  const handleApplyDateRange = () => {
+    onDateRangeChange(localDateRange);
     onPeriodChange('CUSTOM');
+    setPopoverOpen(false);
+  }
+
+  const handlePeriodChange = (value: string) => {
+    const newPeriod = value as Period;
+    onPeriodChange(newPeriod);
+    if (newPeriod !== 'CUSTOM') {
+      onDateRangeChange(undefined);
+    }
   }
 
   return (
     <div className={cn("flex items-center gap-2", className)}>
-        <Tabs value={period} onValueChange={(value) => onPeriodChange(value as Period)}>
+        <Tabs value={period} onValueChange={handlePeriodChange}>
             <TabsList className="grid h-9 grid-cols-4">
                 <TabsTrigger value="D" className="text-xs">Daily</TabsTrigger>
                 <TabsTrigger value="W" className="text-xs">Weekly</TabsTrigger>
@@ -47,7 +64,7 @@ export function PeriodPicker({
                 <TabsTrigger value="YTD" className="text-xs">YTD</TabsTrigger>
             </TabsList>
         </Tabs>
-        <Popover>
+        <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
             <PopoverTrigger asChild>
             <Button
                 id="date"
@@ -74,14 +91,20 @@ export function PeriodPicker({
             </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="end">
-            <Calendar
-                initialFocus
-                mode="range"
-                defaultMonth={dateRange?.from}
-                selected={dateRange}
-                onSelect={handleDateRangeSelect}
-                numberOfMonths={2}
-            />
+              <Calendar
+                  initialFocus
+                  mode="range"
+                  defaultMonth={localDateRange?.from}
+                  selected={localDateRange}
+                  onSelect={setLocalDateRange}
+                  numberOfMonths={2}
+              />
+              <div className="p-2 border-t flex justify-end">
+                <Button onClick={handleApplyDateRange} size="sm">
+                  <Check className="h-4 w-4 mr-2" />
+                  Apply
+                </Button>
+              </div>
             </PopoverContent>
         </Popover>
     </div>

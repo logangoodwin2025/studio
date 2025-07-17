@@ -16,18 +16,20 @@ export function StatCard({ title, value, change, icon: Icon }: StatCardProps) {
 
   return (
     <Card className="group transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{title}</p>
-          <Icon className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-primary" />
+      <CardContent className="p-4 flex items-center gap-4">
+        <div className="p-3 rounded-lg bg-primary/10 shadow-inner">
+            <Icon className="h-6 w-6 text-primary" />
         </div>
-        <div className="flex items-baseline gap-2">
-          <p className="text-2xl font-bold text-foreground">{value}</p>
-          {change && (
-            <span className={cn("text-sm font-semibold", changeColor)}>
-              {change}
-            </span>
-          )}
+        <div className="flex-1">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{title}</p>
+          <div className="flex items-baseline gap-2">
+            <p className="text-2xl font-bold text-foreground">{value}</p>
+            {change && (
+              <span className={cn("text-sm font-semibold", changeColor)}>
+                {change}
+              </span>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>

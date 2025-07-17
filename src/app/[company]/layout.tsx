@@ -44,13 +44,13 @@ import { SheetTitle } from "@/components/ui/sheet";
 import { FinancialDataProvider } from "@/context/financial-data-context";
 
 const navItems = {
+  DASHBOARDS: [
+    { href: "/financial-dashboard", icon: DollarSign, label: "Financial Dashboard" },
+  ],
   "DATA & REPORTS": [
       { href: "/data-entry", icon: ClipboardPlus, label: "Data Entry" },
       { href: "/reports", icon: FileBarChart2, label: "Reports" },
       { href: "/alerts", icon: Bell, label: "Alerts" },
-  ],
-  DASHBOARDS: [
-    { href: "/financial-dashboard", icon: DollarSign, label: "Financial Dashboard" },
   ],
 };
 

@@ -1,7 +1,7 @@
 
 import type { Period } from "@/app/[company]/financial-dashboard/page";
 import type { FinancialRecord } from "@/context/financial-data-context";
-import { subDays, subWeeks, subMonths, startOfYear, isWithinInterval, startOfDay } from 'date-fns';
+import { subDays, subWeeks, subMonths, startOfYear, isWithinInterval, startOfDay, endOfDay, differenceInDays } from 'date-fns';
 import type { DateRange } from "react-day-picker";
 
 type StatValue = {
@@ -24,15 +24,19 @@ const formatCurrency = (value: number) => {
         return `$${(value / 1_000_000).toFixed(1)}M`;
     }
     if (Math.abs(value) >= 1_000) {
-        return `$${(value / 1_000).toFixed(1)}K`;
+        return `$${(value / 1_000).toFixed(0)}K`;
     }
     return `$${value.toFixed(0)}`;
 };
 
 const formatPercentage = (value: number) => `${(value * 100).toFixed(1)}%`;
 
-const formatChange = (change: number) => {
+const formatChange = (change: number, isPercentage: boolean = false) => {
     if (change === 0 || !isFinite(change)) return " ";
+    if (isPercentage) {
+        const bps = (change * 100).toFixed(1);
+        return `${change > 0 ? '+' : ''}${bps} bps`;
+    }
     return `${change > 0 ? '+' : ''}${(change * 100).toFixed(1)}%`;
 }
 
@@ -68,35 +72,41 @@ export const getStatsForPeriod = (allData: FinancialRecord[], period: Period, da
     let interval: Interval;
     let previousInterval: Interval;
 
+    const today = endOfDay(new Date());
+
     switch (period) {
         case 'D':
-            interval = { start: subDays(now, 1), end: now };
-            previousInterval = { start: subDays(now, 2), end: subDays(now, 1) };
+            interval = { start: startOfDay(today), end: today };
+            previousInterval = { start: subDays(startOfDay(today), 1), end: subDays(today, 1) };
             break;
         case 'W':
-            interval = { start: subWeeks(now, 1), end: now };
-            previousInterval = { start: subWeeks(now, 2), end: subWeeks(now, 1) };
+            interval = { start: subWeeks(today, 1), end: today };
+            previousInterval = { start: subWeeks(today, 2), end: subWeeks(today, 1) };
             break;
         case 'M':
-            interval = { start: subMonths(now, 1), end: now };
-            previousInterval = { start: subMonths(now, 2), end: subMonths(now, 1) };
+            interval = { start: subMonths(today, 1), end: today };
+            previousInterval = { start: subMonths(today, 2), end: subMonths(today, 1) };
             break;
         case 'YTD':
-            interval = { start: startOfYear(now), end: now };
-            const prevYearStart = startOfYear(subMonths(now, 12));
-            const prevYearEnd = subMonths(now, 12);
-            previousInterval = { start: prevYearStart, end: prevYearEnd };
+            interval = { start: startOfYear(today), end: today };
+            const prevYearDate = subMonths(today, 12);
+            const prevYearStart = startOfYear(prevYearDate);
+            previousInterval = { start: prevYearStart, end: prevYearDate };
             break;
         case 'CUSTOM':
             if (!dateRange || !dateRange.from || !dateRange.to) {
-                // Return zeroed-out data if custom range is not valid
-                 return getZeroStats();
+                return getZeroStats();
             }
-            interval = { start: startOfDay(dateRange.from), end: startOfDay(dateRange.to) };
-            const duration = dateRange.to.getTime() - dateRange.from.getTime();
+            interval = { start: startOfDay(dateRange.from), end: endOfDay(dateRange.to) };
+            const durationDays = differenceInDays(dateRange.to, dateRange.from);
             const prevEnd = subDays(dateRange.from, 1);
-            const prevStart = new Date(prevEnd.getTime() - duration);
+            const prevStart = subDays(prevEnd, durationDays);
             previousInterval = { start: prevStart, end: prevEnd };
+            break;
+        default:
+             // Default to Monthly if something is wrong
+            interval = { start: subMonths(today, 1), end: today };
+            previousInterval = { start: subMonths(today, 2), end: subMonths(today, 1) };
             break;
     }
     
@@ -111,8 +121,8 @@ export const getStatsForPeriod = (allData: FinancialRecord[], period: Period, da
     }
 
     const calculateChange = (current: number, previous: number) => {
-        if (previous === 0) return 0;
-        return (current - previous) / previous;
+        if (previous === 0) return current === 0 ? 0 : Infinity;
+        return (current - previous) / Math.abs(previous);
     }
     
     const currentGrossMargin = currentAgg.revenue > 0 ? currentAgg.grossProfit / currentAgg.revenue : 0;
@@ -128,11 +138,11 @@ export const getStatsForPeriod = (allData: FinancialRecord[], period: Period, da
         },
         grossMargin: {
             value: formatPercentage(currentGrossMargin),
-            change: formatChange(calculateChange(currentGrossMargin, previousGrossMargin)),
+            change: formatChange(currentGrossMargin - previousGrossMargin, true),
         },
         netMargin: {
             value: formatPercentage(currentNetMargin),
-            change: formatChange(calculateChange(currentNetMargin, previousNetMargin)),
+            change: formatChange(currentNetMargin - previousNetMargin, true),
         },
         ebitda: {
             value: formatCurrency(currentAgg.ebitda),
@@ -155,7 +165,7 @@ export const getStatsForPeriod = (allData: FinancialRecord[], period: Period, da
 
 
 const getZeroStats = (): FinancialStats => {
-    const zeroStat = { value: "$0", change: " " };
+    const zeroStat = { value: "$0K", change: " " };
     const zeroPercentStat = { value: "0.0%", change: " " };
     return {
         revenue: zeroStat,

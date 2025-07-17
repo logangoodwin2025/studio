@@ -11,12 +11,17 @@ import { KeyRatios } from "@/components/key-ratios";
 import { AccountsTable } from "@/components/accounts-table";
 import { PeriodPicker } from "@/components/period-picker";
 import type { DateRange } from "react-day-picker";
+import { startOfMonth, subMonths } from "date-fns";
 
 export type Period = 'D' | 'W' | 'M' | 'YTD' | 'CUSTOM';
 
 export default function FinancePage() {
   const [period, setPeriod] = useState<Period>('M');
-  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: startOfMonth(subMonths(new Date(), 1)),
+    to: new Date(),
+  });
 
   return (
     <>
