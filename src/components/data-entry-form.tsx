@@ -101,10 +101,14 @@ export function DataEntryForm() {
 
   const handleNumericChange = (e: React.ChangeEvent<HTMLInputElement>, field: any) => {
     const value = e.target.value;
-    if (value === '') {
-      field.onChange('');
+    // Allow empty string to clear the field, otherwise convert to number
+    if (value === '' || value === '-') {
+      field.onChange(value);
     } else {
-      field.onChange(Number(value));
+      const num = Number(value);
+      if (!isNaN(num)) {
+        field.onChange(num);
+      }
     }
   };
 
@@ -179,7 +183,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Total Revenue ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 670000" {...field} onChange={e => handleNumericChange(e, field)} />
+                        <Input type="text" inputMode="decimal" placeholder="e.g., 670000" {...field} onChange={e => handleNumericChange(e, field)} value={field.value ?? ''} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -192,7 +196,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Total Expenses ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 410000" {...field} onChange={e => handleNumericChange(e, field)} />
+                        <Input type="text" inputMode="decimal" placeholder="e.g., 410000" {...field} onChange={e => handleNumericChange(e, field)} value={field.value ?? ''} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -205,7 +209,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Gross Profit ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="Auto-calculated" {...field} value={field.value || ''} readOnly className="bg-muted/50" />
+                        <Input type="text" inputMode="decimal" placeholder="Auto-calculated" {...field} value={field.value || ''} readOnly className="bg-muted/50" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -218,7 +222,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Net Income ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="Auto-calculated" {...field} value={field.value || ''} readOnly className="bg-muted/50" />
+                        <Input type="text" inputMode="decimal" placeholder="Auto-calculated" {...field} value={field.value || ''} readOnly className="bg-muted/50" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -231,7 +235,7 @@ export function DataEntryForm() {
                     <FormItem>
                         <FormLabel>EBITDA ($)</FormLabel>
                         <FormControl>
-                        <Input type="number" placeholder="e.g., 285000" {...field} onChange={e => handleNumericChange(e, field)} />
+                        <Input type="text" inputMode="decimal" placeholder="e.g., 285000" {...field} onChange={e => handleNumericChange(e, field)} value={field.value ?? ''} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -244,7 +248,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Operating Cash Flow ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 195000" {...field} onChange={e => handleNumericChange(e, field)} />
+                        <Input type="text" inputMode="decimal" placeholder="e.g., 195000" {...field} onChange={e => handleNumericChange(e, field)} value={field.value ?? ''} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -265,7 +269,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Customer Lifetime Value (LTV) ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 45200" {...field} onChange={e => handleNumericChange(e, field)} />
+                        <Input type="text" inputMode="decimal" placeholder="e.g., 45200" {...field} onChange={e => handleNumericChange(e, field)} value={field.value ?? ''} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -278,7 +282,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Customer Acquisition Cost (CAC) ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 2850" {...field} onChange={e => handleNumericChange(e, field)} />
+                        <Input type="text" inputMode="decimal" placeholder="e.g., 2850" {...field} onChange={e => handleNumericChange(e, field)} value={field.value ?? ''} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
