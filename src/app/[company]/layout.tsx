@@ -9,7 +9,6 @@ import {
   ClipboardPlus,
   FileBarChart2,
   LogOut,
-  MoreVertical,
   ChevronDown,
   Users,
   Shield,
@@ -37,11 +36,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/icons";
 
 const navItems = {
-  OVERVIEW: [
-    { href: "/alerts", icon: Bell, label: "Alerts" },
-  ],
   DASHBOARDS: [
     { href: "/financial-dashboard", icon: DollarSign, label: "Financial Dashboard" },
   ],
@@ -59,7 +56,8 @@ const navItems = {
 function CompanySwitcher({ companySlug }: { companySlug: string }) {
   return (
     <div className="flex items-center gap-2">
-      <h1 className="font-bold text-lg font-headline">BusinessHub</h1>
+      <Logo className="h-6 w-6 text-primary" />
+      <h1 className="font-bold text-lg font-headline">CEO Dashboard</h1>
       <Button variant="outline" size="sm" className="ml-auto text-xs">
         TechCorp Solutions
         <ChevronDown className="h-4 w-4 ml-2" />
