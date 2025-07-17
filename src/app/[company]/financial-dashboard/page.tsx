@@ -10,11 +10,13 @@ import { WeeklyCashFlow } from "@/components/weekly-cash-flow";
 import { KeyRatios } from "@/components/key-ratios";
 import { AccountsTable } from "@/components/accounts-table";
 import { PeriodPicker } from "@/components/period-picker";
+import type { DateRange } from "react-day-picker";
 
-export type Period = 'D' | 'W' | 'M' | 'YTD';
+export type Period = 'D' | 'W' | 'M' | 'YTD' | 'CUSTOM';
 
 export default function FinancePage() {
   const [period, setPeriod] = useState<Period>('M');
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
 
   return (
     <>
@@ -22,10 +24,15 @@ export default function FinancePage() {
         title="Financial Dashboard"
         description="Comprehensive financial metrics and performance indicators"
       >
-        <PeriodPicker value={period} onValueChange={(value) => setPeriod(value as Period)} />
+        <PeriodPicker 
+          period={period} 
+          onPeriodChange={setPeriod}
+          dateRange={dateRange}
+          onDateRangeChange={setDateRange}
+        />
       </DashboardHeader>
       <main className="flex-1 space-y-6 p-4 sm:px-6 lg:px-8">
-        <FinancialStats period={period} />
+        <FinancialStats period={period} dateRange={dateRange} />
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
             <div className="lg:col-span-3">
                 <RevenueProfitTrend />

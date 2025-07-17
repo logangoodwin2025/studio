@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import React from "react";
@@ -41,15 +40,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
+import { SheetTitle } from "@/components/ui/sheet";
+import { FinancialDataProvider } from "@/context/financial-data-context";
 
 const navItems = {
-  DASHBOARDS: [
-    { href: "/financial-dashboard", icon: DollarSign, label: "Financial Dashboard" },
-  ],
   "DATA & REPORTS": [
       { href: "/data-entry", icon: ClipboardPlus, label: "Data Entry" },
       { href: "/reports", icon: FileBarChart2, label: "Reports" },
       { href: "/alerts", icon: Bell, label: "Alerts" },
+  ],
+  DASHBOARDS: [
+    { href: "/financial-dashboard", icon: DollarSign, label: "Financial Dashboard" },
   ],
 };
 
@@ -124,40 +125,42 @@ export default function DashboardLayout({
   const companySlug = params.company as string;
 
   return (
-    <SidebarProvider>
-      <Sidebar>
-        <SidebarHeader>
-          <SidebarHeaderContent />
-        </SidebarHeader>
-        <SidebarContent>
-          <SidebarMenu>
-            {Object.entries(navItems).map(([label, items]) => (
-              <React.Fragment key={label}>
-                <SidebarLabel>{label}</SidebarLabel>
-                {items.map((item) => (
-                  <SidebarMenuItem key={item.href}>
-                    <Link href={`/${companySlug}${item.href}`}>
-                      <SidebarMenuButton
-                        isActive={pathname.endsWith(item.href)}
-                        className="w-full"
-                      >
-                        <item.icon className="h-4 w-4" />
-                        <span>{item.label}</span>
-                      </SidebarMenuButton>
-                    </Link>
-                  </SidebarMenuItem>
-                ))}
-              </React.Fragment>
-            ))}
-          </SidebarMenu>
-        </SidebarContent>
-      </Sidebar>
-      <div className="flex flex-1 flex-col md:ml-64">
-        <Header companySlug={companySlug} />
-        <SidebarInset>
-            {children}
-        </SidebarInset>
-      </div>
-    </SidebarProvider>
+    <FinancialDataProvider>
+      <SidebarProvider>
+        <Sidebar>
+          <SidebarHeader>
+            <SidebarHeaderContent />
+          </SidebarHeader>
+          <SidebarContent>
+            <SidebarMenu>
+              {Object.entries(navItems).map(([label, items]) => (
+                <React.Fragment key={label}>
+                  <SidebarLabel>{label}</SidebarLabel>
+                  {items.map((item) => (
+                    <SidebarMenuItem key={item.href}>
+                      <Link href={`/${companySlug}${item.href}`}>
+                        <SidebarMenuButton
+                          isActive={pathname.endsWith(item.href)}
+                          className="w-full"
+                        >
+                          <item.icon className="h-4 w-4" />
+                          <span>{item.label}</span>
+                        </SidebarMenuButton>
+                      </Link>
+                    </SidebarMenuItem>
+                  ))}
+                </React.Fragment>
+              ))}
+            </SidebarMenu>
+          </SidebarContent>
+        </Sidebar>
+        <div className="flex flex-1 flex-col md:ml-64">
+          <Header companySlug={companySlug} />
+          <SidebarInset>
+              {children}
+          </SidebarInset>
+        </div>
+      </SidebarProvider>
+    </FinancialDataProvider>
   );
 }

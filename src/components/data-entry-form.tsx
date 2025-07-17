@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format } from "date-fns";
+import { useFinancialData } from "@/context/financial-data-context";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -38,8 +39,9 @@ import { Separator } from "./ui/separator";
 const dataEntrySchema = z.object({
   period: z.date({ required_error: "A period date is required." }),
   revenue: z.coerce.number().min(0, "Revenue must be a positive number."),
+  grossProfit: z.coerce.number(),
+  netIncome: z.coerce.number(),
   expenses: z.coerce.number().min(0, "Expenses must be a positive number."),
-  profit: z.coerce.number(),
   cashFlow: z.coerce.number(),
   ebitda: z.coerce.number(),
   customerLtv: z.coerce.number(),
@@ -49,29 +51,32 @@ const dataEntrySchema = z.object({
 type DataEntryFormValues = z.infer<typeof dataEntrySchema>;
 
 const defaultValues: Partial<DataEntryFormValues> = {
-  period: new Date("2025-07-01T00:00:00"),
-  revenue: 670000,
-  expenses: 410000,
-  profit: 260000,
-  cashFlow: 195000,
-  ebitda: 285000,
-  customerLtv: 45200,
-  customerCac: 2850,
+  period: new Date(),
+  revenue: 0,
+  grossProfit: 0,
+  netIncome: 0,
+  expenses: 0,
+  cashFlow: 0,
+  ebitda: 0,
+  customerLtv: 0,
+  customerCac: 0,
 };
 
 export function DataEntryForm() {
   const { toast } = useToast();
+  const { addFinancialRecord } = useFinancialData();
   const form = useForm<DataEntryFormValues>({
     resolver: zodResolver(dataEntrySchema),
     defaultValues,
   });
 
   const onSubmit = (data: DataEntryFormValues) => {
-    console.log(data);
+    addFinancialRecord(data);
     toast({
       title: "Data Saved",
       description: "Financial metrics have been successfully saved.",
     });
+    form.reset(defaultValues);
   };
 
   return (
@@ -157,12 +162,25 @@ export function DataEntryForm() {
                 />
                 <FormField
                   control={form.control}
-                  name="profit"
+                  name="grossProfit"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Net Profit ($)</FormLabel>
+                      <FormLabel>Gross Profit ($)</FormLabel>
                       <FormControl>
                         <Input type="number" placeholder="e.g., 260000" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="netIncome"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Net Income ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="e.g., 150000" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
