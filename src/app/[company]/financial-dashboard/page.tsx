@@ -1,8 +1,9 @@
+
 import { FinancialDashboardClient } from "@/components/financial-dashboard-client";
 import { getStatsForPeriod, getChartDataForPeriod } from "@/lib/financial-aggregator";
 import type { FinancialRecord } from "@/context/financial-data-context";
 import type { DateRange } from "react-day-picker";
-import { parseISO } from "date-fns";
+import { parseISO, formatISO } from "date-fns";
 
 // This is a placeholder for fetching data from a database or API in a real app.
 import { initialData } from "@/context/financial-data-context";
@@ -39,12 +40,18 @@ export default async function FinancePage({
   const stats = getStatsForPeriod(allData, period, dateRange);
   const chartData = getChartDataForPeriod(allData, period, dateRange);
 
+  // Serialize dateRange for the client component
+  const serializedDateRange = dateRange?.from ? {
+    from: formatISO(dateRange.from),
+    to: dateRange.to ? formatISO(dateRange.to) : undefined
+  } : undefined;
+
   return (
     <FinancialDashboardClient
       stats={stats}
       chartData={chartData}
       initialPeriod={period}
-      initialDateRange={dateRange}
+      initialDateRange={serializedDateRange}
     />
   );
 }

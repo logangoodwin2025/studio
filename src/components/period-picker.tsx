@@ -35,9 +35,7 @@ export function PeriodPicker({
     className
 }: PeriodPickerProps) {
   const [popoverOpen, setPopoverOpen] = React.useState(false);
-
-  // We now control date range changes via URL, so we just need a local state for the popover calendar
-  const [localDateRange, setLocalDateRange] = React.useState(dateRange);
+  const [localDateRange, setLocalDateRange] = React.useState<DateRange | undefined>(dateRange);
 
   React.useEffect(() => {
     setLocalDateRange(dateRange);
