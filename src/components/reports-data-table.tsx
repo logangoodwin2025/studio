@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Calendar as CalendarIcon, Download } from "lucide-react";
+import { Calendar as CalendarIcon, Download, FileText } from "lucide-react";
 import { addDays, format } from "date-fns";
 import type { DateRange } from "react-day-picker";
 
@@ -21,116 +21,118 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { DashboardHeader } from "./dashboard-header";
-import { Card, CardContent } from "./ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { useToast } from "@/hooks/use-toast";
 
 type Report = {
   id: string;
-  user: string;
-  amount: number;
-  date: string;
-  status: "Paid" | "Pending" | "Failed";
+  title: string;
+  description: string;
+  lastRun: string;
 };
 
-export function ReportsDataTable({ reports }: { reports: Report[] }) {
+const availableReports: Report[] = [
+    { id: 'rep_01', title: 'Monthly Financial Summary', description: 'Key metrics including revenue, profit, and EBITDA.', lastRun: '2025-07-01' },
+    { id: 'rep_02', title: 'Customer Metrics Analysis', description: 'CLV, CAC, and retention rates for the selected period.', lastRun: '2025-07-01' },
+    { id: 'rep_03', title: 'Cash Flow Statement', description: 'Detailed cash inflow and outflow.', lastRun: '2025-06-28' },
+    { id: 'rep_04', title: 'Accounts Receivable Aging', description: 'Breakdown of outstanding invoices.', lastRun: '2025-07-03' },
+    { id: 'rep_05', title: 'Accounts Payable Summary', description: 'Overview of money owed to suppliers.', lastRun: '2025-07-03' },
+];
+
+
+export function ReportsDataTable({ reports }: { reports: any[] }) {
   const { toast } = useToast();
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: addDays(new Date(), -30),
     to: new Date(),
   });
 
-  const getStatusVariant = (status: Report["status"]) => {
-    switch (status) {
-      case "Paid":
-        return "default";
-      case "Pending":
-        return "secondary";
-      case "Failed":
-        return "destructive";
-    }
-  };
-
-  const handleExport = () => {
+  const handleExport = (reportTitle: string) => {
     toast({
-      title: "Exporting Report",
-      description: "Your report is being generated and will be downloaded shortly.",
+      title: "Generating Report...",
+      description: `Your "${reportTitle}" report for the selected period is being generated.`,
     });
   };
 
   return (
     <>
-      <DashboardHeader title="Reports">
-        <div className="flex items-center space-x-2">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                id="date"
-                variant={"outline"}
-                className={cn(
-                  "w-[300px] justify-start text-left font-normal",
-                  !date && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {date?.from ? (
-                  date.to ? (
-                    <>
-                      {format(date.from, "LLL dd, y")} -{" "}
-                      {format(date.to, "LLL dd, y")}
-                    </>
-                  ) : (
-                    format(date.from, "LLL dd, y")
-                  )
-                ) : (
-                  <span>Pick a date</span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="end">
-              <Calendar
-                initialFocus
-                mode="range"
-                defaultMonth={date?.from}
-                selected={date}
-                onSelect={setDate}
-                numberOfMonths={2}
-              />
-            </PopoverContent>
-          </Popover>
-          <Button onClick={handleExport}>
-            <Download className="mr-2 h-4 w-4" />
-            Export
-          </Button>
-        </div>
-      </DashboardHeader>
+      <DashboardHeader 
+        title="Financial Reports"
+        description="Generate and download financial reports for specific time periods."
+      />
       <main className="flex-1 p-4 sm:px-6 lg:px-8">
         <Card>
-          <CardContent>
+            <CardHeader>
+                <CardTitle className="font-headline">Report Generator</CardTitle>
+                <CardDescription>Select a date range and choose a report to generate.</CardDescription>
+            </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="flex items-center gap-4">
+                <Popover>
+                    <PopoverTrigger asChild>
+                    <Button
+                        id="date"
+                        variant={"outline"}
+                        className={cn(
+                        "w-[300px] justify-start text-left font-normal",
+                        !date && "text-muted-foreground"
+                        )}
+                    >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {date?.from ? (
+                        date.to ? (
+                            <>
+                            {format(date.from, "LLL dd, y")} -{" "}
+                            {format(date.to, "LLL dd, y")}
+                            </>
+                        ) : (
+                            format(date.from, "LLL dd, y")
+                        )
+                        ) : (
+                        <span>Pick a date</span>
+                        )}
+                    </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                        initialFocus
+                        mode="range"
+                        defaultMonth={date?.from}
+                        selected={date}
+                        onSelect={setDate}
+                        numberOfMonths={2}
+                    />
+                    </PopoverContent>
+                </Popover>
+            </div>
+
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Transaction ID</TableHead>
-                  <TableHead>User</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
+                  <TableHead>Report Name</TableHead>
+                  <TableHead>Last Run</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {reports.map((report) => (
+                {availableReports.map((report) => (
                   <TableRow key={report.id}>
-                    <TableCell className="font-medium">{report.id}</TableCell>
-                    <TableCell>{report.user}</TableCell>
-                    <TableCell>{report.date}</TableCell>
                     <TableCell>
-                      <Badge variant={getStatusVariant(report.status)}>
-                        {report.status}
-                      </Badge>
+                        <div className="flex items-center gap-3">
+                            <FileText className="h-5 w-5 text-muted-foreground" />
+                            <div>
+                                <p className="font-medium">{report.title}</p>
+                                <p className="text-sm text-muted-foreground">{report.description}</p>
+                            </div>
+                        </div>
                     </TableCell>
+                    <TableCell>{format(new Date(report.lastRun), "LLL dd, y")}</TableCell>
                     <TableCell className="text-right">
-                      ${report.amount.toFixed(2)}
+                        <Button variant="outline" size="sm" onClick={() => handleExport(report.title)}>
+                            <Download className="mr-2 h-4 w-4" />
+                            Export
+                        </Button>
                     </TableCell>
                   </TableRow>
                 ))}
