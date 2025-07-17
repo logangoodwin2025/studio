@@ -4,7 +4,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 
@@ -33,6 +33,7 @@ export const Sidebar = ({ children, className }: { children: React.ReactNode, cl
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className={cn("w-64 p-0 flex flex-col bg-card", className)}>
+          <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
           {children}
         </SheetContent>
       </Sheet>
@@ -116,7 +117,7 @@ export const SidebarInset = React.forwardRef<
     React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
     return (
-        <main ref={ref} className={cn("flex-1", className)} {...props} />
+        <main ref={ref} className={cn("flex-1 pt-16 md:pt-0", className)} {...props} />
     )
 });
 SidebarInset.displayName = "SidebarInset";
