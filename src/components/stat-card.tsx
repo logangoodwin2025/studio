@@ -21,7 +21,7 @@ export function StatCard({ title, value, change, icon: Icon }: StatCardProps) {
         <div className="p-3 rounded-lg bg-primary/10 shadow-inner self-start">
             <Icon className="h-6 w-6 text-primary" />
         </div>
-        <div className="flex-1 min-w-0">
+        <div className="flex-1">
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider break-words">{title}</p>
           <div className="flex flex-wrap items-baseline gap-x-2">
             <p className="text-xl font-bold text-foreground break-words">{value}</p>
