@@ -34,6 +34,7 @@ export const Sidebar = ({ children, className }: { children: React.ReactNode, cl
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className={cn("w-64 p-0 flex flex-col bg-card", className)}>
+            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
             {children}
         </SheetContent>
       </Sheet>

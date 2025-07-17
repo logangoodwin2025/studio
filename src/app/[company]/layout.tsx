@@ -49,10 +49,7 @@ const navItems = {
   "DATA & REPORTS": [
       { href: "/data-entry", icon: ClipboardPlus, label: "Data Entry" },
       { href: "/reports", icon: FileBarChart2, label: "Reports" },
-  ],
-  ADMINISTRATION: [
-    { href: "/users", icon: Users, label: "Users" },
-    { href: "/roles", icon: Shield, label: "Roles" },
+      { href: "/alerts", icon: Bell, label: "Alerts" },
   ],
 };
 
