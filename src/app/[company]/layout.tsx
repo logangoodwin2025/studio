@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 import { usePathname, useParams } from "next/navigation";
 import {
-  Bell,
   DollarSign,
   ClipboardPlus,
   FileBarChart2,
