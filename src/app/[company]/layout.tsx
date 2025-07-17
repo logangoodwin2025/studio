@@ -58,11 +58,10 @@ function Header({ companySlug }: { companySlug: string }) {
   return (
     <header className="fixed top-0 left-0 right-0 z-40 flex h-16 items-center justify-between border-b bg-background px-4 md:left-64">
         <div className="flex items-center gap-2">
-            <h1 className="font-bold text-lg font-headline hidden md:block">CEO Dashboard</h1>
-            <Badge variant="secondary" className="hidden md:inline-flex">
-                <Building className="h-3 w-3 mr-1.5"/>
-                TechCorp Solutions
-            </Badge>
+            <h1 className="font-bold text-lg font-headline flex items-center gap-2">
+              <Building className="h-5 w-5 text-muted-foreground"/>
+              <span>TechCorp Solutions</span>
+            </h1>
         </div>
 
         <div className="flex items-center gap-4">
@@ -82,6 +81,7 @@ function Header({ companySlug }: { companySlug: string }) {
                 </Avatar>
                 <div className="hidden md:flex flex-col items-start">
                     <span className="font-semibold">Emily Rodriguez</span>
+                    <span className="text-xs text-muted-foreground">Finance Team</span>
                 </div>
                 <ChevronDown className="h-4 w-4 hidden md:block" />
               </button>
