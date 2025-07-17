@@ -16,7 +16,7 @@ import { startOfMonth, subMonths } from "date-fns";
 export type Period = 'D' | 'W' | 'M' | 'YTD' | 'CUSTOM';
 
 export default function FinancePage() {
-  const [period, setPeriod] = useState<Period>('M');
+  const [period, setPeriod] = useState<Period>('D');
   
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [isMounted, setIsMounted] = useState(false);
