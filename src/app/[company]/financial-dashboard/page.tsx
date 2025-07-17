@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { FinancialStats } from "@/components/financial-stats";
 import { RevenueProfitTrend } from "@/components/revenue-profit-trend";
@@ -16,22 +16,16 @@ import { ProfitabilityAnalysis } from "@/components/profitability-analysis";
 import { useFinancialData } from "@/context/financial-data-context";
 import { getStatsForPeriod, getChartDataForPeriod } from "@/lib/financial-aggregator";
 import type { FinancialRecord } from "@/context/financial-data-context";
-import type { Period } from "@/app/[company]/financial-dashboard/page";
 import { formatISO, parseISO } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 
+export type Period = "D" | "W" | "M" | "YTD" | "MAX" | "CUSTOM";
 
-export default function FinancePage({
-  searchParams
-}: {
-  searchParams?: {
-    period?: Period;
-    from?: string;
-    to?: string;
-  }
-}) {
+
+function FinanceDashboardContent() {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { data: allData } = useFinancialData();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -39,16 +33,19 @@ export default function FinancePage({
   const [chartData, setChartData] = useState<FinancialRecord[]>([]);
 
   // Determine period and date range from URL search params
-  const period = searchParams?.period || 'D';
+  const period = (searchParams.get('period') as Period) || 'D';
   let dateRange: DateRange | undefined = undefined;
+  
+  const fromParam = searchParams.get('from');
+  const toParam = searchParams.get('to');
 
-  if (period === 'CUSTOM' && searchParams?.from) {
+  if (period === 'CUSTOM' && fromParam) {
     dateRange = {
-      from: parseISO(searchParams.from),
-      to: searchParams.to ? parseISO(searchParams.to) : undefined
+      from: parseISO(fromParam),
+      to: toParam ? parseISO(toParam) : undefined
     };
   }
-
+  
   useEffect(() => {
     setIsLoading(true);
     if (allData.length > 0) {
@@ -62,18 +59,24 @@ export default function FinancePage({
 
 
   const handlePeriodChange = (newPeriod: Period) => {
-    const params = new URLSearchParams();
+    const params = new URLSearchParams(searchParams.toString());
     params.set('period', newPeriod);
+    if (newPeriod !== 'CUSTOM') {
+      params.delete('from');
+      params.delete('to');
+    }
     router.push(`${pathname}?${params.toString()}`);
   }
 
   const handleDateRangeChange = (newDateRange: DateRange | undefined) => {
+    const params = new URLSearchParams(searchParams.toString());
     if (newDateRange?.from) {
-      const params = new URLSearchParams();
       params.set('period', 'CUSTOM');
       params.set('from', formatISO(newDateRange.from, { representation: 'date' }));
       if (newDateRange.to) {
         params.set('to', formatISO(newDateRange.to, { representation: 'date' }));
+      } else {
+        params.delete('to');
       }
       router.push(`${pathname}?${params.toString()}`);
     }
@@ -151,4 +154,47 @@ export default function FinancePage({
       </main>
     </>
   );
+}
+
+export default function FinancePage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <FinanceDashboardContent />
+    </Suspense>
+  )
+}
+
+function Loading() {
+  return (
+    <>
+      <DashboardHeader 
+        title="Financial Dashboard"
+        description="Comprehensive financial metrics and performance indicators"
+      >
+        <div className="flex items-center gap-2 bg-card p-1 rounded-lg border h-[44px] w-[420px]">
+            <Skeleton className="h-9 w-full" />
+        </div>
+      </DashboardHeader>
+      <main className="flex-1 space-y-6 p-4 sm:px-6 lg:px-8">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
+            {[...Array(7)].map((_, i) => <Skeleton key={i} className="h-[98px] rounded-lg" />)}
+        </div>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+            <Skeleton className="lg:col-span-3 h-[282px] rounded-lg" />
+            <Skeleton className="lg:col-span-2 h-[282px] rounded-lg" />
+        </div>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 lg:col-span-2">
+                <Skeleton className="h-[262px] rounded-lg" />
+                <Skeleton className="h-[262px] rounded-lg" />
+            </div>
+            <div className="grid grid-cols-1 gap-6 lg:col-span-1">
+                <Skeleton className="h-[212px] rounded-lg" />
+                <Skeleton className="h-[218px] rounded-lg" />
+                <Skeleton className="h-[218px] rounded-lg" />
+            </div>
+        </div>
+      </main>
+    </>
+  )
 }
