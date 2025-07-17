@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import { format } from "date-fns"
@@ -57,11 +58,12 @@ export function PeriodPicker({
   return (
     <div className={cn("flex items-center gap-2 bg-card p-1 rounded-lg border", className)}>
         <Tabs value={period} onValueChange={handlePeriodChange} className="relative">
-            <TabsList className="grid h-9 grid-cols-4 bg-transparent p-0">
+            <TabsList className="grid h-9 grid-cols-5 bg-transparent p-0">
                 <TabsTrigger value="D" className="text-xs">Daily</TabsTrigger>
                 <TabsTrigger value="W" className="text-xs">Weekly</TabsTrigger>
                 <TabsTrigger value="M" className="text-xs">Monthly</TabsTrigger>
                 <TabsTrigger value="YTD" className="text-xs">YTD</TabsTrigger>
+                <TabsTrigger value="MAX" className="text-xs">Max</TabsTrigger>
             </TabsList>
         </Tabs>
         <Separator orientation="vertical" className="h-6" />
@@ -70,17 +72,17 @@ export function PeriodPicker({
             <Button
                 id="date"
                 variant={"ghost"}
-                size={dateRange ? "default" : "icon"}
+                size={period === 'CUSTOM' && dateRange ? "default" : "icon"}
                 className={cn(
                 "justify-start text-left font-normal h-9 transition-all duration-200",
-                dateRange ? "w-[260px]" : "w-9",
+                period === 'CUSTOM' && dateRange ? "w-[260px]" : "w-9",
                 "bg-transparent hover:bg-secondary",
                 !dateRange && "text-muted-foreground",
                 period === 'CUSTOM' && "text-primary ring-2 ring-primary"
                 )}
             >
                 <CalendarIcon className="h-4 w-4" />
-                {dateRange?.from && (
+                {period === 'CUSTOM' && dateRange?.from && (
                     <span className="ml-2">
                         {dateRange.to ? (
                             <>
