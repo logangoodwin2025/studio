@@ -70,21 +70,27 @@ export function PeriodPicker({
             <Button
                 id="date"
                 variant={"ghost"}
+                size={dateRange ? "default" : "icon"}
                 className={cn(
-                "w-[260px] justify-start text-left font-normal h-9",
+                "justify-start text-left font-normal h-9 transition-all duration-200",
+                dateRange ? "w-[260px]" : "w-9",
                 "bg-transparent hover:bg-secondary",
                 !dateRange && "text-muted-foreground",
                 period === 'CUSTOM' && "text-primary ring-2 ring-primary"
                 )}
             >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {dateRange?.from && dateRange?.to ? (
-                    <>
-                    {format(dateRange.from, "LLL dd, y")} -{" "}
-                    {format(dateRange.to, "LLL dd, y")}
-                    </>
-                ) : (
-                <span>Custom range</span>
+                <CalendarIcon className="h-4 w-4" />
+                {dateRange?.from && (
+                    <span className="ml-2">
+                        {dateRange.to ? (
+                            <>
+                            {format(dateRange.from, "LLL dd, y")} -{" "}
+                            {format(dateRange.to, "LLL dd, y")}
+                            </>
+                        ) : (
+                            format(dateRange.from, "LLL dd, y")
+                        )}
+                    </span>
                 )}
             </Button>
             </PopoverTrigger>
