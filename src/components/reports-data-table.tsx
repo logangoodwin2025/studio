@@ -21,7 +21,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DashboardHeader } from "./dashboard-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { useToast } from "@/hooks/use-toast";
 
@@ -56,91 +55,85 @@ export function ReportsDataTable({ reports }: { reports: any[] }) {
   };
 
   return (
-    <>
-      <DashboardHeader 
-        title="Financial Reports"
-        description="Generate and download financial reports for specific time periods."
-      />
-      <main className="flex-1 p-4 sm:px-6 lg:px-8">
-        <Card>
-            <CardHeader>
-                <CardTitle className="font-headline">Report Generator</CardTitle>
-                <CardDescription>Select a date range and choose a report to generate.</CardDescription>
-            </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="flex items-center gap-4">
-                <Popover>
-                    <PopoverTrigger asChild>
-                    <Button
-                        id="date"
-                        variant={"outline"}
-                        className={cn(
-                        "w-[300px] justify-start text-left font-normal",
-                        !date && "text-muted-foreground"
-                        )}
-                    >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {date?.from ? (
-                        date.to ? (
-                            <>
-                            {format(date.from, "LLL dd, y")} -{" "}
-                            {format(date.to, "LLL dd, y")}
-                            </>
-                        ) : (
-                            format(date.from, "LLL dd, y")
-                        )
-                        ) : (
-                        <span>Pick a date</span>
-                        )}
-                    </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                        initialFocus
-                        mode="range"
-                        defaultMonth={date?.from}
-                        selected={date}
-                        onSelect={setDate}
-                        numberOfMonths={2}
-                    />
-                    </PopoverContent>
-                </Popover>
-            </div>
+    <main className="flex-1 p-4 sm:px-6 lg:px-8">
+      <Card>
+          <CardHeader>
+              <CardTitle className="font-headline">Report Generator</CardTitle>
+              <CardDescription>Select a date range and choose a report to generate.</CardDescription>
+          </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex items-center gap-4">
+              <Popover>
+                  <PopoverTrigger asChild>
+                  <Button
+                      id="date"
+                      variant={"outline"}
+                      className={cn(
+                      "w-[300px] justify-start text-left font-normal",
+                      !date && "text-muted-foreground"
+                      )}
+                  >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {date?.from ? (
+                      date.to ? (
+                          <>
+                          {format(date.from, "LLL dd, y")} -{" "}
+                          {format(date.to, "LLL dd, y")}
+                          </>
+                      ) : (
+                          format(date.from, "LLL dd, y")
+                      )
+                      ) : (
+                      <span>Pick a date</span>
+                      )}
+                  </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                      initialFocus
+                      mode="range"
+                      defaultMonth={date?.from}
+                      selected={date}
+                      onSelect={setDate}
+                      numberOfMonths={2}
+                  />
+                  </PopoverContent>
+              </Popover>
+          </div>
 
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Report Name</TableHead>
-                  <TableHead>Last Run</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Report Name</TableHead>
+                <TableHead>Last Run</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {availableReports.map((report) => (
+                <TableRow key={report.id}>
+                  <TableCell>
+                      <div className="flex items-center gap-3">
+                          <FileText className="h-5 w-5 text-muted-foreground" />
+                          <div>
+                              <p className="font-medium">{report.title}</p>
+                              <p className="text-sm text-muted-foreground">{report.description}</p>
+                          </div>
+                      </div>
+                  </TableCell>
+                  <TableCell>{format(new Date(report.lastRun), "LLL dd, y")}</TableCell>
+                  <TableCell className="text-right">
+                      <Button variant="outline" size="sm" onClick={() => handleExport(report.title)}>
+                          <Download className="mr-2 h-4 w-4" />
+                          Export
+                      </Button>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {availableReports.map((report) => (
-                  <TableRow key={report.id}>
-                    <TableCell>
-                        <div className="flex items-center gap-3">
-                            <FileText className="h-5 w-5 text-muted-foreground" />
-                            <div>
-                                <p className="font-medium">{report.title}</p>
-                                <p className="text-sm text-muted-foreground">{report.description}</p>
-                            </div>
-                        </div>
-                    </TableCell>
-                    <TableCell>{format(new Date(report.lastRun), "LLL dd, y")}</TableCell>
-                    <TableCell className="text-right">
-                        <Button variant="outline" size="sm" onClick={() => handleExport(report.title)}>
-                            <Download className="mr-2 h-4 w-4" />
-                            Export
-                        </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </main>
-    </>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </main>
   );
 }
