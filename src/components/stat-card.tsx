@@ -15,13 +15,13 @@ export function StatCard({ title, value, change, icon: Icon }: StatCardProps) {
   const changeColor = isPositive ? "text-green-500" : isNegative ? "text-red-500" : "text-muted-foreground";
 
   return (
-    <Card className="group transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+    <Card className="group transition-all duration-300 hover:shadow-lg hover:scale-110 hover:z-10 relative">
       <CardContent className="p-4 flex items-center gap-4">
         <div className="p-3 rounded-lg bg-primary/10 shadow-inner">
             <Icon className="h-6 w-6 text-primary" />
         </div>
         <div className="flex-1 overflow-hidden">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider truncate">{title}</p>
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{title}</p>
           <div className="flex flex-wrap items-baseline gap-x-2">
             <p className="text-xl font-bold text-foreground">{value}</p>
             {change && (
