@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/popover"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { Period } from "@/app/[company]/financial-dashboard/page"
+import { Separator } from "./ui/separator"
 
 interface PeriodPickerProps {
     period: Period;
@@ -49,15 +50,13 @@ export function PeriodPicker({
     const newPeriod = value as Period;
     onPeriodChange(newPeriod);
     if (newPeriod !== 'CUSTOM') {
-      // Reset date range when a pre-defined period is selected.
-      // The dashboard page will then set the correct range.
       onDateRangeChange(undefined);
     }
   }
 
   return (
-    <div className={cn("flex items-center gap-2 bg-card/50 p-1 rounded-lg", className)}>
-        <Tabs value={period} onValueChange={handlePeriodChange}>
+    <div className={cn("flex items-center gap-2 bg-card p-1 rounded-lg border", className)}>
+        <Tabs value={period} onValueChange={handlePeriodChange} className="relative">
             <TabsList className="grid h-9 grid-cols-4 bg-transparent p-0">
                 <TabsTrigger value="D" className="text-xs">Daily</TabsTrigger>
                 <TabsTrigger value="W" className="text-xs">Weekly</TabsTrigger>
@@ -65,27 +64,25 @@ export function PeriodPicker({
                 <TabsTrigger value="YTD" className="text-xs">YTD</TabsTrigger>
             </TabsList>
         </Tabs>
+        <Separator orientation="vertical" className="h-6" />
         <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
             <PopoverTrigger asChild>
             <Button
                 id="date"
-                variant={"outline"}
+                variant={"ghost"}
                 className={cn(
-                "w-[260px] justify-start text-left font-normal h-9 bg-background",
+                "w-[260px] justify-start text-left font-normal h-9",
+                "bg-transparent hover:bg-secondary",
                 !dateRange && "text-muted-foreground",
-                period === 'CUSTOM' && "ring-2 ring-primary ring-offset-2"
+                period === 'CUSTOM' && "text-primary ring-2 ring-primary"
                 )}
             >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {dateRange?.from ? (
-                dateRange.to ? (
+                {dateRange?.from && dateRange?.to ? (
                     <>
                     {format(dateRange.from, "LLL dd, y")} -{" "}
                     {format(dateRange.to, "LLL dd, y")}
                     </>
-                ) : (
-                    format(dateRange.from, "LLL dd, y")
-                )
                 ) : (
                 <span>Custom range</span>
                 )}
@@ -100,7 +97,7 @@ export function PeriodPicker({
                   onSelect={setLocalDateRange}
                   numberOfMonths={2}
               />
-              <div className="p-2 border-t flex justify-end">
+              <div className="p-2 border-t flex justify-end bg-secondary">
                 <Button onClick={handleApplyDateRange} size="sm">
                   <Check className="h-4 w-4 mr-2" />
                   Apply
