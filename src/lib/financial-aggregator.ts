@@ -1,7 +1,7 @@
 
 import type { Period } from "@/app/[company]/financial-dashboard/page";
 import type { FinancialRecord } from "@/context/financial-data-context";
-import { subDays, subWeeks, subMonths, startOfYear, isWithinInterval, startOfDay, endOfDay, differenceInDays, format, startOfMonth, startOfWeek } from 'date-fns';
+import { subDays, subWeeks, subMonths, startOfYear, isWithinInterval, startOfDay, endOfDay, differenceInDays, format, startOfMonth, startOfWeek, endOfWeek, endOfMonth } from 'date-fns';
 import type { DateRange } from "react-day-picker";
 
 type StatValue = {
@@ -77,7 +77,7 @@ const aggregateRecords = (records: FinancialRecord[]): Omit<FinancialRecord, 'pe
     }
 };
 
-const getIntervals = (period: Period, dateRange?: DateRange) => {
+const getIntervalsForStats = (period: Period, dateRange?: DateRange) => {
     const today = new Date();
     let currentInterval: Interval | null = null;
     let previousInterval: Interval | null = null;
@@ -119,9 +119,8 @@ const getIntervals = (period: Period, dateRange?: DateRange) => {
     return { currentInterval, previousInterval };
 }
 
-
 export const getStatsForPeriod = (allData: FinancialRecord[], period: Period, dateRange?: DateRange): FinancialStats => {
-    const { currentInterval, previousInterval } = getIntervals(period, dateRange);
+    const { currentInterval, previousInterval } = getIntervalsForStats(period, dateRange);
 
     const currentRecords = currentInterval ? allData.filter(d => isWithinInterval(d.period, currentInterval!)) : allData;
     const previousRecords = previousInterval ? allData.filter(d => isWithinInterval(d.period, previousInterval!)) : [];
@@ -156,17 +155,39 @@ export const getStatsForPeriod = (allData: FinancialRecord[], period: Period, da
     }
 };
 
+const getIntervalForChart = (period: Period, dateRange?: DateRange): Interval | null => {
+    const today = new Date();
+    switch (period) {
+        case 'D': // For daily stats, show the whole week in chart
+            return { start: startOfWeek(today), end: endOfWeek(today) };
+        case 'W': // For weekly stats, show last 30 days in chart
+            return { start: subDays(today, 30), end: endOfDay(today) };
+        case 'M': // For monthly stats, show last 90 days in chart
+            return { start: subDays(today, 90), end: endOfDay(today) };
+        case 'YTD':
+            return { start: startOfYear(today), end: endOfDay(today) };
+        case 'MAX':
+            return null; // All data
+        case 'CUSTOM':
+             if (!dateRange || !dateRange.from) return null;
+             const end = dateRange.to || dateRange.from;
+             return { start: startOfDay(dateRange.from), end: endOfDay(end) };
+        default:
+            return null;
+    }
+}
+
+
 export const getChartDataForPeriod = (allData: FinancialRecord[], period: Period, dateRange?: DateRange): FinancialRecord[] => {
-    const { currentInterval } = getIntervals(period, dateRange);
-    const records = currentInterval ? allData.filter(d => isWithinInterval(d.period, currentInterval)) : allData;
+    const chartInterval = getIntervalForChart(period, dateRange);
+    const records = chartInterval ? allData.filter(d => isWithinInterval(d.period, chartInterval)) : allData;
     
     // For D and W, we need to aggregate by day/week
     if (period === 'D' || period === 'W') {
         const aggregationMap = new Map<string, FinancialRecord[]>();
         records.forEach(record => {
-            const key = period === 'D' 
-                ? format(record.period, 'yyyy-MM-dd') 
-                : format(startOfWeek(record.period), 'yyyy-MM-dd');
+            // For both daily and weekly selections, we now aggregate by day for chart granularity
+            const key = format(record.period, 'yyyy-MM-dd');
             if (!aggregationMap.has(key)) {
                 aggregationMap.set(key, []);
             }
@@ -185,7 +206,7 @@ export const getChartDataForPeriod = (allData: FinancialRecord[], period: Period
     }
 
     // For M, YTD, MAX - group by month
-    if (['M', 'YTD', 'MAX'].includes(period) && records.length > 12) { // Aggregate if many data points
+    if (['M', 'YTD', 'MAX'].includes(period) && records.length > 30) { // Aggregate by month if many data points
         const monthlyMap = new Map<string, FinancialRecord[]>();
         records.forEach(record => {
             const key = format(startOfMonth(record.period), 'yyyy-MM-dd');
