@@ -22,8 +22,8 @@ export default async function FinancePage({
     to?: string;
   }
 }) {
-  // Fetch all data on the server. In a real app, this would be an async call.
-  const allData: FinancialRecord[] = initialData;
+  // Explicitly create an array from the imported data to ensure it's in the correct format.
+  const allData: FinancialRecord[] = Array.from(initialData);
 
   // Determine period and date range from URL search params
   const period = searchParams?.period || 'D';
@@ -42,8 +42,8 @@ export default async function FinancePage({
 
   // Serialize dateRange for the client component
   const serializedDateRange = dateRange?.from ? {
-    from: formatISO(dateRange.from),
-    to: dateRange.to ? formatISO(dateRange.to) : undefined
+    from: formatISO(dateRange.from, { representation: 'date' }),
+    to: dateRange.to ? formatISO(dateRange.to, { representation: 'date' }) : undefined
   } : undefined;
 
   return (
