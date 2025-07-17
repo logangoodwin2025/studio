@@ -1,19 +1,27 @@
 
-import { FinancialDashboardClient } from "@/components/financial-dashboard-client";
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { DashboardHeader } from "@/components/dashboard-header";
+import { FinancialStats } from "@/components/financial-stats";
+import { RevenueProfitTrend } from "@/components/revenue-profit-trend";
+import { ExpenseBreakdown } from "@/components/expense-breakdown";
+import { WeeklyCashFlow } from "@/components/weekly-cash-flow";
+import { KeyRatios } from "@/components/key-ratios";
+import { AccountsTable } from "@/components/accounts-table";
+import { PeriodPicker } from "@/components/period-picker";
+import type { DateRange } from "react-day-picker";
+import { ProfitabilityAnalysis } from "@/components/profitability-analysis";
+import { useFinancialData } from "@/context/financial-data-context";
 import { getStatsForPeriod, getChartDataForPeriod } from "@/lib/financial-aggregator";
 import type { FinancialRecord } from "@/context/financial-data-context";
-import type { DateRange } from "react-day-picker";
-import { parseISO, formatISO } from "date-fns";
+import type { Period } from "@/app/[company]/financial-dashboard/page";
+import { formatISO, parseISO } from "date-fns";
+import { Skeleton } from "@/components/ui/skeleton";
 
-// This is a placeholder for fetching data from a database or API in a real app.
-import { initialData } from "@/context/financial-data-context";
 
-export type Period = 'D' | 'W' | 'M' | 'YTD' | 'MAX' | 'CUSTOM';
-
-// Ensure this component is treated as a server component.
-// No "use client" directive.
-
-export default async function FinancePage({
+export default function FinancePage({
   searchParams
 }: {
   searchParams?: {
@@ -22,8 +30,13 @@ export default async function FinancePage({
     to?: string;
   }
 }) {
-  // Explicitly create an array from the imported data to ensure it's in the correct format.
-  const allData: FinancialRecord[] = Array.from(initialData);
+  const router = useRouter();
+  const pathname = usePathname();
+  const { data: allData } = useFinancialData();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [stats, setStats] = useState<any>(null);
+  const [chartData, setChartData] = useState<FinancialRecord[]>([]);
 
   // Determine period and date range from URL search params
   const period = searchParams?.period || 'D';
@@ -35,23 +48,107 @@ export default async function FinancePage({
       to: searchParams.to ? parseISO(searchParams.to) : undefined
     };
   }
-  
-  // Perform data aggregation and filtering on the server.
-  const stats = getStatsForPeriod(allData, period, dateRange);
-  const chartData = getChartDataForPeriod(allData, period, dateRange);
 
-  // Serialize dateRange for the client component
-  const serializedDateRange = dateRange?.from ? {
-    from: formatISO(dateRange.from, { representation: 'date' }),
-    to: dateRange.to ? formatISO(dateRange.to, { representation: 'date' }) : undefined
-  } : undefined;
+  useEffect(() => {
+    setIsLoading(true);
+    if (allData.length > 0) {
+      const newStats = getStatsForPeriod(allData, period, dateRange);
+      const newChartData = getChartDataForPeriod(allData, period, dateRange);
+      setStats(newStats);
+      setChartData(newChartData);
+      setIsLoading(false);
+    }
+  }, [allData, period, dateRange]);
+
+
+  const handlePeriodChange = (newPeriod: Period) => {
+    const params = new URLSearchParams();
+    params.set('period', newPeriod);
+    router.push(`${pathname}?${params.toString()}`);
+  }
+
+  const handleDateRangeChange = (newDateRange: DateRange | undefined) => {
+    if (newDateRange?.from) {
+      const params = new URLSearchParams();
+      params.set('period', 'CUSTOM');
+      params.set('from', formatISO(newDateRange.from, { representation: 'date' }));
+      if (newDateRange.to) {
+        params.set('to', formatISO(newDateRange.to, { representation: 'date' }));
+      }
+      router.push(`${pathname}?${params.toString()}`);
+    }
+  }
+
+   if (isLoading || !stats) {
+    return (
+    <>
+      <DashboardHeader 
+        title="Financial Dashboard"
+        description="Comprehensive financial metrics and performance indicators"
+      >
+        <div className="flex items-center gap-2 bg-card p-1 rounded-lg border h-[44px] w-[420px]">
+            <Skeleton className="h-9 w-full" />
+        </div>
+      </DashboardHeader>
+      <main className="flex-1 space-y-6 p-4 sm:px-6 lg:px-8">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
+            {[...Array(7)].map((_, i) => <Skeleton key={i} className="h-[98px] rounded-lg" />)}
+        </div>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+            <Skeleton className="lg:col-span-3 h-[282px] rounded-lg" />
+            <Skeleton className="lg:col-span-2 h-[282px] rounded-lg" />
+        </div>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 lg:col-span-2">
+                <Skeleton className="h-[262px] rounded-lg" />
+                <Skeleton className="h-[262px] rounded-lg" />
+            </div>
+            <div className="grid grid-cols-1 gap-6 lg:col-span-1">
+                <Skeleton className="h-[212px] rounded-lg" />
+                <Skeleton className="h-[218px] rounded-lg" />
+                <Skeleton className="h-[218px] rounded-lg" />
+            </div>
+        </div>
+      </main>
+    </>
+    )
+  }
 
   return (
-    <FinancialDashboardClient
-      stats={stats}
-      chartData={chartData}
-      initialPeriod={period}
-      initialDateRange={serializedDateRange}
-    />
+    <>
+      <DashboardHeader 
+        title="Financial Dashboard"
+        description="Comprehensive financial metrics and performance indicators"
+      >
+        <PeriodPicker 
+          period={period} 
+          onPeriodChange={handlePeriodChange}
+          dateRange={dateRange}
+          onDateRangeChange={handleDateRangeChange}
+        />
+      </DashboardHeader>
+      <main className="flex-1 space-y-6 p-4 sm:px-6 lg:px-8">
+        <FinancialStats stats={stats} />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+            <div className="lg:col-span-3">
+                <RevenueProfitTrend data={chartData} />
+            </div>
+            <div className="lg:col-span-2">
+                <ExpenseBreakdown data={chartData} />
+            </div>
+        </div>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 lg:col-span-2">
+                <ProfitabilityAnalysis data={chartData} />
+                <WeeklyCashFlow data={chartData} />
+            </div>
+            <div className="grid grid-cols-1 gap-6 lg:col-span-1">
+                <KeyRatios />
+                <AccountsTable type="Receivable" />
+                <AccountsTable type="Payable" />
+            </div>
+        </div>
+      </main>
+    </>
   );
 }
