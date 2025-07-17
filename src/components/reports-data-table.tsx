@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -41,13 +42,14 @@ type Report = {
   lastGenerated: Date;
 };
 
+// By appending 'T00:00:00Z', we ensure these dates are parsed as UTC, avoiding timezone issues between server and client.
 const availableReports: Report[] = [
-  { id: 'rep_01', title: 'Financial Summary', description: 'Revenue, Profit, EBITDA, and Margins.', icon: FileText, lastGenerated: new Date('2025-07-01') },
-  { id: 'rep_02', title: 'Customer Metrics', description: 'CLV, CAC, and Retention analysis.', icon: FileText, lastGenerated: new Date('2025-07-15') },
-  { id: 'rep_03', title: 'Cash Flow Statement', description: 'Detailed cash inflow and outflow.', icon: FileText, lastGenerated: new Date('2025-06-30') },
-  { id: 'rep_04', title: 'AR/AP Aging Report', description: 'Breakdown of outstanding receivables and payables.', icon: FileText, lastGenerated: new Date('2025-07-20') },
-  { id: 'rep_05', title: 'Profitability Analysis', description: 'Deep dive into profit margins and SGR.', icon: FileText, lastGenerated: new Date('2025-07-18') },
-  { id: 'rep_06', title: 'Burn Rate Report', description: 'Monthly cash burn and runway.', icon: FileText, lastGenerated: new Date('2025-05-31') },
+  { id: 'rep_01', title: 'Financial Summary', description: 'Revenue, Profit, EBITDA, and Margins.', icon: FileText, lastGenerated: new Date('2025-07-01T00:00:00Z') },
+  { id: 'rep_02', title: 'Customer Metrics', description: 'CLV, CAC, and Retention analysis.', icon: FileText, lastGenerated: new Date('2025-07-15T00:00:00Z') },
+  { id: 'rep_03', title: 'Cash Flow Statement', description: 'Detailed cash inflow and outflow.', icon: FileText, lastGenerated: new Date('2025-06-30T00:00:00Z') },
+  { id: 'rep_04', title: 'AR/AP Aging Report', description: 'Breakdown of outstanding receivables and payables.', icon: FileText, lastGenerated: new Date('2025-07-20T00:00:00Z') },
+  { id: 'rep_05', title: 'Profitability Analysis', description: 'Deep dive into profit margins and SGR.', icon: FileText, lastGenerated: new Date('2025-07-18T00:00:00Z') },
+  { id: 'rep_06', title: 'Burn Rate Report', description: 'Monthly cash burn and runway.', icon: FileText, lastGenerated: new Date('2025-05-31T00:00:00Z') },
 ];
 
 export function ReportsDataTable() {
