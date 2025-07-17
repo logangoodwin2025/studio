@@ -52,10 +52,6 @@ export default function FinancePage() {
         <Skeleton className="lg:col-span-3 h-[382px] rounded-lg" />
         <Skeleton className="lg:col-span-2 h-[382px] rounded-lg" />
       </div>
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-        <Skeleton className="lg:col-span-3 h-[282px] rounded-lg" />
-        <Skeleton className="lg:col-span-2 h-[282px] rounded-lg" />
-      </div>
     </>
   )
 
@@ -67,7 +63,12 @@ export default function FinancePage() {
       >
         <PeriodPicker 
           period={period} 
-          onPeriodChange={setPeriod}
+          onPeriodChange={(p) => {
+            setPeriod(p);
+            if (p !== 'CUSTOM') {
+              setDateRange(undefined);
+            }
+          }}
           dateRange={dateRange}
           onDateRangeChange={setDateRange}
         />
@@ -84,31 +85,25 @@ export default function FinancePage() {
                     <ExpenseBreakdown data={chartData} />
                 </div>
             </div>
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-                <div className="lg:col-span-3">
+             <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:col-span-2 xl:grid-cols-2">
                     <ProfitabilityAnalysis data={chartData} />
-                </div>
-                <div className="lg:col-span-2">
                     <WeeklyCashFlow data={chartData} />
+                </div>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3 xl:col-span-1 xl:grid-cols-1">
+                    <div className="md:col-span-1">
+                        <KeyRatios />
+                    </div>
+                    <div className="md:col-span-1">
+                        <AccountsTable type="Receivable" />
+                    </div>
+                     <div className="md:col-span-1">
+                        <AccountsTable type="Payable" />
+                    </div>
                 </div>
             </div>
           </>
         )}
-        
-        {/* These components remain static as per business logic */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-            <div className="lg:col-span-3">
-              {/* Placeholder for future dynamic component or can be static */}
-            </div>
-            <div className="lg:col-span-2">
-                <KeyRatios />
-            </div>
-        </div>
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <AccountsTable type="Receivable" />
-            <AccountsTable type="Payable" />
-        </div>
-
       </main>
     </>
   );

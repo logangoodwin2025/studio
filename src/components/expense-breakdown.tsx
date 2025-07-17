@@ -32,12 +32,12 @@ const aggregateExpenses = (data: FinancialRecord[]) => {
 export function ExpenseBreakdown({ data }: { data: FinancialRecord[]}) {
   const expenseData = aggregateExpenses(data);
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle className="font-headline">Expense Breakdown</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
+        <div className="h-[220px]">
           {expenseData.length > 0 ? (
              <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -62,8 +62,8 @@ export function ExpenseBreakdown({ data }: { data: FinancialRecord[]}) {
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  outerRadius={100}
-                  innerRadius={60}
+                  outerRadius={80}
+                  innerRadius={50}
                   fill="#8884d8"
                   dataKey="value"
                   strokeWidth={2}

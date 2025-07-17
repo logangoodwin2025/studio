@@ -15,8 +15,9 @@ const formatChartData = (data: FinancialRecord[]) => {
   const rangeInDays = (last.getTime() - first.getTime()) / (1000 * 3600 * 24);
 
   let dateFormat = 'MMM yy';
-  if (rangeInDays <= 31) dateFormat = 'MMM d';
-  if (rangeInDays <= 90) dateFormat = 'MMM d';
+  if (rangeInDays <= 1) dateFormat = 'HH:mm'; // For daily view
+  else if (rangeInDays <= 31) dateFormat = 'MMM d';
+  else if (rangeInDays <= 90) dateFormat = 'MMM d';
 
 
   return data.map(item => ({
@@ -31,12 +32,12 @@ export function RevenueProfitTrend({ data }: { data: FinancialRecord[] }) {
   const chartData = formatChartData(data);
 
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle className="font-headline">Revenue & Profit Trend</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
+        <div className="h-[220px]">
           {chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={chartData} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>

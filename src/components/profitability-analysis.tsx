@@ -13,8 +13,9 @@ const formatChartData = (data: FinancialRecord[]) => {
   const rangeInDays = (last.getTime() - first.getTime()) / (1000 * 3600 * 24);
   
   let dateFormat = 'MMM yy';
-  if (rangeInDays <= 31) dateFormat = 'MMM d';
-  if (rangeInDays <= 90) dateFormat = 'MMM d';
+  if (rangeInDays <= 1) dateFormat = 'HH:mm';
+  else if (rangeInDays <= 31) dateFormat = 'MMM d';
+  else if (rangeInDays <= 90) dateFormat = 'MMM d';
 
   return data.map(item => ({
     name: format(item.period, dateFormat),
@@ -29,7 +30,7 @@ export function ProfitabilityAnalysis({ data }: { data: FinancialRecord[] }) {
   const chartData = formatChartData(data);
 
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle className="font-headline">Profitability Analysis</CardTitle>
       </CardHeader>
