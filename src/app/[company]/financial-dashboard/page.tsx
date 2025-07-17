@@ -85,21 +85,15 @@ export default function FinancePage() {
                     <ExpenseBreakdown data={chartData} />
                 </div>
             </div>
-             <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:col-span-2 xl:grid-cols-2">
+             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-6 lg:col-span-2">
                     <ProfitabilityAnalysis data={chartData} />
                     <WeeklyCashFlow data={chartData} />
                 </div>
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-3 xl:col-span-1 xl:grid-cols-1">
-                    <div className="md:col-span-1">
-                        <KeyRatios />
-                    </div>
-                    <div className="md:col-span-1">
-                        <AccountsTable type="Receivable" />
-                    </div>
-                     <div className="md:col-span-1">
-                        <AccountsTable type="Payable" />
-                    </div>
+                <div className="grid grid-cols-1 gap-6 lg:col-span-1">
+                    <KeyRatios />
+                    <AccountsTable type="Receivable" />
+                    <AccountsTable type="Payable" />
                 </div>
             </div>
           </>
