@@ -1,11 +1,13 @@
 
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format } from "date-fns";
 import { useFinancialData } from "@/context/financial-data-context";
+import React, { useEffect } from "react";
+import type { DateRange } from "react-day-picker";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -37,7 +39,10 @@ import { cn } from "@/lib/utils";
 import { Separator } from "./ui/separator";
 
 const dataEntrySchema = z.object({
-  period: z.date({ required_error: "A period date is required." }),
+  period: z.custom<DateRange>(
+    (val) => typeof val === 'object' && val !== null && 'from' in val, 
+    { message: "A reporting period is required." }
+  ),
   revenue: z.coerce.number().min(0, "Revenue must be a positive number."),
   grossProfit: z.coerce.number(),
   netIncome: z.coerce.number(),
@@ -51,15 +56,14 @@ const dataEntrySchema = z.object({
 type DataEntryFormValues = z.infer<typeof dataEntrySchema>;
 
 const defaultValues: Partial<DataEntryFormValues> = {
-  period: new Date(),
-  revenue: 0,
-  grossProfit: 0,
-  netIncome: 0,
-  expenses: 0,
-  cashFlow: 0,
-  ebitda: 0,
-  customerLtv: 0,
-  customerCac: 0,
+  revenue: undefined,
+  grossProfit: undefined,
+  netIncome: undefined,
+  expenses: undefined,
+  cashFlow: undefined,
+  ebitda: undefined,
+  customerLtv: undefined,
+  customerCac: undefined,
 };
 
 export function DataEntryForm() {
@@ -70,8 +74,28 @@ export function DataEntryForm() {
     defaultValues,
   });
 
+  const revenue = useWatch({ control: form.control, name: "revenue" });
+  const expenses = useWatch({ control: form.control, name: "expenses" });
+
+  useEffect(() => {
+    const rev = typeof revenue === 'number' ? revenue : 0;
+    const exp = typeof expenses === 'number' ? expenses : 0;
+    
+    // Auto-calculate Gross Profit (assuming it's the same as revenue for simplicity here)
+    form.setValue("grossProfit", rev, { shouldValidate: true });
+    
+    // Auto-calculate Net Income
+    form.setValue("netIncome", rev - exp, { shouldValidate: true });
+
+  }, [revenue, expenses, form]);
+
   const onSubmit = (data: DataEntryFormValues) => {
-    addFinancialRecord(data);
+    // For now, we'll use the 'from' date as the period date.
+    const recordToSave = {
+        ...data,
+        period: data.period.from!,
+    };
+    addFinancialRecord(recordToSave);
     toast({
       title: "Data Saved",
       description: "Financial metrics have been successfully saved.",
@@ -96,31 +120,40 @@ export function DataEntryForm() {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Reporting Period</FormLabel>
-                  <Popover>
+                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
                           variant={"outline"}
-                          className={cn(
-                            "w-full max-w-sm pl-3 text-left font-normal",
+                           className={cn(
+                            "w-full max-w-sm justify-start text-left font-normal",
                             !field.value && "text-muted-foreground"
                           )}
                         >
-                          {field.value ? (
-                            format(field.value, "PPP")
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {field.value?.from ? (
+                            field.value.to ? (
+                              <>
+                                {format(field.value.from, "LLL dd, y")} -{" "}
+                                {format(field.value.to, "LLL dd, y")}
+                              </>
+                            ) : (
+                              format(field.value.from, "LLL dd, y")
+                            )
                           ) : (
-                            <span>Pick a date</span>
+                            <span>Pick a date or range</span>
                           )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
-                        mode="single"
+                        initialFocus
+                        mode="range"
+                        defaultMonth={field.value?.from}
                         selected={field.value}
                         onSelect={field.onChange}
-                        initialFocus
+                        numberOfMonths={2}
                       />
                     </PopoverContent>
                   </Popover>
@@ -141,7 +174,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Total Revenue ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 670000" {...field} />
+                        <Input type="number" placeholder="e.g., 670000" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : +e.target.value)} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -154,7 +187,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Total Expenses ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 410000" {...field} />
+                        <Input type="number" placeholder="e.g., 410000" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : +e.target.value)} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -167,7 +200,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Gross Profit ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 260000" {...field} />
+                        <Input type="number" placeholder="Auto-calculated" {...field} readOnly className="bg-muted/50" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -180,7 +213,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Net Income ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 150000" {...field} />
+                        <Input type="number" placeholder="Auto-calculated" {...field} readOnly className="bg-muted/50" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -193,7 +226,7 @@ export function DataEntryForm() {
                     <FormItem>
                         <FormLabel>EBITDA ($)</FormLabel>
                         <FormControl>
-                        <Input type="number" placeholder="e.g., 285000" {...field} />
+                        <Input type="number" placeholder="e.g., 285000" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : +e.target.value)} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -206,7 +239,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Operating Cash Flow ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 195000" {...field} />
+                        <Input type="number" placeholder="e.g., 195000" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : +e.target.value)} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -227,7 +260,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Customer Lifetime Value (LTV) ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 45200" {...field} />
+                        <Input type="number" placeholder="e.g., 45200" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : +e.target.value)} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -240,7 +273,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Customer Acquisition Cost (CAC) ($)</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g., 2850" {...field} />
+                        <Input type="number" placeholder="e.g., 2850" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : +e.target.value)} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
