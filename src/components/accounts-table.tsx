@@ -31,11 +31,11 @@ export function AccountsTable({ type }: AccountsTableProps) {
     const totalLabel = `Total A${type.charAt(0)}`;
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="font-headline">{title}</CardTitle>
-        <FileSpreadsheet className="h-5 w-5 text-muted-foreground" />
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="font-headline text-base">{title}</CardTitle>
+        <FileSpreadsheet className="h-4 w-4 text-muted-foreground" />
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3">
         {data.items.map((item) => (
             <div key={item.label} className="flex justify-between items-center text-sm">
                 <p className={cn("text-muted-foreground", item.color)}>{item.label}</p>
@@ -43,7 +43,7 @@ export function AccountsTable({ type }: AccountsTableProps) {
             </div>
         ))}
         <Separator />
-        <div className="flex justify-between items-center font-bold">
+        <div className="flex justify-between items-center font-bold text-sm">
             <p>{totalLabel}</p>
             <p>${data.total.toLocaleString()}</p>
         </div>

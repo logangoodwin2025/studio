@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 
 const ratios = [
     { label: "Current Ratio", value: "2.4" },
@@ -13,18 +12,17 @@ const ratios = [
 export function KeyRatios() {
   return (
     <Card className="h-full">
-      <CardHeader>
-        <CardTitle className="font-headline">Key Ratios</CardTitle>
+      <CardHeader className="pb-2">
+        <CardTitle className="font-headline text-base">Key Ratios</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          {ratios.map((ratio, index) => (
+        <div className="space-y-2.5">
+          {ratios.map((ratio) => (
             <div key={ratio.label}>
                 <div className="flex justify-between items-center text-sm">
                     <p className="text-muted-foreground">{ratio.label}</p>
                     <p className={`font-semibold ${ratio.color || 'text-foreground'}`}>{ratio.value}</p>
                 </div>
-                {index < ratios.length - 1 && <Separator className="mt-4"/>}
             </div>
           ))}
         </div>
