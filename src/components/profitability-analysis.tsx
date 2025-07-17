@@ -6,11 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const data = [
   { name: 'Jan', grossMargin: 0.38, netMargin: 0.15, roi: 0.18 },
-  { name: 'Feb', grossMargin: 0.39, netMargin: 0.16, roi: 0.19 },
-  { name: 'Mar', grossMargin: 0.385, netMargin: 0.155, roi: 0.185 },
-  { name: 'Apr', grossMargin: 0.41, netMargin: 0.17, roi: 0.20 },
-  { name: 'May', grossMargin: 0.40, netMargin: 0.165, roi: 0.195 },
-  { name: 'Jun', grossMargin: 0.42, netMargin: 0.18, roi: 0.21 },
+  { name: 'Feb', grossMargin: 0.37, netMargin: 0.14, roi: 0.17 },
+  { name: 'Mar', grossMargin: 0.41, netMargin: 0.18, roi: 0.22 },
+  { name: 'Apr', grossMargin: 0.43, netMargin: 0.20, roi: 0.25 },
+  { name: 'May', grossMargin: 0.40, netMargin: 0.17, roi: 0.21 },
+  { name: 'Jun', grossMargin: 0.42, netMargin: 0.18, roi: 0.23 },
 ];
 
 export function ProfitabilityAnalysis() {
