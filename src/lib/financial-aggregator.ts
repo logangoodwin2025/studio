@@ -95,7 +95,7 @@ export const getStatsForPeriod = (allData: FinancialRecord[], period: Period, da
             break;
         case 'CUSTOM':
             if (!dateRange || !dateRange.from || !dateRange.to) {
-                return getZeroStats();
+                return getNoDataStats();
             }
             interval = { start: startOfDay(dateRange.from), end: endOfDay(dateRange.to) };
             const durationDays = differenceInDays(dateRange.to, dateRange.from);
@@ -117,7 +117,7 @@ export const getStatsForPeriod = (allData: FinancialRecord[], period: Period, da
     const previousAgg = aggregateRecords(previousRecords);
     
     if (currentRecords.length === 0) {
-        return getZeroStats();
+        return getNoDataStats();
     }
 
     const calculateChange = (current: number, previous: number) => {
@@ -164,16 +164,15 @@ export const getStatsForPeriod = (allData: FinancialRecord[], period: Period, da
 };
 
 
-const getZeroStats = (): FinancialStats => {
-    const zeroStat = { value: "$0K", change: " " };
-    const zeroPercentStat = { value: "0.0%", change: " " };
+const getNoDataStats = (): FinancialStats => {
+    const noDataStat = { value: "N/A", change: " " };
     return {
-        revenue: zeroStat,
-        grossMargin: zeroPercentStat,
-        netMargin: zeroPercentStat,
-        ebitda: zeroStat,
-        cashFlow: zeroStat,
-        customerLtv: zeroStat,
-        customerCac: zeroStat,
+        revenue: noDataStat,
+        grossMargin: noDataStat,
+        netMargin: noDataStat,
+        ebitda: noDataStat,
+        cashFlow: noDataStat,
+        customerLtv: noDataStat,
+        customerCac: noDataStat,
     };
 };

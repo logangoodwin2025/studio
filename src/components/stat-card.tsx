@@ -20,10 +20,10 @@ export function StatCard({ title, value, change, icon: Icon }: StatCardProps) {
         <div className="p-3 rounded-lg bg-primary/10 shadow-inner">
             <Icon className="h-6 w-6 text-primary" />
         </div>
-        <div className="flex-1">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{title}</p>
+        <div className="flex-1 overflow-hidden">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider truncate">{title}</p>
           <div className="flex items-baseline gap-2">
-            <p className="text-2xl font-bold text-foreground">{value}</p>
+            <p className="text-2xl font-bold text-foreground truncate">{value}</p>
             {change && (
               <span className={cn("text-sm font-semibold", changeColor)}>
                 {change}

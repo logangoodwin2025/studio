@@ -13,7 +13,6 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-  PopoverClose
 } from "@/components/ui/popover"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { Period } from "@/app/[company]/financial-dashboard/page"
@@ -50,14 +49,16 @@ export function PeriodPicker({
     const newPeriod = value as Period;
     onPeriodChange(newPeriod);
     if (newPeriod !== 'CUSTOM') {
+      // Reset date range when a pre-defined period is selected.
+      // The dashboard page will then set the correct range.
       onDateRangeChange(undefined);
     }
   }
 
   return (
-    <div className={cn("flex items-center gap-2", className)}>
+    <div className={cn("flex items-center gap-2 bg-card/50 p-1 rounded-lg", className)}>
         <Tabs value={period} onValueChange={handlePeriodChange}>
-            <TabsList className="grid h-9 grid-cols-4">
+            <TabsList className="grid h-9 grid-cols-4 bg-transparent p-0">
                 <TabsTrigger value="D" className="text-xs">Daily</TabsTrigger>
                 <TabsTrigger value="W" className="text-xs">Weekly</TabsTrigger>
                 <TabsTrigger value="M" className="text-xs">Monthly</TabsTrigger>
@@ -70,9 +71,9 @@ export function PeriodPicker({
                 id="date"
                 variant={"outline"}
                 className={cn(
-                "w-[260px] justify-start text-left font-normal h-9",
+                "w-[260px] justify-start text-left font-normal h-9 bg-background",
                 !dateRange && "text-muted-foreground",
-                period === 'CUSTOM' && "bg-primary/10 border-primary text-primary"
+                period === 'CUSTOM' && "ring-2 ring-primary ring-offset-2"
                 )}
             >
                 <CalendarIcon className="mr-2 h-4 w-4" />
@@ -80,7 +81,7 @@ export function PeriodPicker({
                 dateRange.to ? (
                     <>
                     {format(dateRange.from, "LLL dd, y")} -{" "}
-                    {format(dateRange.to, "LLL dd, y")}
+                    {format(date.to, "LLL dd, y")}
                     </>
                 ) : (
                     format(dateRange.from, "LLL dd, y")
