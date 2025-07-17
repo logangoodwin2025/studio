@@ -17,7 +17,7 @@ export function StatCard({ title, value, change, icon: Icon, iconBgColor = 'bg-p
   const trendIcon = isPositive ? "↗︎" : isNegative ? "↘︎" : "";
 
   return (
-    <Card>
+    <Card className="transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-medium">{title}</CardTitle>
