@@ -22,11 +22,7 @@ export default function FinancePage() {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    // Initialize date range only on the client to avoid hydration mismatch
-    setDateRange({
-      from: startOfMonth(subMonths(new Date(), 1)),
-      to: new Date(),
-    });
+    // This ensures client-side only rendering to avoid hydration errors
     setIsMounted(true);
   }, []);
 
