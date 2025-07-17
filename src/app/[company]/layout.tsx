@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { usePathname, useParams } from "next/navigation";
 import {
@@ -10,6 +11,8 @@ import {
   LogOut,
   MoreVertical,
   ChevronDown,
+  Users,
+  Shield,
 } from "lucide-react";
 
 import {
@@ -45,6 +48,10 @@ const navItems = {
   "DATA & REPORTS": [
       { href: "/data-entry", icon: ClipboardPlus, label: "Data Entry" },
       { href: "/reports", icon: FileBarChart2, label: "Reports" },
+  ],
+  ADMINISTRATION: [
+    { href: "/users", icon: Users, label: "Users" },
+    { href: "/roles", icon: Shield, label: "Roles" },
   ],
 };
 
