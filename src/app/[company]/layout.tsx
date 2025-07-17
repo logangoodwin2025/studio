@@ -72,7 +72,7 @@ function Header({ companySlug }: { companySlug: string }) {
                     <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500 justify-center text-white text-[10px] items-center">3</span>
                 </span>
             </Button>
-            <DropdownMenu>
+            <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-2 text-sm font-medium">
                 <Avatar className="h-8 w-8">
