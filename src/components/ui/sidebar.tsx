@@ -32,7 +32,7 @@ export const Sidebar = ({ children, className }: { children: React.ReactNode, cl
             <Menu className="h-5 w-5" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className={cn("w-64 p-0 flex flex-col", className)}>
+        <SheetContent side="left" className={cn("w-64 p-0 flex flex-col bg-card", className)}>
           {children}
         </SheetContent>
       </Sheet>
@@ -49,7 +49,7 @@ Sidebar.displayName = "Sidebar";
 
 export const SidebarHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
     ({ className, ...props }, ref) => (
-      <div ref={ref} className={cn("p-4 border-b", className)} {...props} />
+      <div ref={ref} className={cn("p-4 border-b h-16 flex items-center", className)} {...props} />
     )
   );
 SidebarHeader.displayName = "SidebarHeader";
@@ -68,6 +68,13 @@ export const SidebarMenu = React.forwardRef<HTMLUListElement, React.HTMLAttribut
   );
 SidebarMenu.displayName = "SidebarMenu";
 
+export const SidebarLabel = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(
+    ({ className, ...props }, ref) => (
+        <p ref={ref} className={cn("px-3 py-2 text-xs font-semibold uppercase text-muted-foreground/80", className)} {...props} />
+    )
+);
+SidebarLabel.displayName = "SidebarLabel";
+
 export const SidebarMenuItem = React.forwardRef<HTMLLIElement, React.HTMLAttributes<HTMLLIElement>>(
     ({ className, ...props }, ref) => (
       <li ref={ref} className={cn("", className)} {...props} />
@@ -85,8 +92,8 @@ export const SidebarMenuButton = React.forwardRef<
       className={cn(
         "flex items-center gap-3 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors w-full",
         isActive
-          ? "bg-primary text-primary-foreground"
-          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+          ? "bg-primary/10 text-primary"
+          : "text-muted-foreground hover:bg-secondary hover:text-foreground",
         className
       )}
       {...props}
@@ -99,7 +106,7 @@ SidebarMenuButton.displayName = "SidebarMenuButton";
 
 export const SidebarFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
     ({ className, ...props }, ref) => (
-      <div ref={ref} className={cn("p-4 mt-auto border-t", className)} {...props} />
+      <div ref={ref} className={cn("p-2 mt-auto border-t", className)} {...props} />
     )
   );
 SidebarFooter.displayName = "SidebarFooter";
