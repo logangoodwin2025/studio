@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format } from "date-fns";
@@ -33,6 +33,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { CalendarIcon, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Separator } from "./ui/separator";
 
 const dataEntrySchema = z.object({
   period: z.date({ required_error: "A period date is required." }),
@@ -48,7 +49,7 @@ const dataEntrySchema = z.object({
 type DataEntryFormValues = z.infer<typeof dataEntrySchema>;
 
 const defaultValues: Partial<DataEntryFormValues> = {
-  period: new Date("2025-07-17T00:00:00"),
+  period: new Date("2025-07-01T00:00:00"),
   revenue: 670000,
   expenses: 410000,
   profit: 260000,
@@ -72,160 +73,166 @@ export function DataEntryForm() {
       description: "Financial metrics have been successfully saved.",
     });
   };
-  
-  const selectedDate = form.watch("period");
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div className="space-y-1.5">
-              <CardTitle className="font-headline">Financial Metrics</CardTitle>
-            </div>
-             <p className="text-sm text-muted-foreground">
-                Period: {selectedDate ? format(selectedDate, "yyyy-MM-dd") : "Not selected"}
-            </p>
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle className="font-headline text-2xl">Record Financial Metrics</CardTitle>
+            <CardDescription>
+                Fill out the form below to add financial data for a specific period.
+            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              <FormField
-                control={form.control}
-                name="period"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Period</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
+          <CardContent className="space-y-8">
+            <FormField
+              control={form.control}
+              name="period"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Reporting Period</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full max-w-sm pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Separator />
+            
+            <div>
+              <h3 className="text-lg font-semibold mb-4 font-headline">Core Financials</h3>
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                 <FormField
+                  control={form.control}
+                  name="revenue"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Total Revenue ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="e.g., 670000" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="expenses"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Total Expenses ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="e.g., 410000" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="profit"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Net Profit ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="e.g., 260000" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                    control={form.control}
+                    name="ebitda"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>EBITDA ($)</FormLabel>
                         <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
+                        <Input type="number" placeholder="e.g., 285000" {...field} />
                         </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="revenue"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Revenue ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="670000" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="expenses"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Expenses ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="410000" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+                <FormField
+                  control={form.control}
+                  name="cashFlow"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Operating Cash Flow ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="e.g., 195000" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              <FormField
-                control={form.control}
-                name="profit"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Profit ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="260000" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="cashFlow"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Cash Flow ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="195000" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="ebitda"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>EBITDA ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="285000" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              <FormField
-                control={form.control}
-                name="customerLtv"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Customer LTV ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="45200" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="customerCac"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Customer CAC ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="2850" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+
+            <Separator />
+
+            <div>
+              <h3 className="text-lg font-semibold mb-4 font-headline">Customer Metrics</h3>
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="customerLtv"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Customer Lifetime Value (LTV) ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="e.g., 45200" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="customerCac"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Customer Acquisition Cost (CAC) ($)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="e.g., 2850" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
           </CardContent>
-          <CardFooter className="flex justify-end">
-            <Button type="submit">
+          <CardFooter className="flex justify-end border-t pt-6">
+            <Button type="submit" size="lg">
                 <Save className="mr-2 h-4 w-4" />
                 Save Financial Data
             </Button>

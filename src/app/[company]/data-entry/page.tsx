@@ -8,7 +8,7 @@ export default function DataEntryPage() {
     <>
       <DashboardHeader
         title="Data Entry"
-        description="Input financial metrics and KPIs"
+        description="Input financial metrics and KPIs for a specific period"
       >
         <div className="flex items-center gap-2">
           <Button variant="outline">
@@ -22,7 +22,9 @@ export default function DataEntryPage() {
         </div>
       </DashboardHeader>
       <main className="flex-1 p-4 sm:px-6 lg:px-8">
-        <DataEntryForm />
+        <div className="mx-auto max-w-4xl">
+            <DataEntryForm />
+        </div>
       </main>
     </>
   );
