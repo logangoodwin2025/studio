@@ -81,7 +81,7 @@ export function PeriodPicker({
                 dateRange.to ? (
                     <>
                     {format(dateRange.from, "LLL dd, y")} -{" "}
-                    {format(date.to, "LLL dd, y")}
+                    {format(dateRange.to, "LLL dd, y")}
                     </>
                 ) : (
                     format(dateRange.from, "LLL dd, y")
