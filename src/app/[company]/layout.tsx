@@ -61,7 +61,7 @@ function Header({ companySlug }: { companySlug: string }) {
         <div className="flex items-center gap-2">
             <h1 className="font-bold text-lg font-headline flex items-center gap-2">
               <Building className="h-5 w-5 text-muted-foreground"/>
-              <span>TechCorp Solutions</span>
+              <span>Innovate Inc.</span>
             </h1>
         </div>
 
@@ -81,8 +81,8 @@ function Header({ companySlug }: { companySlug: string }) {
                   <AvatarFallback>ER</AvatarFallback>
                 </Avatar>
                 <div className="hidden md:flex flex-col items-start">
-                    <span className="font-semibold">Emily Rodriguez</span>
-                    <span className="text-xs text-muted-foreground">Finance Team</span>
+                    <span className="font-semibold">Finance Team</span>
+                    <span className="text-xs text-muted-foreground">finance@techcorp.com</span>
                 </div>
                 <ChevronDown className="h-4 w-4 hidden md:block" />
               </button>
