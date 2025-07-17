@@ -21,8 +21,8 @@ export default async function FinancePage({
     to?: string;
   }
 }) {
-  // Fetch all data on the server.
-  const allData: FinancialRecord[] = await Promise.resolve(initialData);
+  // Fetch all data on the server. In a real app, this would be an async call.
+  const allData: FinancialRecord[] = initialData;
 
   // Determine period and date range from URL search params
   const period = searchParams?.period || 'D';
