@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -23,6 +24,7 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { DashboardHeader } from "./dashboard-header";
 
 type Report = {
   id: string;
@@ -42,10 +44,17 @@ const availableReports: Report[] = [
 
 export function ReportsDataTable({ reports }: { reports: any[] }) {
   const { toast } = useToast();
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: addDays(new Date(), -30),
-    to: new Date(),
-  });
+  const [date, setDate] = React.useState<DateRange | undefined>(undefined);
+  const [isMounted, setIsMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setDate({
+        from: addDays(new Date(), -30),
+        to: new Date(),
+    });
+    setIsMounted(true);
+  }, []);
+
 
   const handleExport = (reportTitle: string) => {
     toast({
@@ -53,14 +62,18 @@ export function ReportsDataTable({ reports }: { reports: any[] }) {
       description: `Your "${reportTitle}" report for the selected period is being generated.`,
     });
   };
+  
+  if (!isMounted) {
+    return null; // Or a loading skeleton
+  }
 
   return (
     <main className="flex-1 p-4 sm:px-6 lg:px-8">
       <Card>
-          <CardHeader>
-              <CardTitle className="font-headline">Report Generator</CardTitle>
-              <CardDescription>Select a date range and choose a report to generate.</CardDescription>
-          </CardHeader>
+        <CardHeader>
+            <CardTitle className="font-headline">Report Generator</CardTitle>
+            <CardDescription>Select a date range and choose a report to generate.</CardDescription>
+        </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center gap-4">
               <Popover>
