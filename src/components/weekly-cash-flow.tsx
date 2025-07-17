@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -30,8 +31,8 @@ export function WeeklyCashFlow() {
                   borderColor: "hsl(var(--border))",
                 }}
               />
-              <Bar dataKey="inflow" fill="hsl(var(--chart-2))" name="Inflow" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="outflow" fill="hsl(var(--chart-5))" name="Outflow" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="inflow" fill="hsl(var(--chart-2))" name="Inflow" radius={[4, 4, 0, 0]} animationDuration={800} />
+              <Bar dataKey="outflow" fill="hsl(var(--chart-5))" name="Outflow" radius={[4, 4, 0, 0]} animationDuration={800} animationBegin={200}/>
             </BarChart>
           </ResponsiveContainer>
         </div>

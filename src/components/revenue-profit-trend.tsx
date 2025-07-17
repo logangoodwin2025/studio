@@ -1,7 +1,8 @@
+
 "use client";
 
-import { Area, AreaChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const data = [
   { name: 'Jan', revenue: 480000, profit: 150000 },
@@ -47,8 +48,8 @@ export function RevenueProfitTrend() {
                 }}
               />
               <Legend iconType="circle" iconSize={8} />
-              <Area type="monotone" dataKey="revenue" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorRevenue)" strokeWidth={2} />
-              <Area type="monotone" dataKey="profit" stroke="hsl(var(--chart-2))" fillOpacity={1} fill="url(#colorProfit)" strokeWidth={2} />
+              <Area type="monotone" dataKey="revenue" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorRevenue)" strokeWidth={2} animationDuration={800} />
+              <Area type="monotone" dataKey="profit" stroke="hsl(var(--chart-2))" fillOpacity={1} fill="url(#colorProfit)" strokeWidth={2} animationDuration={800} animationBegin={200} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
