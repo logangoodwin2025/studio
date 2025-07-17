@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import React from "react";
@@ -12,6 +13,8 @@ import {
   ChevronDown,
   Users,
   Shield,
+  Bell,
+  Building,
 } from "lucide-react";
 
 import {
@@ -37,6 +40,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/icons";
+import { Badge } from "@/components/ui/badge";
 
 const navItems = {
   DASHBOARDS: [
@@ -52,18 +56,64 @@ const navItems = {
   ],
 };
 
-
-function CompanySwitcher({ companySlug }: { companySlug: string }) {
+function Header({ companySlug }: { companySlug: string }) {
   return (
-    <div className="flex items-center gap-2">
-      <Logo className="h-6 w-6 text-primary" />
-      <h1 className="font-bold text-lg font-headline">CEO Dashboard</h1>
-      <Button variant="outline" size="sm" className="ml-auto text-xs">
-        TechCorp Solutions
-        <ChevronDown className="h-4 w-4 ml-2" />
-      </Button>
-    </div>
-  );
+    <header className="fixed top-0 left-0 right-0 z-40 flex h-16 items-center justify-between border-b bg-background px-4 md:left-64">
+        <div className="flex items-center gap-2">
+            <h1 className="font-bold text-lg font-headline hidden md:block">CEO Dashboard</h1>
+            <Badge variant="secondary" className="hidden md:inline-flex">
+                <Building className="h-3 w-3 mr-1.5"/>
+                TechCorp Solutions
+            </Badge>
+        </div>
+
+        <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" className="relative">
+                <Bell className="h-5 w-5"/>
+                <span className="absolute top-1 right-1 flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500 justify-center text-white text-[10px] items-center">3</span>
+                </span>
+            </Button>
+            <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex items-center gap-2 text-sm font-medium">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Emily Rodriguez" />
+                  <AvatarFallback>ER</AvatarFallback>
+                </Avatar>
+                <div className="hidden md:flex flex-col items-start">
+                    <span className="font-semibold">Emily Rodriguez</span>
+                </div>
+                <ChevronDown className="h-4 w-4 hidden md:block" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56 mt-2" align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <Link href="/login">
+                  <DropdownMenuItem className="text-destructive">
+                      <LogOut className="mr-2 h-4 w-4"/>
+                      Log out
+                  </DropdownMenuItem>
+                </Link>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+    </header>
+  )
+}
+
+function SidebarHeaderContent() {
+    return (
+        <div className="flex items-center gap-2">
+          <Logo className="h-6 w-6 text-primary" />
+          <h1 className="font-bold text-lg font-headline">CEO Dashboard</h1>
+        </div>
+    )
 }
 
 
@@ -80,7 +130,7 @@ export default function DashboardLayout({
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <CompanySwitcher companySlug={companySlug} />
+          <SidebarHeaderContent />
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
@@ -104,41 +154,13 @@ export default function DashboardLayout({
             ))}
           </SidebarMenu>
         </SidebarContent>
-        <SidebarFooter>
-           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex w-full items-center justify-between rounded-md p-2 text-sm font-medium text-left hover:bg-secondary">
-                <div className="flex items-center gap-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Emily Rodriguez" />
-                      <AvatarFallback>ER</AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col items-start">
-                        <span className="font-semibold">Emily Rodriguez</span>
-                    </div>
-                </div>
-                <ChevronDown className="h-4 w-4" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 mb-2" align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <Link href="/login">
-                  <DropdownMenuItem className="text-destructive">
-                      <LogOut className="mr-2 h-4 w-4"/>
-                      Log out
-                  </DropdownMenuItem>
-                </Link>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </SidebarFooter>
       </Sidebar>
-      <SidebarInset>
-        <div className="flex h-full flex-col">{children}</div>
-      </SidebarInset>
+      <div className="flex flex-1 flex-col md:ml-64">
+        <Header companySlug={companySlug} />
+        <SidebarInset>
+            {children}
+        </SidebarInset>
+      </div>
     </SidebarProvider>
   );
 }

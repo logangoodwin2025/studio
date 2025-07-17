@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -28,20 +29,19 @@ export const Sidebar = ({ children, className }: { children: React.ReactNode, cl
     return (
       <Sheet>
         <SheetTrigger asChild>
-          <Button variant="outline" size="icon" className="fixed top-4 left-4 z-50 md:hidden bg-background">
+          <Button variant="ghost" size="icon" className="fixed top-4 left-4 z-50 md:hidden">
             <Menu className="h-5 w-5" />
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className={cn("w-64 p-0 flex flex-col bg-card", className)}>
-          <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-          {children}
+            {children}
         </SheetContent>
       </Sheet>
     );
   }
 
   return (
-    <aside className={cn("hidden md:flex md:w-64 md:flex-col md:border-r bg-card", className)}>
+    <aside className={cn("hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col md:border-r bg-card", className)}>
       {children}
     </aside>
   );
@@ -117,7 +117,7 @@ export const SidebarInset = React.forwardRef<
     React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
     return (
-        <main ref={ref} className={cn("flex-1 pt-16 md:pt-0", className)} {...props} />
+        <main ref={ref} className={cn("flex-1 pt-16", className)} {...props} />
     )
 });
 SidebarInset.displayName = "SidebarInset";
