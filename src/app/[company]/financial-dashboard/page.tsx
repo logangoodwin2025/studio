@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useMemo, useCallback } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { FinancialStats } from "@/components/financial-stats";
@@ -34,17 +34,18 @@ function FinanceDashboardContent() {
 
   // Determine period and date range from URL search params
   const period = (searchParams.get('period') as Period) || 'D';
-  let dateRange: DateRange | undefined = undefined;
   
-  const fromParam = searchParams.get('from');
-  const toParam = searchParams.get('to');
-
-  if (period === 'CUSTOM' && fromParam) {
-    dateRange = {
-      from: parseISO(fromParam),
-      to: toParam ? parseISO(toParam) : undefined
-    };
-  }
+  const dateRange = useMemo(() => {
+    const fromParam = searchParams.get('from');
+    const toParam = searchParams.get('to');
+    if (period === 'CUSTOM' && fromParam) {
+      return {
+        from: parseISO(fromParam),
+        to: toParam ? parseISO(toParam) : undefined
+      };
+    }
+    return undefined;
+  }, [period, searchParams]);
   
   useEffect(() => {
     setIsLoading(true);
@@ -58,7 +59,7 @@ function FinanceDashboardContent() {
   }, [allData, period, dateRange]);
 
 
-  const handlePeriodChange = (newPeriod: Period) => {
+  const handlePeriodChange = useCallback((newPeriod: Period) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('period', newPeriod);
     if (newPeriod !== 'CUSTOM') {
@@ -66,9 +67,9 @@ function FinanceDashboardContent() {
       params.delete('to');
     }
     router.push(`${pathname}?${params.toString()}`);
-  }
+  }, [pathname, router, searchParams]);
 
-  const handleDateRangeChange = (newDateRange: DateRange | undefined) => {
+  const handleDateRangeChange = useCallback((newDateRange: DateRange | undefined) => {
     const params = new URLSearchParams(searchParams.toString());
     if (newDateRange?.from) {
       params.set('period', 'CUSTOM');
@@ -80,7 +81,7 @@ function FinanceDashboardContent() {
       }
       router.push(`${pathname}?${params.toString()}`);
     }
-  }
+  }, [pathname, router, searchParams]);
 
    if (isLoading || !stats) {
     return (
