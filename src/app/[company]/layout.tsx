@@ -50,8 +50,6 @@ const navItems = {
   MANAGEMENT: [
     { href: "/data-entry", icon: ClipboardPlus, label: "Data Entry" },
     { href: "/reports", icon: FileBarChart2, label: "Reports" },
-    { href: "/users", icon: Users, label: "Users" },
-    { href: "/roles", icon: Shield, label: "Roles" },
   ],
 };
 
