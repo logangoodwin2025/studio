@@ -1,6 +1,8 @@
 
+
 "use client";
 
+import { useMemo } from "react";
 import { Line, LineChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
@@ -27,7 +29,7 @@ const formatChartData = (data: FinancialRecord[]) => {
 };
 
 export function ProfitabilityAnalysis({ data }: { data: FinancialRecord[] }) {
-  const chartData = formatChartData(data);
+  const chartData = useMemo(() => formatChartData(data), [data]);
 
   return (
     <Card className="h-full">

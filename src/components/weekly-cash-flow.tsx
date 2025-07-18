@@ -2,6 +2,7 @@
 
 "use client";
 
+import { useMemo } from "react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
@@ -27,7 +28,7 @@ const formatChartData = (data: FinancialRecord[]) => {
 };
 
 export function WeeklyCashFlow({ data }: { data: FinancialRecord[] }) {
-  const chartData = formatChartData(data);
+  const chartData = useMemo(() => formatChartData(data), [data]);
   return (
     <Card>
       <CardHeader>

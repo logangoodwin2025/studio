@@ -2,6 +2,7 @@
 
 "use client";
 
+import { useMemo } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { FinancialRecord } from '@/context/financial-data-context';
@@ -30,7 +31,7 @@ const aggregateExpenses = (data: FinancialRecord[]) => {
 
 
 export function ExpenseBreakdown({ data }: { data: FinancialRecord[]}) {
-  const expenseData = aggregateExpenses(data);
+  const expenseData = useMemo(() => aggregateExpenses(data), [data]);
   return (
     <Card className="h-full">
       <CardHeader>
