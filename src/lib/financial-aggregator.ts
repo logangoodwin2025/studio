@@ -1,5 +1,5 @@
 
-import type { Period } from "@/app/[company]/financial-dashboard/page";
+import type { Period } from "@/lib/types";
 import type { FinancialRecord } from "@/context/financial-data-context";
 import { subDays, subWeeks, subMonths, startOfYear, isWithinInterval, startOfDay, endOfDay, differenceInDays, format, startOfMonth, startOfWeek, endOfWeek, endOfMonth } from 'date-fns';
 import type { DateRange } from "react-day-picker";

@@ -15,6 +15,7 @@ import {
   Bell,
   Building,
   History,
+  LayoutDashboard,
 } from "lucide-react";
 
 import {
@@ -24,7 +25,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarFooter,
   SidebarProvider,
   SidebarInset,
   SidebarLabel,
@@ -40,18 +40,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/icons";
-import { Badge } from "@/components/ui/badge";
-import { SheetTitle } from "@/components/ui/sheet";
 import { FinancialDataProvider } from "@/context/financial-data-context";
 
 const navItems = {
-  DASHBOARDS: [
-    { href: "/financial-dashboard", icon: DollarSign, label: "Financial Dashboard" },
+  GENERAL: [
+    { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
     { href: "/recent-activity", icon: History, label: "Recent Activity" },
   ],
-  "DATA & REPORTS": [
-      { href: "/data-entry", icon: ClipboardPlus, label: "Data Entry" },
-      { href: "/reports", icon: FileBarChart2, label: "Reports" },
+  MANAGEMENT: [
+    { href: "/data-entry", icon: ClipboardPlus, label: "Data Entry" },
+    { href: "/reports", icon: FileBarChart2, label: "Reports" },
+    { href: "/users", icon: Users, label: "Users" },
+    { href: "/roles", icon: Shield, label: "Roles" },
   ],
 };
 
