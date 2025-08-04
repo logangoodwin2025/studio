@@ -1,7 +1,16 @@
 
+import Link from "next/link";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { StatCard } from "../stat-card";
+import { UserPlus, Users, MessageSquareWarning, Clock } from "lucide-react";
+
+const alerts = [
+    { text: "QuantumLeap Corp. is nearing its storage limit.", color: "text-orange-500" },
+    { text: "Synergy Solutions has low API usage this month.", color: "text-blue-500" },
+    { text: "Support ticket #T-1234 has been escalated.", color: "text-red-500" },
+]
 
 export function PlatformManagerDashboardView() {
   return (
@@ -12,42 +21,10 @@ export function PlatformManagerDashboardView() {
       />
       <main className="flex-1 p-4 sm:px-6 lg:px-8 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card>
-                <CardHeader>
-                    <CardTitle>New Signups</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-2xl font-bold">12</p>
-                    <p className="text-xs text-muted-foreground">in the last 7 days</p>
-                </CardContent>
-            </Card>
-            <Card>
-                <CardHeader>
-                    <CardTitle>Active Users</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-2xl font-bold">1,402</p>
-                    <p className="text-xs text-muted-foreground">across 88 tenants</p>
-                </CardContent>
-            </Card>
-             <Card>
-                <CardHeader>
-                    <CardTitle>Open Support Tickets</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-2xl font-bold">23</p>
-                    <p className="text-xs text-muted-foreground">8 high priority</p>
-                </CardContent>
-            </Card>
-             <Card>
-                <CardHeader>
-                    <CardTitle>Avg. Resolution Time</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-2xl font-bold">2.1h</p>
-                    <p className="text-xs text-muted-foreground">over last 30 days</p>
-                </CardContent>
-            </Card>
+            <StatCard icon={UserPlus} title="New Signups" value="12" change="in last 7 days" />
+            <StatCard icon={Users} title="Active Users" value="1,402" change="across 88 tenants" />
+            <StatCard icon={MessageSquareWarning} title="Open Support Tickets" value="23" change="8 high priority" />
+            <StatCard icon={Clock} title="Avg. Resolution Time" value="2.1h" change="last 30 days" />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
@@ -56,9 +33,10 @@ export function PlatformManagerDashboardView() {
                     <CardDescription>Create a new tenant account.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    {/* Placeholder for onboarding form */}
-                    <p className="text-muted-foreground">(Onboarding form goes here)</p>
-                    <Button className="mt-4">Add New Tenant</Button>
+                    <p className="text-muted-foreground pb-4">Use the tenant management page to add, view, and manage all tenants.</p>
+                    <Button asChild>
+                        <Link href="/admin/tenants">Manage Tenants</Link>
+                    </Button>
                 </CardContent>
             </Card>
              <Card>
@@ -67,9 +45,13 @@ export function PlatformManagerDashboardView() {
                     <CardDescription>Important tenant notifications.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <ul className="list-disc list-inside text-sm space-y-2">
-                        <li><span className="font-semibold">QuantumLeap Corp.</span> is nearing its storage limit.</li>
-                        <li><span className="font-semibold">Synergy Solutions</span> has low API usage this month.</li>
+                    <ul className="space-y-3">
+                        {alerts.map((alert, index) => (
+                             <li key={index} className="flex items-start gap-3">
+                                <div className="mt-1 h-2 w-2 rounded-full" style={{ backgroundColor: `var(--chart-${index + 2})` }} />
+                                <span className="text-sm">{alert.text}</span>
+                            </li>
+                        ))}
                     </ul>
                 </CardContent>
             </Card>
