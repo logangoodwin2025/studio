@@ -25,6 +25,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuPortal,
+  DropdownMenuSubContent
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
@@ -38,7 +42,7 @@ import {
 import { Badge } from "./ui/badge";
 import { Card, CardContent } from "./ui/card";
 import { DashboardHeader } from "./dashboard-header";
-import { type SupportTicket, supportTickets } from "@/lib/mock-data";
+import { type SupportTicket, supportTickets as initialSupportTickets } from "@/lib/mock-data";
 import { format } from "date-fns";
 import {
   Select,
@@ -47,6 +51,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 const priorityVariantMap: Record<SupportTicket['priority'], "destructive" | "default" | "secondary"> = {
     High: "destructive",
@@ -62,23 +69,39 @@ const statusVariantMap: Record<SupportTicket['status'], "secondary" | "default" 
 }
 
 export function SupportTicketsDataTable() {
+  const { toast } = useToast();
+  const searchParams = useSearchParams();
+  const [data, setData] = React.useState(initialSupportTickets);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+
+  const createHref = (href: string) => {
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    return `${href}?${newSearchParams.toString()}`;
+  }
+
+  const handleChangeStatus = (ticketId: string, newStatus: SupportTicket['status']) => {
+    setData(prevData => prevData.map(ticket => ticket.id === ticketId ? { ...ticket, status: newStatus, lastUpdated: new Date() } : ticket));
+    toast({
+        title: "Status Updated",
+        description: `Ticket ${ticketId} has been updated to "${newStatus}".`
+    });
+  }
 
   const columns: ColumnDef<SupportTicket>[] = [
     {
       accessorKey: "id",
       header: "Ticket ID",
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("id")}</div>
+        <div className="capitalize font-mono">{row.getValue("id")}</div>
       ),
     },
     {
       accessorKey: "subject",
       header: "Subject",
-      cell: ({ row }) => <div>{row.getValue("subject")}</div>,
+      cell: ({ row }) => <div className="font-medium">{row.getValue("subject")}</div>,
     },
     {
       accessorKey: "tenant",
@@ -119,6 +142,8 @@ export function SupportTicketsDataTable() {
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
+        const ticket = row.original;
+        const statuses: SupportTicket['status'][] = ["Open", "In Progress", "Resolved", "Closed"];
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -129,14 +154,28 @@ export function SupportTicketsDataTable() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem asChild>
+                  <Link href={createHref(`/admin/support-tickets/${ticket.id}`)}>View ticket details</Link>
+              </DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Change Status</DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                    <DropdownMenuSubContent>
+                         {statuses.map(status => (
+                            <DropdownMenuItem key={status} onClick={() => handleChangeStatus(ticket.id, status)}>
+                                <Badge variant={statusVariantMap[status]} className="mr-2 h-2 w-2 p-0 rounded-full" />
+                                {status}
+                            </DropdownMenuItem>
+                         ))}
+                    </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+              <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(row.original.id)}
               >
                 Copy ticket ID
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>View ticket details</DropdownMenuItem>
-              <DropdownMenuItem>Change status</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -146,7 +185,7 @@ export function SupportTicketsDataTable() {
 
 
   const table = useReactTable({
-    data: supportTickets,
+    data,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -178,7 +217,7 @@ export function SupportTicketsDataTable() {
       <div className="flex-1 p-4 sm:px-6 lg:px-8 space-y-6">
         <Card>
           <CardContent className="p-4">
-             <div className="flex items-center gap-4">
+             <div className="flex flex-wrap items-center gap-4">
                 <Input
                     placeholder="Filter by subject..."
                     value={(table.getColumn("subject")?.getFilterValue() as string) ?? ""}
@@ -187,8 +226,8 @@ export function SupportTicketsDataTable() {
                     }
                     className="max-w-sm"
                 />
-                <Select onValueChange={(value) => table.getColumn("status")?.setFilterValue(value === 'all' ? '' : value)}>
-                    <SelectTrigger className="w-[180px]">
+                <Select onValueChange={(value) => table.getColumn("status")?.setFilterValue(value === 'all' ? undefined : value)}>
+                    <SelectTrigger className="w-full sm:w-[180px]">
                         <SelectValue placeholder="Filter by status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -199,8 +238,8 @@ export function SupportTicketsDataTable() {
                         <SelectItem value="Closed">Closed</SelectItem>
                     </SelectContent>
                 </Select>
-                 <Select onValueChange={(value) => table.getColumn("priority")?.setFilterValue(value === 'all' ? '' : value)}>
-                    <SelectTrigger className="w-[180px]">
+                 <Select onValueChange={(value) => table.getColumn("priority")?.setFilterValue(value === 'all' ? undefined : value)}>
+                    <SelectTrigger className="w-full sm:w-[180px]">
                         <SelectValue placeholder="Filter by priority" />
                     </SelectTrigger>
                     <SelectContent>
