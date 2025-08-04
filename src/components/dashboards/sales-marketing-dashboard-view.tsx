@@ -2,6 +2,7 @@
 import { SalesMarketingMetrics } from "./sales-marketing-metrics";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "../ui/card";
 import type { FinancialStats } from "@/lib/financial-aggregator";
+import { InfoTooltip } from "../info-tooltip";
 
 interface SalesMarketingDashboardViewProps {
   stats: FinancialStats;
@@ -14,7 +15,10 @@ export function SalesMarketingDashboardView({ stats }: SalesMarketingDashboardVi
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline">Lead Pipeline</CardTitle>
+                    <CardTitle className="font-headline flex items-center">
+                        Lead Pipeline
+                        <InfoTooltip>A visual representation of the sales funnel, from lead to conversion.</InfoTooltip>
+                    </CardTitle>
                     <CardDescription>Lead volume by source and conversion trends.</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -25,7 +29,10 @@ export function SalesMarketingDashboardView({ stats }: SalesMarketingDashboardVi
             </Card>
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline">Campaign Performance</CardTitle>
+                    <CardTitle className="font-headline flex items-center">
+                        Campaign Performance
+                        <InfoTooltip>Measures the return on investment (ROI) for each marketing campaign.</InfoTooltip>
+                    </CardTitle>
                     <CardDescription>Marketing ROI by campaign.</CardDescription>
                 </CardHeader>
                  <CardContent>

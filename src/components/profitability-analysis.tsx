@@ -7,6 +7,7 @@ import { Line, LineChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YA
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
 import type { FinancialRecord } from "@/context/financial-data-context";
+import { InfoTooltip } from "./info-tooltip";
 
 const formatChartData = (data: FinancialRecord[]) => {
   if (data.length === 0) return [];
@@ -34,7 +35,12 @@ export function ProfitabilityAnalysis({ data }: { data: FinancialRecord[] }) {
   return (
     <Card className="h-full">
       <CardHeader>
-        <CardTitle className="font-headline">Profitability Analysis</CardTitle>
+        <CardTitle className="font-headline flex items-center">
+            Profitability Analysis
+            <InfoTooltip>
+                Tracks key profitability ratios like Gross Margin, Net Margin, and Return on Investment (ROI) over time.
+            </InfoTooltip>
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[200px]">

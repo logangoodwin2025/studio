@@ -6,6 +6,7 @@ import { useMemo } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { FinancialRecord } from '@/context/financial-data-context';
+import { InfoTooltip } from "./info-tooltip";
 
 const aggregateExpenses = (data: FinancialRecord[]) => {
     if (data.length === 0) return [];
@@ -35,7 +36,12 @@ export function ExpenseBreakdown({ data }: { data: FinancialRecord[]}) {
   return (
     <Card className="h-full">
       <CardHeader>
-        <CardTitle className="font-headline">Expense Breakdown</CardTitle>
+        <CardTitle className="font-headline flex items-center">
+          Expense Breakdown
+          <InfoTooltip>
+            A pie chart showing the distribution of total expenses across different categories.
+          </InfoTooltip>
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[220px]">

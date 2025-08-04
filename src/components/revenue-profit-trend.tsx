@@ -7,6 +7,7 @@ import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, X
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from 'date-fns';
 import type { FinancialRecord } from "@/context/financial-data-context";
+import { InfoTooltip } from "./info-tooltip";
 
 const formatChartData = (data: FinancialRecord[]) => {
   if (data.length === 0) return [];
@@ -35,7 +36,12 @@ export function RevenueProfitTrend({ data }: { data: FinancialRecord[] }) {
   return (
     <Card className="h-full">
       <CardHeader>
-        <CardTitle className="font-headline">Revenue & Profit Trend</CardTitle>
+        <CardTitle className="font-headline flex items-center">
+          Revenue & Profit Trend
+          <InfoTooltip>
+            An area chart showing the trend of total revenue and net profit over the selected period.
+          </InfoTooltip>
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[220px]">

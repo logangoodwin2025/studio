@@ -2,6 +2,7 @@
 import { OperationalMetrics } from "./operational-metrics";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "../ui/card";
 import type { FinancialStats } from "@/lib/financial-aggregator";
+import { InfoTooltip } from "../info-tooltip";
 
 interface OperationsDashboardViewProps {
   stats: FinancialStats;
@@ -14,7 +15,12 @@ export function OperationsDashboardView({ stats }: OperationsDashboardViewProps)
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline">Project Health</CardTitle>
+                    <CardTitle className="font-headline flex items-center">
+                        Project Health
+                        <InfoTooltip>
+                            An overview of project status, including on-time completion rates and budget adherence.
+                        </InfoTooltip>
+                    </CardTitle>
                     <CardDescription>Completion rate and status overview.</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -25,7 +31,12 @@ export function OperationsDashboardView({ stats }: OperationsDashboardViewProps)
             </Card>
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline">Service Delivery</CardTitle>
+                    <CardTitle className="font-headline flex items-center">
+                        Service Delivery
+                        <InfoTooltip>
+                            Tracks Service Level Agreement (SLA) compliance and average delivery times for services.
+                        </InfoTooltip>
+                    </CardTitle>
                     <CardDescription>SLA compliance and average delivery times.</CardDescription>
                 </CardHeader>
                  <CardContent>

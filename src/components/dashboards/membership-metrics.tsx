@@ -34,13 +34,53 @@ export function MembershipMetrics({ stats }: MembershipMetricsProps) {
 
     return (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <StatCard title="Total Members" value={data.totalMembers.value} change={data.totalMembers.change} icon={Users} />
-            <StatCard title="New Members Gained" value={data.newMembers.value} change={data.newMembers.change} icon={UserPlus} />
-            <StatCard title="Members Lost" value={data.lostMembers.value} change={data.lostMembers.change} icon={UserMinus} />
-            <StatCard title="Retention Rate" value={data.retentionRate.value} icon={HeartHandshake} />
-            <StatCard title="Churn Rate" value={data.churnRate.value} icon={UserX} />
-            <StatCard title="Client Satisfaction (CSAT)" value={data.csat.value} change={data.csat.change} icon={Smile} />
-            <StatCard title="Net Promoter Score (NPS)" value={data.nps.value} change={data.nps.change} icon={Star} />
+            <StatCard 
+                title="Total Members" 
+                value={data.totalMembers.value} 
+                change={data.totalMembers.change} 
+                icon={Users}
+                tooltipText="The total number of active members or subscribers."
+            />
+            <StatCard 
+                title="New Members Gained" 
+                value={data.newMembers.value} 
+                change={data.newMembers.change} 
+                icon={UserPlus}
+                tooltipText="The number of new members acquired during the selected period."
+            />
+            <StatCard 
+                title="Members Lost" 
+                value={data.lostMembers.value} 
+                change={data.lostMembers.change} 
+                icon={UserMinus}
+                tooltipText="The number of members who cancelled their subscription (churned)."
+            />
+            <StatCard 
+                title="Retention Rate" 
+                value={data.retentionRate.value} 
+                icon={HeartHandshake}
+                tooltipText="The percentage of members who remained active over the period."
+            />
+            <StatCard 
+                title="Churn Rate" 
+                value={data.churnRate.value} 
+                icon={UserX}
+                tooltipText="The percentage of members who cancelled their subscription over the period."
+            />
+            <StatCard 
+                title="Client Satisfaction (CSAT)" 
+                value={data.csat.value} 
+                change={data.csat.change} 
+                icon={Smile}
+                tooltipText="A measure of customer satisfaction with a product or service."
+            />
+            <StatCard 
+                title="Net Promoter Score (NPS)" 
+                value={data.nps.value} 
+                change={data.nps.change} 
+                icon={Star}
+                tooltipText="A measure of customer loyalty and willingness to recommend your company."
+            />
         </div>
     )
 }

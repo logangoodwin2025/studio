@@ -11,9 +11,10 @@ import { BadgeDollarSign, Users, PieChart as PieChartIcon, CalendarCheck2, UserP
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Pie, PieChart, Cell, Legend } from "recharts";
+import { BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Pie, PieChart, Cell, Legend, Bar } from "recharts";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { format } from "date-fns";
+import { InfoTooltip } from "../info-tooltip";
 
 const userLoginsData = [
     { name: 'Finance', logins: 120 },
@@ -49,7 +50,13 @@ export function CompanyAdminDashboardView() {
             <Dialog>
                 <DialogTrigger asChild>
                     <div className="cursor-pointer">
-                        <StatCard icon={BadgeDollarSign} title="Total Revenue (YTD)" value="$4.8M" change="+12.5%" />
+                        <StatCard 
+                            icon={BadgeDollarSign} 
+                            title="Total Revenue (YTD)" 
+                            value="$4.8M" 
+                            change="+12.5%" 
+                            tooltipText="Year-to-date total revenue across all sources."
+                        />
                     </div>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl">
@@ -73,7 +80,13 @@ export function CompanyAdminDashboardView() {
              <Dialog>
                 <DialogTrigger asChild>
                     <div className="cursor-pointer">
-                        <StatCard icon={Users} title="Active Members" value="1,402" change="+32 this month" />
+                        <StatCard 
+                            icon={Users} 
+                            title="Active Members" 
+                            value="1,402" 
+                            change="+32 this month"
+                            tooltipText="Total number of active members in your organization."
+                        />
                     </div>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl">
@@ -102,8 +115,20 @@ export function CompanyAdminDashboardView() {
                 </DialogContent>
             </Dialog>
 
-            <StatCard icon={PieChartIcon} title="Team Utilization" value="88%" change="-2%" />
-            <StatCard icon={CalendarCheck2} title="Next Billing Date" value="Aug 1, 2025" change="in 21 days" />
+            <StatCard 
+                icon={PieChartIcon} 
+                title="Team Utilization" 
+                value="88%" 
+                change="-2%"
+                tooltipText="Percentage of team capacity being utilized."
+            />
+            <StatCard 
+                icon={CalendarCheck2} 
+                title="Next Billing Date" 
+                value="Aug 1, 2025" 
+                change="in 21 days"
+                tooltipText="The date your subscription will be automatically renewed."
+            />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -127,7 +152,10 @@ export function CompanyAdminDashboardView() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline">User Logins by Department</CardTitle>
+                    <CardTitle className="font-headline flex items-center">
+                        User Logins by Department
+                        <InfoTooltip>Tracks login activity across different departments for the current month.</InfoTooltip>
+                    </CardTitle>
                     <CardDescription>Team login activity for the current month.</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -145,7 +173,10 @@ export function CompanyAdminDashboardView() {
             </Card>
              <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline">Data Entry Compliance</CardTitle>
+                    <CardTitle className="font-headline flex items-center">
+                        Data Entry Compliance
+                         <InfoTooltip>Shows which departments have met their data entry deadlines.</InfoTooltip>
+                    </CardTitle>
                     <CardDescription>Percentage of departments meeting data entry deadlines.</CardDescription>
                 </CardHeader>
                 <CardContent>

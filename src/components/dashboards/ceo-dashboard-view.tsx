@@ -10,6 +10,7 @@ import { ExpenseBreakdown } from "@/components/expense-breakdown";
 import { MembershipMetrics } from "./membership-metrics";
 import { SalesMarketingMetrics } from "./sales-marketing-metrics";
 import { OperationalMetrics } from "./operational-metrics";
+import { InfoTooltip } from "../info-tooltip";
 
 interface CeoDashboardViewProps {
   stats: FinancialStats;
@@ -19,7 +20,12 @@ interface CeoDashboardViewProps {
 export function CeoDashboardView({ stats, chartData }: CeoDashboardViewProps) {
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold font-headline">Financial Health</h2>
+      <h2 className="text-xl font-bold font-headline flex items-center">
+        Financial Health
+        <InfoTooltip>
+          An overview of the company's key financial performance indicators for the selected period.
+        </InfoTooltip>
+      </h2>
       <FinancialStatsCards stats={stats} />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         <div className="lg:col-span-3">
@@ -32,7 +38,12 @@ export function CeoDashboardView({ stats, chartData }: CeoDashboardViewProps) {
        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Card>
             <CardHeader>
-                <CardTitle className="font-headline">Competitive Position</CardTitle>
+                <CardTitle className="font-headline flex items-center">
+                  Competitive Position
+                  <InfoTooltip>
+                    Compares your company's market share and Net Promoter Score (NPS) against industry benchmarks.
+                  </InfoTooltip>
+                </CardTitle>
                 <CardDescription>Market share and NPS vs. industry benchmarks.</CardDescription>
             </CardHeader>
             <CardContent>
@@ -43,7 +54,12 @@ export function CeoDashboardView({ stats, chartData }: CeoDashboardViewProps) {
           </Card>
            <Card>
             <CardHeader>
-                <CardTitle className="font-headline">Executive Summary</CardTitle>
+                <CardTitle className="font-headline flex items-center">
+                  Executive Summary
+                   <InfoTooltip>
+                    AI-generated insights summarizing performance and a scenario planner to model potential outcomes.
+                  </InfoTooltip>
+                </CardTitle>
                 <CardDescription>AI-generated insights and scenario planner.</CardDescription>
             </CardHeader>
             <CardContent>
@@ -54,13 +70,28 @@ export function CeoDashboardView({ stats, chartData }: CeoDashboardViewProps) {
           </Card>
       </div>
 
-      <h2 className="text-xl font-bold font-headline pt-4">Membership Trends</h2>
+      <h2 className="text-xl font-bold font-headline pt-4 flex items-center">
+        Membership Trends
+        <InfoTooltip>
+          Key metrics related to customer growth, churn, and satisfaction.
+        </InfoTooltip>
+      </h2>
       <MembershipMetrics stats={stats} />
       
-      <h2 className="text-xl font-bold font-headline pt-4">Sales & Marketing</h2>
+      <h2 className="text-xl font-bold font-headline pt-4 flex items-center">
+        Sales & Marketing
+        <InfoTooltip>
+            Performance indicators for your sales funnel and marketing campaign effectiveness.
+        </InfoTooltip>
+      </h2>
       <SalesMarketingMetrics stats={stats} />
 
-      <h2 className="text-xl font-bold font-headline pt-4">Operational Efficiency</h2>
+      <h2 className="text-xl font-bold font-headline pt-4 flex items-center">
+        Operational Efficiency
+        <InfoTooltip>
+          Metrics that measure the efficiency of your company's core operations.
+        </InfoTooltip>
+      </h2>
       <OperationalMetrics stats={stats} />
     </div>
   );

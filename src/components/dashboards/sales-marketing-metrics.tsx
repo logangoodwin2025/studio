@@ -25,12 +25,48 @@ export function SalesMarketingMetrics({ stats }: SalesMarketingMetricsProps) {
     const data = getSimulatedSalesData(stats);
     return (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <StatCard title="Lead Generation" value={data.leadGeneration.value} change={data.leadGeneration.change} icon={Lightbulb} />
-            <StatCard title="Conversion Rates" value={data.conversionRate.value} change={data.conversionRate.change} icon={GitCompareArrows} />
-            <StatCard title="Sales Pipeline Value" value={data.pipelineValue.value} change={data.pipelineValue.change} icon={Database} />
-            <StatCard title="Average Revenue per Client" value={data.avgRevenue.value} change={data.avgRevenue.change} icon={CircleDollarSign} />
-            <StatCard title="Marketing ROI" value={data.marketingRoi.value} change={data.marketingRoi.change} icon={Target} />
-            <StatCard title="Cost Per Lead (CPL)" value={data.cpl.value} change={data.cpl.change} icon={Crosshair} />
+            <StatCard 
+                title="Lead Generation" 
+                value={data.leadGeneration.value} 
+                change={data.leadGeneration.change} 
+                icon={Lightbulb}
+                tooltipText="The total number of potential customers generated from marketing efforts."
+            />
+            <StatCard 
+                title="Conversion Rates" 
+                value={data.conversionRate.value} 
+                change={data.conversionRate.change} 
+                icon={GitCompareArrows}
+                tooltipText="The percentage of leads that are converted into paying customers."
+            />
+            <StatCard 
+                title="Sales Pipeline Value" 
+                value={data.pipelineValue.value} 
+                change={data.pipelineValue.change} 
+                icon={Database}
+                tooltipText="The total estimated value of all open sales opportunities."
+            />
+            <StatCard 
+                title="Average Revenue per Client" 
+                value={data.avgRevenue.value} 
+                change={data.avgRevenue.change} 
+                icon={CircleDollarSign}
+                tooltipText="The average revenue generated from a single client."
+            />
+            <StatCard 
+                title="Marketing ROI" 
+                value={data.marketingRoi.value} 
+                change={data.marketingRoi.change} 
+                icon={Target}
+                tooltipText="The return on investment from marketing activities."
+            />
+            <StatCard 
+                title="Cost Per Lead (CPL)" 
+                value={data.cpl.value} 
+                change={data.cpl.change} 
+                icon={Crosshair}
+                tooltipText="The average cost to acquire one new lead."
+            />
         </div>
     )
 }

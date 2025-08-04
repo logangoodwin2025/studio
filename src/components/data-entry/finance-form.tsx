@@ -44,6 +44,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Separator } from "../ui/separator";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import { Textarea } from "../ui/textarea";
+import { InfoTooltip } from "../info-tooltip";
 
 const financeFormSchema = z.object({
   // Revenue
@@ -126,7 +127,12 @@ export function FinanceForm() {
             <Accordion type="multiple" defaultValue={['revenue']} className="w-full">
               {/* Revenue Tracking */}
               <AccordionItem value="revenue">
-                <AccordionTrigger className="text-lg font-semibold font-headline">Revenue Tracking</AccordionTrigger>
+                <AccordionTrigger className="text-lg font-semibold font-headline">
+                  <div className="flex items-center">
+                    Revenue Tracking
+                    <InfoTooltip>Record all sources of incoming revenue.</InfoTooltip>
+                  </div>
+                </AccordionTrigger>
                 <AccordionContent className="pt-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <FormField control={form.control} name="revenueDate" render={({ field }) => ( <FormItem className="flex flex-col"><FormLabel>Date</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : (<span>Pick a date</span>)}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)} />
@@ -139,7 +145,12 @@ export function FinanceForm() {
               
               {/* Expenses */}
               <AccordionItem value="expenses">
-                <AccordionTrigger className="text-lg font-semibold font-headline">Expenses</AccordionTrigger>
+                <AccordionTrigger className="text-lg font-semibold font-headline">
+                   <div className="flex items-center">
+                      Expenses
+                      <InfoTooltip>Record all business expenses, including COGS and operating costs.</InfoTooltip>
+                   </div>
+                </AccordionTrigger>
                 <AccordionContent className="pt-4 space-y-6">
                     <div>
                         <h4 className="font-medium mb-4">Cost of Goods Sold (COGS)</h4>
@@ -163,7 +174,12 @@ export function FinanceForm() {
 
                {/* Depreciation & Amortization */}
               <AccordionItem value="depreciation">
-                <AccordionTrigger className="text-lg font-semibold font-headline">Depreciation & Amortization</AccordionTrigger>
+                <AccordionTrigger className="text-lg font-semibold font-headline">
+                    <div className="flex items-center">
+                        Depreciation & Amortization
+                        <InfoTooltip>Record the expense of an asset over its useful life.</InfoTooltip>
+                    </div>
+                </AccordionTrigger>
                 <AccordionContent className="pt-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <FormField control={form.control} name="depreciationDate" render={({ field }) => ( <FormItem className="flex flex-col"><FormLabel>Date</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : (<span>Pick a date</span>)}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)} />
@@ -175,7 +191,12 @@ export function FinanceForm() {
 
               {/* Interest & Taxes */}
               <AccordionItem value="interest-taxes">
-                <AccordionTrigger className="text-lg font-semibold font-headline">Interest & Taxes</AccordionTrigger>
+                <AccordionTrigger className="text-lg font-semibold font-headline">
+                    <div className="flex items-center">
+                        Interest & Taxes
+                        <InfoTooltip>Record payments for interest on debt and taxes.</InfoTooltip>
+                    </div>
+                </AccordionTrigger>
                 <AccordionContent className="pt-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <FormField control={form.control} name="interestTaxDate" render={({ field }) => ( <FormItem className="flex flex-col"><FormLabel>Date</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : (<span>Pick a date</span>)}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)} />
@@ -187,7 +208,12 @@ export function FinanceForm() {
 
               {/* Cash Flow */}
               <AccordionItem value="cash-flow">
-                <AccordionTrigger className="text-lg font-semibold font-headline">Cash Flow Components</AccordionTrigger>
+                <AccordionTrigger className="text-lg font-semibold font-headline">
+                    <div className="flex items-center">
+                        Cash Flow Components
+                        <InfoTooltip>Record the movement of cash into and out of the company.</InfoTooltip>
+                    </div>
+                </AccordionTrigger>
                 <AccordionContent className="pt-4 space-y-6">
                      <div>
                         <h4 className="font-medium mb-4">Cash Inflow</h4>
@@ -211,7 +237,12 @@ export function FinanceForm() {
 
               {/* Accounts Receivable/Payable */}
               <AccordionItem value="ar-ap">
-                <AccordionTrigger className="text-lg font-semibold font-headline">Accounts Receivable/Payable</AccordionTrigger>
+                <AccordionTrigger className="text-lg font-semibold font-headline">
+                    <div className="flex items-center">
+                        Accounts Receivable/Payable
+                        <InfoTooltip>Track money owed to your company and money your company owes.</InfoTooltip>
+                    </div>
+                </AccordionTrigger>
                 <AccordionContent className="pt-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                     <FormField control={form.control} name="invoiceDate" render={({ field }) => ( <FormItem className="flex flex-col"><FormLabel>Invoice Date</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : (<span>Pick a date</span>)}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)} />
@@ -225,7 +256,12 @@ export function FinanceForm() {
 
               {/* Shareholders' Equity & Dividends */}
               <AccordionItem value="equity">
-                <AccordionTrigger className="text-lg font-semibold font-headline">Shareholders' Equity & Dividends</AccordionTrigger>
+                <AccordionTrigger className="text-lg font-semibold font-headline">
+                    <div className="flex items-center">
+                        Shareholders' Equity & Dividends
+                        <InfoTooltip>Record changes in equity and dividends paid out to shareholders.</InfoTooltip>
+                    </div>
+                </AccordionTrigger>
                 <AccordionContent className="pt-4">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <FormField control={form.control} name="equityDate" render={({ field }) => ( <FormItem className="flex flex-col"><FormLabel>Date</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : (<span>Pick a date</span>)}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)} />

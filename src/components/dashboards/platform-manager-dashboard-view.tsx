@@ -16,6 +16,7 @@ import { tenants, supportTickets, userList } from "@/lib/mock-data";
 import { Badge } from "../ui/badge";
 import { PeriodPicker } from "../period-picker";
 import { BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Bar } from "recharts";
+import { InfoTooltip } from "../info-tooltip";
 
 
 const alerts = [
@@ -78,7 +79,15 @@ export function PlatformManagerDashboardView() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Dialog>
                 <DialogTrigger asChild>
-                    <div className="cursor-pointer"><StatCard icon={UserPlus} title="New Signups" value="12" change="in last 7 days" /></div>
+                    <div className="cursor-pointer">
+                        <StatCard 
+                            icon={UserPlus} 
+                            title="New Signups" 
+                            value="12" 
+                            change="in last 7 days"
+                            tooltipText="Number of new tenants that joined the platform."
+                        />
+                    </div>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl">
                     <DialogHeader>
@@ -103,7 +112,15 @@ export function PlatformManagerDashboardView() {
             </Dialog>
             <Dialog>
                  <DialogTrigger asChild>
-                    <div className="cursor-pointer"><StatCard icon={Users} title="Active Users" value="1,402" change="across 88 tenants" /></div>
+                    <div className="cursor-pointer">
+                        <StatCard 
+                            icon={Users} 
+                            title="Active Users" 
+                            value="1,402" 
+                            change="across 88 tenants"
+                            tooltipText="Total number of active users across all tenants."
+                        />
+                    </div>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl">
                     <DialogHeader>
@@ -128,7 +145,15 @@ export function PlatformManagerDashboardView() {
             </Dialog>
             <Dialog>
                 <DialogTrigger asChild>
-                    <div className="cursor-pointer"><StatCard icon={MessageSquareWarning} title="Open Support Tickets" value="23" change="8 high priority" /></div>
+                    <div className="cursor-pointer">
+                        <StatCard 
+                            icon={MessageSquareWarning} 
+                            title="Open Support Tickets" 
+                            value="23" 
+                            change="8 high priority"
+                            tooltipText="Number of support tickets that are currently open."
+                        />
+                    </div>
                 </DialogTrigger>
                  <DialogContent className="max-w-3xl">
                     <DialogHeader>
@@ -157,13 +182,22 @@ export function PlatformManagerDashboardView() {
                     </Table>
                 </DialogContent>
             </Dialog>
-            <StatCard icon={Clock} title="Avg. Resolution Time" value="2.1h" change="last 30 days" />
+            <StatCard 
+                icon={Clock} 
+                title="Avg. Resolution Time" 
+                value="2.1h" 
+                change="last 30 days"
+                tooltipText="The average time it takes to resolve a support ticket."
+            />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             <Card className="xl:col-span-2">
                 <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                     <div>
-                        <CardTitle className="font-headline">Tenant Activity</CardTitle>
+                        <CardTitle className="font-headline flex items-center">
+                            Tenant Activity
+                            <InfoTooltip>Tracks the number of new tenant signups over time.</InfoTooltip>
+                        </CardTitle>
                         <CardDescription>New signups trend over the selected period.</CardDescription>
                     </div>
                     <PeriodPicker 
@@ -189,7 +223,10 @@ export function PlatformManagerDashboardView() {
              <Card>
                 <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                      <div>
-                        <CardTitle className="font-headline">Support Tickets</CardTitle>
+                        <CardTitle className="font-headline flex items-center">
+                            Support Tickets
+                             <InfoTooltip>Shows the number of open versus resolved tickets, categorized by priority.</InfoTooltip>
+                        </CardTitle>
                         <CardDescription>Open vs. Resolved by priority.</CardDescription>
                     </div>
                      <PeriodPicker 
@@ -219,7 +256,10 @@ export function PlatformManagerDashboardView() {
                 <Card>
                     <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                         <div>
-                            <CardTitle className="font-headline">Resource Utilization</CardTitle>
+                            <CardTitle className="font-headline flex items-center">
+                                Resource Utilization
+                                <InfoTooltip>Monitors resource usage like storage per tenant.</InfoTooltip>
+                            </CardTitle>
                             <CardDescription>Storage usage per tenant.</CardDescription>
                         </div>
                         <PeriodPicker
@@ -237,7 +277,10 @@ export function PlatformManagerDashboardView() {
                 <Card>
                     <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                         <div>
-                            <CardTitle className="font-headline">API Calls</CardTitle>
+                            <CardTitle className="font-headline flex items-center">
+                                API Calls
+                                <InfoTooltip>Shows the volume of API calls to identify peak usage times.</InfoTooltip>
+                            </CardTitle>
                             <CardDescription>Peak usage times.</CardDescription>
                         </div>
                         <PeriodPicker

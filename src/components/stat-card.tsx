@@ -4,15 +4,17 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
+import { InfoTooltip } from "./info-tooltip";
 
 interface StatCardProps {
   title: string;
   value: string;
   change?: string;
   icon: LucideIcon;
+  tooltipText?: string;
 }
 
-export function StatCard({ title, value, change, icon: Icon }: StatCardProps) {
+export function StatCard({ title, value, change, icon: Icon, tooltipText }: StatCardProps) {
   const isPositive = change?.startsWith("+");
   const isNegative = change?.startsWith("-");
   const changeColor = isPositive ? "text-green-500" : isNegative ? "text-red-500" : "text-muted-foreground";
@@ -28,7 +30,10 @@ export function StatCard({ title, value, change, icon: Icon }: StatCardProps) {
                 <Icon className="h-6 w-6 text-primary" />
             </div>
             <div className="flex-1">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider break-words">{title}</p>
+              <div className="flex items-center">
+                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider break-words">{title}</p>
+                 {tooltipText && <InfoTooltip>{tooltipText}</InfoTooltip>}
+              </div>
               <div className="flex flex-wrap items-baseline gap-x-2">
                   <p className="text-xl font-bold text-foreground break-words">{value}</p>
                   {change && (
