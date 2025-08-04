@@ -7,11 +7,11 @@ import { UsersDataTable } from "../users-data-table";
 import { userList } from "@/lib/mock-data";
 import { CompanyAdminSettings } from "../company-admin-settings";
 import { StatCard } from "../stat-card";
-import { BadgeDollarSign, Users, PieChart, CalendarCheck2, UserPlus, Download } from "lucide-react";
+import { BadgeDollarSign, Users, PieChart as PieChartIcon, CalendarCheck2, UserPlus, Download } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ResponsiveContainer, Bar, BarChart, XAxis, YAxis, Tooltip, Pie, Cell } from "recharts";
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Pie, PieChart, Cell, Legend } from "recharts";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { format } from "date-fns";
 
@@ -24,15 +24,10 @@ const userLoginsData = [
 ];
 
 const complianceData = [
-    { name: 'Finance', value: 1, color: 'hsl(var(--chart-1))' },
-    { name: 'Sales', value: 1, color: 'hsl(var(--chart-2))' },
-    { name: 'Operations', value: 0, color: 'hsl(var(--chart-5))' },
+    { name: 'Finance', value: 1, color: 'hsl(var(--chart-1))', label: "Complete" },
+    { name: 'Sales', value: 1, color: 'hsl(var(--chart-2))', label: "Complete" },
+    { name: 'Operations', value: 0, color: 'hsl(var(--chart-5))', label: "Pending" },
 ];
-const complianceDataMap = {
-    Finance: { value: 1, color: 'hsl(var(--chart-1))', label: "Complete" },
-    Sales: { value: 1, color: 'hsl(var(--chart-2))', label: "Complete" },
-    Operations: { value: 0, color: 'hsl(var(--chart-5))', label: "Pending" },
-};
 
 const revenueHistory = [
     { month: 'Jan', revenue: 450000 }, { month: 'Feb', revenue: 475000 },
@@ -66,7 +61,7 @@ export function CompanyAdminDashboardView() {
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={revenueHistory}>
                                 <XAxis dataKey="month" fontSize={12} />
-                                <YAxis fontSize={12} tickFormatter={(val) => `$${val/1000}k`}/>
+                                <YAxis fontSize={12} tickFormatter={(val) => `$${(val as number)/1000}k`}/>
                                 <Tooltip formatter={(val: number) => `$${val.toLocaleString()}`} />
                                 <Bar dataKey="revenue" fill="hsl(var(--primary))" radius={[4,4,0,0]} />
                             </BarChart>
@@ -107,7 +102,7 @@ export function CompanyAdminDashboardView() {
                 </DialogContent>
             </Dialog>
 
-            <StatCard icon={PieChart} title="Team Utilization" value="88%" change="-2%" />
+            <StatCard icon={PieChartIcon} title="Team Utilization" value="88%" change="-2%" />
             <StatCard icon={CalendarCheck2} title="Next Billing Date" value="Aug 1, 2025" change="in 21 days" />
         </div>
 
@@ -157,8 +152,9 @@ export function CompanyAdminDashboardView() {
                    <div className="h-60 flex items-center justify-center">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
-                                <Tooltip />
-                                <Pie data={complianceData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} innerRadius={50} label={({ name }) => complianceDataMap[name as keyof typeof complianceDataMap].label}>
+                                <Tooltip formatter={(value, name, props) => [`${(props.payload.value === 1 ? 'Complete' : 'Pending')}`, name]}/>
+                                <Legend />
+                                <Pie data={complianceData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} innerRadius={50} labelLine={false} label={({name, value}) => `${name}: ${value === 1 ? 'Complete' : 'Pending'}`}>
                                     {complianceData.map(entry => (
                                         <Cell key={`cell-${entry.name}`} fill={entry.color} />
                                     ))}
