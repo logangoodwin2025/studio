@@ -1,4 +1,5 @@
 
+
 export const userList = [
   {
     id: "usr_1",
@@ -79,6 +80,24 @@ export const roles: Record<string, string[]> = {
   "Operations Team": ["Access to operational data"],
   "Basic User": ["Limited view-only access"],
 };
+
+export type Tenant = {
+  id: string;
+  name: string;
+  plan: string;
+  users: number;
+  lastActive: string;
+  status: string;
+};
+
+export const tenants: Tenant[] = [
+    { id: "ten_1", name: "TechCorp Solutions", plan: "Enterprise", users: 25, lastActive: "2 hours ago", status: "Active" },
+    { id: "ten_2", name: "Innovate Inc.", plan: "Paid", users: 10, lastActive: "1 day ago", status: "Active" },
+    { id: "ten_3", name: "Synergy Labs", plan: "Trial", users: 5, lastActive: "3 days ago", status: "Provisioning" },
+    { id: "ten_4", name: "QuantumLeap", plan: "Paid", users: 15, lastActive: "5 hours ago", status: "Active" },
+    { id: "ten_5", name: "DataWeavers", plan: "Free", users: 2, lastActive: "1 week ago", status: "Suspended" },
+];
+
 
 export const monthlyRevenueData = [
   { month: "Jan", revenue: 4000 }, { month: "Feb", revenue: 3000 },

@@ -1,17 +1,11 @@
 
+
 import { DashboardHeader } from "@/components/dashboard-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Badge } from "../ui/badge";
-
-const dummyTenants = [
-    { name: "TechCorp Solutions", plan: "Enterprise", users: 25, lastActive: "2 hours ago", status: "Active" },
-    { name: "Innovate Inc.", plan: "Paid", users: 10, lastActive: "1 day ago", status: "Active" },
-    { name: "Synergy Labs", plan: "Trial", users: 5, lastActive: "3 days ago", status: "Provisioning" },
-    { name: "QuantumLeap", plan: "Paid", users: 15, lastActive: "5 hours ago", status: "Active" },
-    { name: "DataWeavers", plan: "Free", users: 2, lastActive: "1 week ago", status: "Suspended" },
-];
+import { tenants } from "@/lib/mock-data";
 
 
 export function SuperAdminDashboardView() {
@@ -20,7 +14,12 @@ export function SuperAdminDashboardView() {
       <DashboardHeader 
         title="Super Admin Dashboard" 
         description="Platform-wide oversight and management."
-      />
+      >
+         <div className="flex items-center gap-2">
+          <Button>Generate Platform Report</Button>
+          <Button variant="outline">View Audit Logs</Button>
+        </div>
+      </DashboardHeader>
       <main className="flex-1 p-4 sm:px-6 lg:px-8 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card>
@@ -78,7 +77,7 @@ export function SuperAdminDashboardView() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {dummyTenants.map(tenant => (
+                            {tenants.map(tenant => (
                                 <TableRow key={tenant.name}>
                                     <TableCell className="font-medium">{tenant.name}</TableCell>
                                     <TableCell>{tenant.plan}</TableCell>
@@ -111,7 +110,6 @@ export function SuperAdminDashboardView() {
                     <CardContent className="flex flex-col space-y-4">
                         <Button variant="outline">Toggle Maintenance Mode</Button>
                         <Button variant="outline">Manage API Rate Limits</Button>
-                        <Button>View Audit Logs</Button>
                     </CardContent>
                 </Card>
             </div>

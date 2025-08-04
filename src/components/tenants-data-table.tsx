@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState } from "react";
@@ -6,6 +7,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { MoreHorizontal, PlusCircle } from "lucide-react";
+import Link from 'next/link';
+import { useSearchParams } from "next/navigation";
+
 
 import { Button } from "@/components/ui/button";
 import {
@@ -50,32 +54,20 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { DashboardHeader } from "./dashboard-header";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
+import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
+import { type Tenant, tenants as initialTenants } from "@/lib/mock-data";
 
-type Tenant = {
-  id: string;
-  name: string;
-  plan: string;
-  users: number;
-  lastActive: string;
-};
 
 const tenantSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   plan: z.enum(["Free", "Trial", "Paid", "Enterprise"]),
 });
 
-const initialTenants: Tenant[] = [
-  { id: 'ten_1', name: 'TechCorp Solutions', plan: 'Enterprise', users: 25, lastActive: '2 hours ago' },
-  { id: 'ten_2', name: 'Innovate Inc.', plan: 'Paid', users: 10, lastActive: '1 day ago' },
-  { id: 'ten_3', name: 'Synergy Labs', plan: 'Trial', users: 5, lastActive: '3 days ago' },
-  { id: 'ten_4', name: 'QuantumLeap', plan: 'Paid', users: 15, lastActive: '5 hours ago' },
-];
-
 
 export function TenantsDataTable() {
   const { toast } = useToast();
+  const searchParams = useSearchParams();
   const [tenants, setTenants] = useState(initialTenants);
   const [isSheetOpen, setSheetOpen] = useState(false);
   const [editingTenant, setEditingTenant] = useState<Tenant | null>(null);
@@ -93,21 +85,29 @@ export function TenantsDataTable() {
 
   const handleEdit = (tenant: Tenant) => {
     setEditingTenant(tenant);
-    form.reset(tenant);
+    form.reset({ name: tenant.name, plan: tenant.plan as "Free" | "Trial" | "Paid" | "Enterprise" });
     setSheetOpen(true);
   };
+  
+  const createHref = (href: string) => {
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    return `${href}?${newSearchParams.toString()}`;
+  }
+
 
   const onSubmit = (values: z.infer<typeof tenantSchema>) => {
     setTimeout(() => {
       if (editingTenant) {
-        setTenants(tenants.map((t) => (t.id === editingTenant.id ? { ...t, ...values } : t)));
+        setTenants(tenants.map((t) => (t.id === editingTenant.id ? { ...t, ...values, plan: values.plan, status: t.status } : t)));
         toast({ title: "Tenant Updated", description: "The tenant details have been successfully updated." });
       } else {
         const newTenant: Tenant = { 
-            ...values, 
+            ...values,
+            plan: values.plan,
             id: `ten_${Date.now()}`, 
             users: 1, 
-            lastActive: 'Just now' 
+            lastActive: 'Just now',
+            status: "Provisioning"
         };
         setTenants([newTenant, ...tenants]);
         toast({ title: "Tenant Added", description: "A new tenant has been successfully added." });
@@ -118,12 +118,13 @@ export function TenantsDataTable() {
   
   const content = (
     <Card>
-      <CardContent>
+      <CardContent className="p-0">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Company Name</TableHead>
               <TableHead>Plan</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead>Users</TableHead>
               <TableHead>Last Active</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -135,6 +136,9 @@ export function TenantsDataTable() {
                 <TableCell className="font-medium">{tenant.name}</TableCell>
                 <TableCell>
                     <Badge variant={tenant.plan === 'Enterprise' ? 'default' : 'secondary'}>{tenant.plan}</Badge>
+                </TableCell>
+                <TableCell>
+                    <Badge variant={tenant.status === 'Active' ? 'secondary' : 'destructive'}>{tenant.status}</Badge>
                 </TableCell>
                 <TableCell>{tenant.users}</TableCell>
                 <TableCell>{tenant.lastActive}</TableCell>
@@ -149,7 +153,9 @@ export function TenantsDataTable() {
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuItem onClick={() => handleEdit(tenant)}>Edit</DropdownMenuItem>
-                      <DropdownMenuItem>View Details</DropdownMenuItem>
+                       <DropdownMenuItem asChild>
+                          <Link href={createHref(`/admin/tenants/${tenant.id}`)}>View Details</Link>
+                        </DropdownMenuItem>
                       <DropdownMenuItem className="text-destructive">Suspend</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
