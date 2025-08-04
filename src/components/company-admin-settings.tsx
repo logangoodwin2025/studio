@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState } from "react";
@@ -9,6 +10,7 @@ import { Check, Upload, Palette, Rocket } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
+import { Badge } from "./ui/badge";
 
 const plans = [
     { name: "Standard", price: "$49/mo", features: ["10 Users", "Basic Reporting", "Email Support"] },
@@ -17,24 +19,29 @@ const plans = [
 ]
 
 const colors = [
-    { name: "Indigo", value: "54, 83, 20" },
-    { name: "Cyan", value: "220, 83, 50" },
-    { name: "Amber", value: "45, 93, 40" },
-    { name: "Rose", value: "346, 83, 50" },
+    { name: "Indigo", value: "231, 48%, 48%" },
+    { name: "Cyan", value: "180, 82%, 35%" },
+    { name: "Amber", value: "45, 93%, 47%" },
+    { name: "Rose", value: "346, 84%, 61%" },
 ]
 
 export function CompanyAdminSettings() {
     const [selectedPlan, setSelectedPlan] = useState("Pro");
+    const [primaryColor, setPrimaryColor] = useState("231, 48%, 48%");
 
     return (
         <>
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline">Subscription Status</CardTitle>
+                    <CardTitle className="font-headline">Subscription</CardTitle>
+                     <CardDescription>Current plan and upgrade options.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <p>Plan: <span className="font-semibold text-primary">Enterprise</span></p>
-                    <p className="text-sm text-muted-foreground">Next billing date: August 1, 2025</p>
+                    <div className="flex justify-between items-center mb-4">
+                       <p className="font-semibold">Current Plan:</p>
+                       <Badge variant="default">Enterprise</Badge>
+                    </div>
+                    
                     <Dialog>
                         <DialogTrigger asChild>
                            <Button variant="outline" className="w-full mt-4">
@@ -52,7 +59,7 @@ export function CompanyAdminSettings() {
                                     <Card 
                                         key={plan.name} 
                                         className={cn(
-                                            "flex flex-col",
+                                            "flex flex-col cursor-pointer",
                                             selectedPlan === plan.name && "border-primary ring-2 ring-primary"
                                         )}
                                         onClick={() => setSelectedPlan(plan.name)}
@@ -132,17 +139,35 @@ export function CompanyAdminSettings() {
                                 <DialogTitle>Select Primary Color</DialogTitle>
                                 <DialogDescription>Choose a primary color for your company's dashboard theme.</DialogDescription>
                             </DialogHeader>
-                            <RadioGroup defaultValue="Indigo" className="grid grid-cols-2 gap-4 pt-4">
-                                {colors.map(color => (
-                                    <div key={color.name}>
-                                        <RadioGroupItem value={color.name} id={color.name} className="sr-only" />
-                                        <Label htmlFor={color.name} className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary">
-                                             <div className="w-full h-16 rounded-lg" style={{backgroundColor: `hsl(${color.value})`}}></div>
-                                             <span className="font-semibold mt-2">{color.name}</span>
-                                        </Label>
-                                    </div>
-                                ))}
-                            </RadioGroup>
+                            <div className="grid grid-cols-2 gap-4 py-4">
+                                <RadioGroup defaultValue={primaryColor} onValueChange={setPrimaryColor} className="grid grid-cols-2 gap-4">
+                                    {colors.map(color => (
+                                        <div key={color.name}>
+                                            <RadioGroupItem value={color.value} id={color.name} className="sr-only" />
+                                            <Label htmlFor={color.name} className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary">
+                                                 <div className="w-full h-16 rounded-lg" style={{backgroundColor: `hsl(${color.value})`}}></div>
+                                                 <span className="font-semibold mt-2">{color.name}</span>
+                                            </Label>
+                                        </div>
+                                    ))}
+                                </RadioGroup>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Theme Preview</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-2">
+                                        <div className="p-2 rounded-lg" style={{backgroundColor: `hsl(${primaryColor})`}}>
+                                            <h3 className="text-sm font-semibold text-primary-foreground">Primary Button</h3>
+                                        </div>
+                                         <div className="p-2 rounded-lg" style={{backgroundColor: `hsl(${primaryColor} / 0.1)`}}>
+                                            <h3 className="text-sm font-semibold" style={{color: `hsl(${primaryColor})`}}>Active Item</h3>
+                                        </div>
+                                         <div className="p-2 rounded-lg bg-secondary">
+                                            <h3 className="text-sm font-semibold text-secondary-foreground">Secondary Item</h3>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
                              <DialogFooter>
                                 <Button type="submit">Save Palette</Button>
                             </DialogFooter>
