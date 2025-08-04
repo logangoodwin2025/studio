@@ -1,11 +1,16 @@
 
 import { OperationalMetrics } from "./operational-metrics";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "../ui/card";
+import type { FinancialStats } from "@/lib/financial-aggregator";
 
-export function OperationsDashboardView() {
+interface OperationsDashboardViewProps {
+  stats: FinancialStats;
+}
+
+export function OperationsDashboardView({ stats }: OperationsDashboardViewProps) {
     return (
       <div className="space-y-6">
-        <OperationalMetrics />
+        <OperationalMetrics stats={stats} />
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <Card>
                 <CardHeader>

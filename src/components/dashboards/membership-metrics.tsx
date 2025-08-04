@@ -1,17 +1,46 @@
-import { HeartHandshake, Smile, Star, UserMinus, UserPlus, UserX, Users } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { StatCard } from "@/components/stat-card";
 
-export function MembershipMetrics() {
+import { HeartHandshake, Smile, Star, UserMinus, UserPlus, UserX, Users } from "lucide-react";
+import { StatCard } from "@/components/stat-card";
+import type { FinancialStats } from "@/lib/financial-aggregator";
+
+interface MembershipMetricsProps {
+    stats: FinancialStats;
+}
+
+// In a real app, this data would be fetched and not derived from financial stats.
+// We are simulating it for the prototype.
+const getSimulatedMembershipData = (stats: FinancialStats) => {
+    const revenueValue = parseFloat(stats.revenue.value.replace(/[^0-9.]/g, ''));
+    const revenueMagnitude = stats.revenue.value.includes('M') ? 1000000 : stats.revenue.value.includes('K') ? 1000 : 1;
+    const numericRevenue = revenueValue * revenueMagnitude;
+
+    const totalMembers = Math.round(numericRevenue / 120); // Assume $120 revenue per member for the period
+    const newMembers = Math.round(totalMembers * 0.08); // 8% new members
+    const lostMembers = Math.round(totalMembers * 0.015); // 1.5% churn
+
+    return {
+        totalMembers: { value: totalMembers.toLocaleString(), change: stats.revenue.change },
+        newMembers: { value: newMembers.toLocaleString(), change: "+10%" },
+        lostMembers: { value: lostMembers.toLocaleString(), change: "-5%" },
+        retentionRate: { value: "98.5%", icon: HeartHandshake },
+        churnRate: { value: "1.5%", icon: UserX },
+        csat: { value: "92%", change: "+2%" },
+        nps: { value: "65", change: "+5" },
+    }
+}
+
+export function MembershipMetrics({ stats }: MembershipMetricsProps) {
+    const data = getSimulatedMembershipData(stats);
+
     return (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <StatCard title="Total Members" value="10,482" change="+250" icon={Users} />
-            <StatCard title="New Members Gained" value="312" change="+10%" icon={UserPlus} />
-            <StatCard title="Members Lost" value="62" change="-5%" icon={UserMinus} />
-            <StatCard title="Retention Rate" value="94%" icon={HeartHandshake} />
-            <StatCard title="Churn Rate" value="6%" icon={UserX} />
-            <StatCard title="Client Satisfaction (CSAT)" value="92%" change="+2%" icon={Smile} />
-            <StatCard title="Net Promoter Score (NPS)" value="65" change="+5" icon={Star} />
+            <StatCard title="Total Members" value={data.totalMembers.value} change={data.totalMembers.change} icon={Users} />
+            <StatCard title="New Members Gained" value={data.newMembers.value} change={data.newMembers.change} icon={UserPlus} />
+            <StatCard title="Members Lost" value={data.lostMembers.value} change={data.lostMembers.change} icon={UserMinus} />
+            <StatCard title="Retention Rate" value={data.retentionRate.value} icon={HeartHandshake} />
+            <StatCard title="Churn Rate" value={data.churnRate.value} icon={UserX} />
+            <StatCard title="Client Satisfaction (CSAT)" value={data.csat.value} change={data.csat.change} icon={Smile} />
+            <StatCard title="Net Promoter Score (NPS)" value={data.nps.value} change={data.nps.change} icon={Star} />
         </div>
     )
 }

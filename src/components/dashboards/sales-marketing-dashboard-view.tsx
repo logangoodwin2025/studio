@@ -1,11 +1,16 @@
 
 import { SalesMarketingMetrics } from "./sales-marketing-metrics";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "../ui/card";
+import type { FinancialStats } from "@/lib/financial-aggregator";
 
-export function SalesMarketingDashboardView() {
+interface SalesMarketingDashboardViewProps {
+  stats: FinancialStats;
+}
+
+export function SalesMarketingDashboardView({ stats }: SalesMarketingDashboardViewProps) {
     return (
       <div className="space-y-6">
-        <SalesMarketingMetrics />
+        <SalesMarketingMetrics stats={stats} />
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <Card>
                 <CardHeader>

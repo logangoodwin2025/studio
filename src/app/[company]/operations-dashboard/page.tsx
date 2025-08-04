@@ -1,7 +1,7 @@
 
 "use client";
 
-import { Suspense, useCallback, useMemo, useState } from "react";
+import { Suspense, useCallback, useMemo, useState, useEffect } from "react";
 import { useUserRole } from "@/hooks/use-user-role";
 import { AccessDenied } from "@/components/access-denied";
 import { DashboardHeader } from "@/components/dashboard-header";
@@ -12,6 +12,10 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { DateRange } from "react-day-picker";
 import { formatISO, parseISO } from "date-fns";
 import { Loading } from "@/components/loading";
+import type { FinancialStats } from "@/lib/financial-aggregator";
+import { getStatsForPeriod } from "@/lib/financial-aggregator";
+import { useFinancialData } from "@/context/financial-data-context";
+
 
 const REQUIRED_ROLES = ["Operations Team", "Company Admin", "CEO/Executive"];
 
@@ -20,6 +24,8 @@ function OperationsDashboardPageContent() {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
+    const { data: allData } = useFinancialData();
+    const [stats, setStats] = useState<FinancialStats | null>(null);
 
     const period = (searchParams.get('period') as Period) || 'M';
   
@@ -34,6 +40,14 @@ function OperationsDashboardPageContent() {
         }
         return undefined;
     }, [period, searchParams]);
+
+    useEffect(() => {
+        if (allData.length > 0) {
+            const newStats = getStatsForPeriod(allData, period, dateRange);
+            setStats(newStats);
+        }
+    }, [allData, period, dateRange]);
+
 
     const handlePeriodChange = useCallback((newPeriod: Period) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -59,7 +73,7 @@ function OperationsDashboardPageContent() {
         }
     }, [pathname, router, searchParams]);
 
-    if (!isLoaded) {
+    if (!isLoaded || !stats) {
         return <Loading />;
     }
     
@@ -81,7 +95,7 @@ function OperationsDashboardPageContent() {
                 />
             </DashboardHeader>
             <main className="flex-1 space-y-6 p-4 sm:px-6 lg:px-8">
-                <OperationsDashboardView />
+                <OperationsDashboardView stats={stats} />
             </main>
         </>
     );

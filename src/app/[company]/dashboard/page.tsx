@@ -1,7 +1,7 @@
 
 "use client";
 
-import { Suspense, useCallback, useMemo, useState } from "react";
+import { Suspense, useCallback, useMemo, useState, useEffect } from "react";
 import { useUserRole } from "@/hooks/use-user-role";
 import { AccessDenied } from "@/components/access-denied";
 import { DashboardHeader } from "@/components/dashboard-header";
@@ -11,6 +11,11 @@ import type { Period } from "@/lib/types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { DateRange } from "react-day-picker";
 import { formatISO, parseISO } from "date-fns";
+import { Loading } from "@/components/loading";
+import { useFinancialData } from "@/context/financial-data-context";
+import { getChartDataForPeriod, getStatsForPeriod } from "@/lib/financial-aggregator";
+import type { FinancialRecord } from "@/context/financial-data-context";
+import type { FinancialStats } from "@/lib/financial-aggregator";
 
 const REQUIRED_ROLES = ["CEO/Executive", "Company Admin"];
 
@@ -19,8 +24,12 @@ function DashboardPageContent() {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
+    const { data: allData } = useFinancialData();
 
-    const period = (searchParams.get('period') as Period) || 'D';
+    const [stats, setStats] = useState<FinancialStats | null>(null);
+    const [chartData, setChartData] = useState<FinancialRecord[]>([]);
+
+    const period = (searchParams.get('period') as Period) || 'M';
   
     const dateRange = useMemo(() => {
         const fromParam = searchParams.get('from');
@@ -33,6 +42,16 @@ function DashboardPageContent() {
         }
         return undefined;
     }, [period, searchParams]);
+    
+    useEffect(() => {
+        if (allData.length > 0) {
+            const newStats = getStatsForPeriod(allData, period, dateRange);
+            const newChartData = getChartDataForPeriod(allData, period, dateRange);
+            setStats(newStats);
+            setChartData(newChartData);
+        }
+    }, [allData, period, dateRange]);
+
 
     const handlePeriodChange = useCallback((newPeriod: Period) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -59,8 +78,8 @@ function DashboardPageContent() {
     }, [pathname, router, searchParams]);
 
 
-    if (!isLoaded) {
-        return null; // or a loading skeleton
+    if (!isLoaded || !stats) {
+        return <Loading />;
     }
     
     if (!role || !REQUIRED_ROLES.includes(role)) {
@@ -81,7 +100,7 @@ function DashboardPageContent() {
                 />
             </DashboardHeader>
             <main className="flex-1 space-y-6 p-4 sm:px-6 lg:px-8">
-                <CeoDashboardView />
+                <CeoDashboardView stats={stats} chartData={chartData} />
             </main>
         </>
     );

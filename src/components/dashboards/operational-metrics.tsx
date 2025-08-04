@@ -1,15 +1,34 @@
-import { Activity, BadgeDollarSign, CheckCircle, Clock, UserCog } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { StatCard } from "@/components/stat-card";
 
-export function OperationalMetrics() {
+import { Activity, BadgeDollarSign, CheckCircle, Clock, UserCog } from "lucide-react";
+import { StatCard } from "@/components/stat-card";
+import type { FinancialStats } from "@/lib/financial-aggregator";
+
+interface OperationalMetricsProps {
+    stats: FinancialStats;
+}
+
+// In a real app, this data would be fetched and not derived from financial stats.
+// We are simulating it for the prototype.
+const getSimulatedOperationsData = (stats: FinancialStats) => {
+    return {
+        utilizationRate: { value: "85%", change: "+5%" },
+        projectCompletionRate: { value: "98%", icon: CheckCircle },
+        serviceDeliveryTime: { value: "48h", change: "-4h" },
+        revenuePerEmployee: { value: stats.revenue.value, change: stats.revenue.change }, // Simplified
+        employeeUtilization: { value: "92%", icon: UserCog },
+    }
+}
+
+
+export function OperationalMetrics({ stats }: OperationalMetricsProps) {
+    const data = getSimulatedOperationsData(stats);
     return (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <StatCard title="Utilization Rate" value="85%" change="+5%" icon={Activity} />
-            <StatCard title="Project Completion Rate" value="98%" icon={CheckCircle} />
-            <StatCard title="Service Delivery Time" value="48h" change="-4h" icon={Clock} />
-            <StatCard title="Revenue Per Employee" value="$120k" icon={BadgeDollarSign} />
-            <StatCard title="Employee Utilization Rate" value="92%" icon={UserCog} />
+            <StatCard title="Utilization Rate" value={data.utilizationRate.value} change={data.utilizationRate.change} icon={Activity} />
+            <StatCard title="Project Completion Rate" value={data.projectCompletionRate.value} icon={CheckCircle} />
+            <StatCard title="Service Delivery Time" value={data.serviceDeliveryTime.value} change={data.serviceDeliveryTime.change} icon={Clock} />
+            <StatCard title="Revenue Per Employee" value={data.revenuePerEmployee.value} change={data.revenuePerEmployee.change} icon={BadgeDollarSign} />
+            <StatCard title="Employee Utilization Rate" value={data.employeeUtilization.value} icon={UserCog} />
         </div>
     )
 }
