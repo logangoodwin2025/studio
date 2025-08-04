@@ -49,23 +49,26 @@ import { FinancialDataProvider } from "@/context/financial-data-context";
 import { useUserRole } from "@/hooks/use-user-role";
 
 const allNavItems = {
+    ADMIN: [
+      { href: "/admin/dashboard", icon: LayoutDashboard, label: "Admin Dashboard", roles: ["Company Admin", "Platform Super Admin", "Platform Manager"] },
+    ],
     GENERAL: [
-      { href: "/dashboard", icon: LayoutDashboard, label: "CEO Dashboard", roles: ["CEO/Executive", "Company Admin"] },
-      { href: "/financial-dashboard", icon: DollarSign, label: "Financial Dashboard", roles: ["Finance Team", "Company Admin"] },
-      { href: "/sales-marketing-dashboard", icon: Lightbulb, label: "Sales & Marketing", roles: ["Sales & Marketing", "Company Admin"] },
-      { href: "/operations-dashboard", icon: Activity, label: "Operations Dashboard", roles: ["Operations Team", "Company Admin"] },
-      { href: "/membership-dashboard", icon: Users2, label: "Membership Dashboard", roles: ["Sales & Marketing", "Company Admin"] },
+      { href: "/dashboard", icon: LayoutDashboard, label: "CEO Dashboard", roles: ["CEO/Executive"] },
+      { href: "/financial-dashboard", icon: DollarSign, label: "Financial Dashboard", roles: ["Finance Team"] },
+      { href: "/sales-marketing-dashboard", icon: Lightbulb, label: "Sales & Marketing", roles: ["Sales & Marketing"] },
+      { href: "/operations-dashboard", icon: Activity, label: "Operations Dashboard", roles: ["Operations Team"] },
+      { href: "/membership-dashboard", icon: Users2, label: "Membership Dashboard", roles: ["Sales & Marketing"] },
       { href: "/recent-activity", icon: History, label: "Recent Activity", roles: ["Platform Super Admin", "Company Admin", "CEO/Executive", "Finance Team", "Sales & Marketing", "Operations Team"] },
     ],
     MANAGEMENT: [
-      { href: "/data-entry/finance", icon: ClipboardPlus, label: "Finance Data Entry", roles: ["Finance Team", "Company Admin"] },
-      { href: "/data-entry/sales", icon: ClipboardPlus, label: "Sales Data Entry", roles: ["Sales & Marketing", "Company Admin"] },
-      { href: "/data-entry/operations", icon: ClipboardPlus, label: "Operations Data Entry", roles: ["Operations Team", "Company Admin"] },
-      { href: "/data-entry/membership", icon: ClipboardPlus, label: "Membership Data Entry", roles: ["Sales & Marketing", "Company Admin"] },
+      { href: "/data-entry/finance", icon: ClipboardPlus, label: "Finance Data Entry", roles: ["Finance Team"] },
+      { href: "/data-entry/sales", icon: ClipboardPlus, label: "Sales Data Entry", roles: ["Sales & Marketing"] },
+      { href: "/data-entry/operations", icon: ClipboardPlus, label: "Operations Data Entry", roles: ["Operations Team"] },
+      { href: "/data-entry/membership", icon: ClipboardPlus, label: "Membership Data Entry", roles: ["Sales & Marketing"] },
       
-      { href: "/reports/finance", icon: FileBarChart2, label: "Financial Reports", roles: ["Finance Team", "CEO/Executive", "Company Admin"] },
-      { href: "/reports/sales", icon: FileBarChart2, label: "Sales Reports", roles: ["Sales & Marketing", "CEO/Executive", "Company Admin"] },
-      { href: "/reports/operations", icon: FileBarChart2, label: "Operations Reports", roles: ["Operations Team", "CEO/Executive", "Company Admin"] },
+      { href: "/reports/finance", icon: FileBarChart2, label: "Financial Reports", roles: ["Finance Team", "CEO/Executive"] },
+      { href: "/reports/sales", icon: FileBarChart2, label: "Sales Reports", roles: ["Sales & Marketing", "CEO/Executive"] },
+      { href: "/reports/operations", icon: FileBarChart2, label: "Operations Reports", roles: ["Operations Team", "CEO/Executive"] },
 
       { href: "/users", icon: Users, label: "Users", roles: ["Company Admin", "Platform Super Admin"] },
       { href: "/roles", icon: Shield, label: "Roles", roles: ["Company Admin", "Platform Super Admin"] },
@@ -141,13 +144,14 @@ function SidebarHeaderContent() {
 
 function getVisibleNavItems(role: string | null) {
     if (!role) {
-        return { GENERAL: [], MANAGEMENT: [] };
+        return { ADMIN: [], GENERAL: [], MANAGEMENT: [] };
     }
 
     const filterItems = (items: typeof allNavItems.GENERAL) => 
         items.filter(item => item.roles.includes(role));
 
     return {
+        ADMIN: filterItems(allNavItems.ADMIN),
         GENERAL: filterItems(allNavItems.GENERAL),
         MANAGEMENT: filterItems(allNavItems.MANAGEMENT)
     }

@@ -49,10 +49,18 @@ export const userList = [
     role: "Platform Super Admin",
     avatar: "https://i.pravatar.cc/150?u=super",
   },
+  {
+    id: "usr_8",
+    name: "Heidi Turner",
+    email: "manager@techcorp.com",
+    role: "Platform Manager",
+    avatar: "https://i.pravatar.cc/150?u=manager",
+  },
 ];
 
 export const allPermissions = [
   "Manages tenant accounts",
+  "Manages platform settings",
   "Manages organization settings and users",
   "Access to all dashboards and reports",
   "Access to financial metrics",
@@ -62,8 +70,9 @@ export const allPermissions = [
 ];
 
 export const roles: Record<string, string[]> = {
-  "Platform Super Admin": ["Manages tenant accounts"],
-  "Company Admin": ["Manages organization settings and users", "Access to financial metrics", "Access to sales/marketing data", "Access to operational data"],
+  "Platform Super Admin": ["Manages tenant accounts", "Manages platform settings"],
+  "Platform Manager": ["Manages tenant accounts"],
+  "Company Admin": ["Manages organization settings and users"],
   "CEO/Executive": ["Access to all dashboards and reports"],
   "Finance Team": ["Access to financial metrics"],
   "Sales & Marketing": ["Access to sales/marketing data"],
