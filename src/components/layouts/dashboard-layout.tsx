@@ -53,7 +53,7 @@ const allNavItems = {
       { href: "/financial-dashboard", icon: DollarSign, label: "Financial Dashboard", roles: ["Finance Team"] },
       { href: "/sales-marketing-dashboard", icon: Lightbulb, label: "Sales & Marketing", roles: ["Sales & Marketing"] },
       { href: "/operations-dashboard", icon: Activity, label: "Operations Dashboard", roles: ["Operations Team"] },
-      { href: "/membership-dashboard", icon: Users2, label: "Membership Dashboard", roles: ["Sales & Marketing", "CEO/Executive"] },
+      { href: "/membership-dashboard", icon: Users2, label: "Membership Dashboard", roles: ["Sales & Marketing"] },
       { href: "/recent-activity", icon: History, label: "Recent Activity", roles: ["CEO/Executive", "Finance Team", "Sales & Marketing", "Operations Team"] },
     ],
     MANAGEMENT: [
@@ -62,9 +62,7 @@ const allNavItems = {
       { href: "/data-entry/operations", icon: ClipboardPlus, label: "Operations Data Entry", roles: ["Operations Team"] },
       { href: "/data-entry/membership", icon: ClipboardPlus, label: "Membership Data Entry", roles: ["Sales & Marketing"] },
       
-      { href: "/reports/finance", icon: FileBarChart2, label: "Financial Reports", roles: ["Finance Team", "CEO/Executive"] },
-      { href: "/reports/sales", icon: FileBarChart2, label: "Sales Reports", roles: ["Sales & Marketing", "CEO/Executive"] },
-      { href: "/reports/operations", icon: FileBarChart2, label: "Operations Reports", roles: ["Operations Team", "CEO/Executive"] },
+      { href: "/reports", icon: FileBarChart2, label: "Reports", roles: ["Finance Team", "Sales & Marketing", "Operations Team", "CEO/Executive"] },
     ],
 };
 
