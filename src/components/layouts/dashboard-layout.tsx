@@ -10,8 +10,6 @@ import {
   FileBarChart2,
   LogOut,
   ChevronDown,
-  Users,
-  Shield,
   Bell,
   Building,
   History,
@@ -20,6 +18,8 @@ import {
   Settings,
   Activity,
   Lightbulb,
+  CheckCircle,
+  AlertCircle,
 } from "lucide-react";
 
 import {
@@ -66,12 +66,32 @@ const allNavItems = {
     ],
 };
 
+const userNotifications = {
+    "CEO/Executive": [
+        { icon: AlertCircle, text: "Q2 financial report is ready for review.", time: "2h ago", color: "text-orange-500" },
+        { icon: CheckCircle, text: "Market share increased by 0.5% this month.", time: "1d ago", color: "text-green-500" },
+    ],
+    "Finance Team": [
+        { icon: CheckCircle, text: "Q2 P&L statement has been generated.", time: "1h ago", color: "text-green-500" },
+        { icon: AlertCircle, text: "Accounts payable for 'Supplier Inc.' is due tomorrow.", time: "1d ago", color: "text-orange-500" },
+    ],
+    "Sales & Marketing": [
+        { icon: CheckCircle, text: "New lead 'John Smith' has been assigned to you.", time: "15m ago", color: "text-green-500" },
+        { icon: AlertCircle, text: "'Summer Sale' campaign ends in 3 days.", time: "3d ago", color: "text-orange-500" },
+    ],
+    "Operations Team": [
+        { icon: AlertCircle, text: "Project 'Phoenix' is at risk of delay.", time: "4h ago", color: "text-red-500" },
+        { icon: CheckCircle, text: "Weekly resource utilization report is available.", time: "1d ago", color: "text-green-500" },
+    ]
+}
 
 function Header() {
   const searchParams = useSearchParams();
   const name = searchParams.get('name') || "User";
-  const role = searchParams.get('role') || "User";
+  const { role } = useUserRole();
+  const userRole = searchParams.get('role') || "User";
   const avatarUrl = searchParams.get('avatar');
+  const notifications = (role && userNotifications[role as keyof typeof userNotifications]) || [];
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 flex h-16 items-center justify-between border-b bg-background px-4 md:left-64">
@@ -83,13 +103,35 @@ function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5"/>
-                <span className="absolute top-1 right-1 flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500 justify-center text-white text-[10px] items-center">3</span>
-                </span>
-            </Button>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="relative">
+                        <Bell className="h-5 w-5"/>
+                        {notifications.length > 0 && (
+                            <span className="absolute top-1 right-1 flex h-3 w-3">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500 justify-center text-white text-[10px] items-center">{notifications.length}</span>
+                            </span>
+                        )}
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-80">
+                    <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {notifications.length > 0 ? notifications.map((item, index) => (
+                        <DropdownMenuItem key={index} className="flex items-start gap-3">
+                            <item.icon className={`h-4 w-4 mt-1 ${item.color}`} />
+                            <div>
+                                <p className="text-sm leading-tight">{item.text}</p>
+                                <p className="text-xs text-muted-foreground">{item.time}</p>
+                            </div>
+                        </DropdownMenuItem>
+                    )) : (
+                        <DropdownMenuItem>No new notifications</DropdownMenuItem>
+                    )}
+                </DropdownMenuContent>
+            </DropdownMenu>
+
             <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-2 text-sm font-medium">
@@ -99,7 +141,7 @@ function Header() {
                 </Avatar>
                 <div className="hidden md:flex flex-col items-start">
                     <span className="font-semibold">{name}</span>
-                    <span className="text-xs text-muted-foreground">{role}</span>
+                    <span className="text-xs text-muted-foreground">{userRole}</span>
                 </div>
                 <ChevronDown className="h-4 w-4 hidden md:block" />
               </button>

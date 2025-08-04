@@ -4,7 +4,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { LogOut, ChevronDown, Bell, LayoutDashboard, Users, Shield, Settings, User, Component } from "lucide-react";
+import { LogOut, ChevronDown, Bell, LayoutDashboard, Users, Shield, Settings, User, Component, AlertCircle, CheckCircle } from "lucide-react";
 
 import {
   Sidebar,
@@ -42,11 +42,29 @@ const allNavItems = {
     ]
 };
 
+const adminNotifications = {
+    "Platform Super Admin": [
+        { icon: AlertCircle, text: "System update scheduled for tonight at 11 PM PST.", time: "1h ago", color: "text-orange-500" },
+        { icon: CheckCircle, text: "Database backup completed successfully.", time: "4h ago", color: "text-green-500" },
+        { icon: AlertCircle, text: "High CPU usage detected on server-3.", time: "1d ago", color: "text-red-500" },
+    ],
+    "Platform Manager": [
+        { icon: CheckCircle, text: "New tenant 'Innovate Inc.' successfully onboarded.", time: "2h ago", color: "text-green-500" },
+        { icon: AlertCircle, text: "Support ticket #T-1234 escalated to high priority.", time: "6h ago", color: "text-orange-500" },
+    ],
+    "Company Admin": [
+        { icon: CheckCircle, text: "User 'Bob Williams' has been added to the Finance Team.", time: "30m ago", color: "text-green-500" },
+        { icon: AlertCircle, text: "Your company subscription will renew in 7 days.", time: "1d ago", color: "text-orange-500" },
+    ]
+}
+
 function Header() {
   const searchParams = useSearchParams();
   const name = searchParams.get('name') || "Admin";
-  const role = searchParams.get('role') || "Administrator";
+  const { role } = useUserRole();
+  const userRole = searchParams.get('role') || "Administrator";
   const avatarUrl = searchParams.get('avatar');
+  const notifications = (role && adminNotifications[role as keyof typeof adminNotifications]) || [];
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 flex h-16 items-center justify-between border-b bg-background px-4 md:left-64">
@@ -58,9 +76,34 @@ function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5"/>
-            </Button>
+             <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="relative">
+                        <Bell className="h-5 w-5"/>
+                        {notifications.length > 0 && (
+                            <span className="absolute top-1 right-1 flex h-3 w-3">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500 justify-center text-white text-[10px] items-center">{notifications.length}</span>
+                            </span>
+                        )}
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-80">
+                    <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {notifications.length > 0 ? notifications.map((item, index) => (
+                        <DropdownMenuItem key={index} className="flex items-start gap-3">
+                            <item.icon className={`h-4 w-4 mt-1 ${item.color}`} />
+                            <div>
+                                <p className="text-sm leading-tight">{item.text}</p>
+                                <p className="text-xs text-muted-foreground">{item.time}</p>
+                            </div>
+                        </DropdownMenuItem>
+                    )) : (
+                        <DropdownMenuItem>No new notifications</DropdownMenuItem>
+                    )}
+                </DropdownMenuContent>
+            </DropdownMenu>
             <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-2 text-sm font-medium">
@@ -70,7 +113,7 @@ function Header() {
                 </Avatar>
                 <div className="hidden md:flex flex-col items-start">
                     <span className="font-semibold">{name}</span>
-                    <span className="text-xs text-muted-foreground">{role}</span>
+                    <span className="text-xs text-muted-foreground">{userRole}</span>
                 </div>
                 <ChevronDown className="h-4 w-4 hidden md:block" />
               </button>
