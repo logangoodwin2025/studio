@@ -4,12 +4,30 @@ import { DashboardHeader } from "@/components/dashboard-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatCard } from "../stat-card";
-import { UserPlus, Users, MessageSquareWarning, Clock } from "lucide-react";
+import { UserPlus, Users, MessageSquareWarning, Clock, AlertTriangle, CheckCircle, Info } from "lucide-react";
 
 const alerts = [
-    { text: "QuantumLeap Corp. is nearing its storage limit.", color: "text-orange-500" },
-    { text: "Synergy Solutions has low API usage this month.", color: "text-blue-500" },
-    { text: "Support ticket #T-1234 has been escalated.", color: "text-red-500" },
+    { 
+        icon: CheckCircle,
+        title: "New Tenant Onboarded",
+        description: "QuantumLeap Corp. has completed setup.", 
+        time: "1h ago",
+        color: "text-green-500" 
+    },
+    { 
+        icon: AlertTriangle,
+        title: "High Priority Ticket",
+        description: "Support ticket #T-1234 has been escalated.", 
+        time: "3h ago",
+        color: "text-orange-500" 
+    },
+    { 
+        icon: Info,
+        title: "Low API Usage",
+        description: "Synergy Solutions has low API usage this month.", 
+        time: "1d ago",
+        color: "text-blue-500"
+    },
 ]
 
 export function PlatformManagerDashboardView() {
@@ -44,15 +62,17 @@ export function PlatformManagerDashboardView() {
                     <CardTitle className="font-headline">Alerts</CardTitle>
                     <CardDescription>Important tenant notifications.</CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <ul className="space-y-3">
-                        {alerts.map((alert, index) => (
-                             <li key={index} className="flex items-start gap-3">
-                                <div className="mt-1 h-2 w-2 rounded-full" style={{ backgroundColor: `var(--chart-${index + 2})` }} />
-                                <span className="text-sm">{alert.text}</span>
-                            </li>
-                        ))}
-                    </ul>
+                <CardContent className="space-y-4">
+                    {alerts.map((alert, index) => (
+                        <div key={index} className="flex items-start gap-4">
+                            <alert.icon className={`h-6 w-6 flex-shrink-0 ${alert.color}`} />
+                            <div className="flex-grow">
+                                <p className="font-semibold text-sm">{alert.title}</p>
+                                <p className="text-sm text-muted-foreground">{alert.description}</p>
+                                <p className="text-xs text-muted-foreground mt-1">{alert.time}</p>
+                            </div>
+                        </div>
+                    ))}
                 </CardContent>
             </Card>
         </div>
