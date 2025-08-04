@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -27,6 +27,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { Separator } from "@/components/ui/separator";
+import { ArrowLeft } from "lucide-react";
 
 const profileFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -44,6 +45,7 @@ const passwordFormSchema = z.object({
 
 
 export default function SettingsPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
   
@@ -81,7 +83,12 @@ export default function SettingsPage() {
       <DashboardHeader
         title="Profile & Settings"
         description="Manage your personal information and security settings."
-      />
+      >
+        <Button variant="outline" onClick={() => router.back()}>
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back
+        </Button>
+      </DashboardHeader>
       <main className="flex-1 p-4 sm:px-6 lg:px-8 space-y-6">
         <Card>
           <CardHeader>
