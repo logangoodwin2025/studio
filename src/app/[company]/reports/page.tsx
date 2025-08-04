@@ -7,12 +7,13 @@ import { ReportsDataTable } from "@/components/reports-data-table";
 import { Suspense } from "react";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Loading } from "@/components/loading";
 
 function ReportsPageContent() {
   const { role, isLoaded } = useUserRole();
 
   if (!isLoaded) {
-    return null; // or a loading spinner
+    return <Loading />;
   }
 
   const canViewReports =
@@ -39,16 +40,16 @@ function ReportsPageContent() {
                         <TabsTrigger value="operations">Operations</TabsTrigger>
                     </TabsList>
                     <TabsContent value="financials" className="mt-6">
-                        <ReportsDataTable />
+                        <ReportsDataTable reportType="financial"/>
                     </TabsContent>
                     <TabsContent value="membership" className="mt-6">
-                        <ReportsDataTable />
+                        <ReportsDataTable reportType="membership"/>
                     </TabsContent>
                     <TabsContent value="sales" className="mt-6">
-                       <ReportsDataTable />
+                       <ReportsDataTable reportType="sales"/>
                     </TabsContent>
                     <TabsContent value="operations" className="mt-6">
-                        <ReportsDataTable />
+                        <ReportsDataTable reportType="operations"/>
                     </TabsContent>
                 </Tabs>
             </main>
@@ -56,7 +57,12 @@ function ReportsPageContent() {
       )
   }
 
-  // Other roles see a single reports table
+  // Other roles see a single reports table. The specific reports would be determined by their role.
+  // For the prototype, we can infer the report type from the role.
+  let reportType: "financial" | "sales" | "operations" | "membership" = "financial";
+  if (role === "Sales & Marketing") reportType = "sales";
+  if (role === "Operations Team") reportType = "operations";
+  
   return (
     <>
       <DashboardHeader
@@ -64,7 +70,7 @@ function ReportsPageContent() {
         description="Generate and download financial reports for sharing and documentation."
       />
       <main className="flex-1 p-4 sm:px-6 lg:px-8 space-y-6">
-        <ReportsDataTable />
+        <ReportsDataTable reportType={reportType} />
       </main>
     </>
   );

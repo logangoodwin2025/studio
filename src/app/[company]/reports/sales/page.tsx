@@ -12,7 +12,7 @@ export default function SalesReportsPage() {
         description="Generate and download sales and marketing reports."
       />
       <main className="flex-1 p-4 sm:px-6 lg:px-8 space-y-6">
-        <ReportsDataTable />
+        <ReportsDataTable reportType="sales" />
       </main>
     </>
   );

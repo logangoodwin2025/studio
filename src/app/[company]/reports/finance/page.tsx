@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { ReportsDataTable } from "@/components/reports-data-table";
@@ -13,7 +12,7 @@ export default function FinanceReportsPage() {
         description="Generate and download financial reports for sharing and documentation."
       />
       <main className="flex-1 p-4 sm:px-6 lg:px-8 space-y-6">
-        <ReportsDataTable />
+        <ReportsDataTable reportType="financial" />
       </main>
     </>
   );

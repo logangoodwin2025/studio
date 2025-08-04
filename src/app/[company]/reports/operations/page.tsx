@@ -12,7 +12,7 @@ export default function OperationsReportsPage() {
         description="Generate and download operational reports."
       />
       <main className="flex-1 p-4 sm:px-6 lg:px-8 space-y-6">
-        <ReportsDataTable />
+        <ReportsDataTable reportType="operations" />
       </main>
     </>
   );

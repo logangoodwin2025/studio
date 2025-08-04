@@ -1,5 +1,7 @@
 
 
+import { FileText, Users, Lightbulb, Activity } from "lucide-react";
+
 export const userList = [
   {
     id: "usr_1",
@@ -117,6 +119,38 @@ export const supportTickets: SupportTicket[] = [
     { id: "T-1238", subject: "Feature request: Dark mode", tenant: "Synergy Labs", user: "user@synergy.com", priority: "Low", status: "Resolved", created: new Date("2025-07-22T18:00:00Z"), lastUpdated: new Date("2025-07-23T10:00:00Z") },
     { id: "T-1239", subject: "Billing question", tenant: "Innovate Inc.", user: "finance@innovate.com", priority: "Medium", status: "Open", created: new Date("2025-07-26T08:00:00Z"), lastUpdated: new Date("2025-07-26T08:15:00Z") },
 ];
+
+export type Report = {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ElementType;
+  lastGenerated: Date;
+};
+
+export const availableReports = {
+    financial: [
+        { id: 'fin_01', title: 'Financial Summary', description: 'Revenue, Profit, EBITDA, and Margins.', icon: FileText, lastGenerated: new Date('2025-07-01T00:00:00Z') },
+        { id: 'fin_02', title: 'Cash Flow Statement', description: 'Detailed cash inflow and outflow.', icon: FileText, lastGenerated: new Date('2025-06-30T00:00:00Z') },
+        { id: 'fin_03', title: 'AR/AP Aging Report', description: 'Breakdown of outstanding receivables and payables.', icon: FileText, lastGenerated: new Date('2025-07-20T00:00:00Z') },
+        { id: 'fin_04', title: 'Profitability Analysis', description: 'Deep dive into profit margins and SGR.', icon: FileText, lastGenerated: new Date('2025-07-18T00:00:00Z') },
+    ],
+    membership: [
+        { id: 'mem_01', title: 'Customer Metrics', description: 'CLV, CAC, and Retention analysis.', icon: Users, lastGenerated: new Date('2025-07-15T00:00:00Z') },
+        { id: 'mem_02', title: 'Churn Analysis', description: 'Analysis of lost members and reasons.', icon: Users, lastGenerated: new Date('2025-07-10T00:00:00Z') },
+        { id: 'mem_03', title: 'NPS & CSAT Trends', description: 'Customer satisfaction trends over time.', icon: Users, lastGenerated: new Date('2025-07-19T00:00:00Z') },
+    ],
+    sales: [
+        { id: 'sal_01', title: 'Lead Generation', description: 'Tracking of new leads by source.', icon: Lightbulb, lastGenerated: new Date('2025-07-21T00:00:00Z') },
+        { id: 'sal_02', title: 'Sales Pipeline', description: 'Value and stage distribution of deals.', icon: Lightbulb, lastGenerated: new Date('2025-07-22T00:00:00Z') },
+        { id: 'sal_03', title: 'Campaign ROI', description: 'Return on investment for marketing campaigns.', icon: Lightbulb, lastGenerated: new Date('2025-07-23T00:00:00Z') },
+    ],
+    operations: [
+        { id: 'ops_01', title: 'Project Health', description: 'On-time completion and budget adherence.', icon: Activity, lastGenerated: new Date('2025-07-24T00:00:00Z') },
+        { id: 'ops_02', title: 'Resource Utilization', description: 'Team and employee billable hours.', icon: Activity, lastGenerated: new Date('2025-07-25T00:00:00Z') },
+        { id: 'ops_03', title: 'Service Delivery', description: 'SLA compliance and average delivery times.', icon: Activity, lastGenerated: new Date('2025-07-26T00:00:00Z') },
+    ]
+}
 
 
 export const monthlyRevenueData = [

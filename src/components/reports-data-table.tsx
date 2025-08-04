@@ -1,9 +1,8 @@
 
-
 "use client";
 
 import * as React from "react";
-import { Check, Download, FileText, MoreHorizontal } from "lucide-react";
+import { Download, FileText, MoreHorizontal } from "lucide-react";
 import { addDays, format } from "date-fns";
 import type { DateRange } from "react-day-picker";
 import {
@@ -21,7 +20,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { DashboardHeader } from "./dashboard-header";
 import { Input } from "./ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
 import {
@@ -31,30 +29,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DateRangePicker } from "./date-range-picker";
+import { type Report, availableReports as allReports } from "@/lib/mock-data";
 
-type Report = {
-  id: string;
-  title: string;
-  description: string;
-  icon: React.ElementType;
-  lastGenerated: Date;
-};
 
-// By appending 'T00:00:00Z', we ensure these dates are parsed as UTC, avoiding timezone issues between server and client.
-const availableReports: Report[] = [
-  { id: 'rep_01', title: 'Financial Summary', description: 'Revenue, Profit, EBITDA, and Margins.', icon: FileText, lastGenerated: new Date('2025-07-01T00:00:00Z') },
-  { id: 'rep_02', title: 'Customer Metrics', description: 'CLV, CAC, and Retention analysis.', icon: FileText, lastGenerated: new Date('2025-07-15T00:00:00Z') },
-  { id: 'rep_03', title: 'Cash Flow Statement', description: 'Detailed cash inflow and outflow.', icon: FileText, lastGenerated: new Date('2025-06-30T00:00:00Z') },
-  { id: 'rep_04', title: 'AR/AP Aging Report', description: 'Breakdown of outstanding receivables and payables.', icon: FileText, lastGenerated: new Date('2025-07-20T00:00:00Z') },
-  { id: 'rep_05', title: 'Profitability Analysis', description: 'Deep dive into profit margins and SGR.', icon: FileText, lastGenerated: new Date('2025-07-18T00:00:00Z') },
-  { id: 'rep_06', title: 'Burn Rate Report', description: 'Monthly cash burn and runway.', icon: FileText, lastGenerated: new Date('2025-05-31T00:00:00Z') },
-];
+type ReportType = "financial" | "membership" | "sales" | "operations" | "all";
 
-export function ReportsDataTable() {
+interface ReportsDataTableProps {
+  reportType?: ReportType;
+}
+
+export function ReportsDataTable({ reportType = "all" }: ReportsDataTableProps) {
   const { toast } = useToast();
   const [date, setDate] = React.useState<DateRange | undefined>(undefined);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  
+  const availableReports = reportType === 'all' 
+    ? allReports.financial.concat(allReports.membership, allReports.sales, allReports.operations)
+    : allReports[reportType];
 
   React.useEffect(() => {
     setDate({
