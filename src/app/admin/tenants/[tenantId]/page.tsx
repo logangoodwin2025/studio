@@ -1,13 +1,45 @@
 
+
 "use client";
 
 import { notFound, useParams } from "next/navigation";
-import { tenants } from "@/lib/mock-data";
+import { tenants, userList } from "@/lib/mock-data";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Users, Clock, DollarSign, Activity, FileText, AlertCircle } from "lucide-react";
+import { Users, Clock, DollarSign, Activity, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UsersDataTable } from "@/components/users-data-table";
+
+// Simulate activity for a tenant
+const activityLog = [
+  {
+    user: "Alice Johnson",
+    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+    action: "upgraded the plan to Enterprise.",
+    timestamp: "1 hour ago",
+  },
+  {
+    user: "Robert Williams",
+    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+    action: "added a new user 'sales@techcorp.com'.",
+    timestamp: "3 hours ago",
+  },
+   {
+    user: "System",
+    avatar: "/placeholder.svg",
+    action: "generated the monthly invoice.",
+    timestamp: "1 day ago",
+  },
+  {
+    user: "Alice Johnson",
+    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+    action: "reset the password for 'ops@techcorp.com'.",
+    timestamp: "2 days ago",
+  },
+];
+
 
 export default function TenantDetailsPage() {
     const params = useParams();
@@ -18,6 +50,10 @@ export default function TenantDetailsPage() {
     if (!tenant) {
         notFound();
     }
+    
+    // For the prototype, we'll just show the main user list for any tenant.
+    // In a real app, you'd fetch users for the specific tenant.
+    const tenantUsers = userList;
 
     return (
         <>
@@ -70,15 +106,7 @@ export default function TenantDetailsPage() {
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2">
-                         <Card>
-                            <CardHeader>
-                                <CardTitle>Users</CardTitle>
-                                <CardDescription>Users associated with {tenant.name}.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-muted-foreground">(User data table placeholder)</p>
-                            </CardContent>
-                        </Card>
+                         <UsersDataTable initialUsers={tenantUsers} />
                     </div>
                     <div className="space-y-6">
                         <Card>
@@ -94,9 +122,27 @@ export default function TenantDetailsPage() {
                          <Card>
                             <CardHeader>
                                 <CardTitle>Recent Activity</CardTitle>
+                                <CardDescription>A log of recent events for this tenant.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-muted-foreground">(Activity feed placeholder)</p>
+                                <div className="space-y-6">
+                                {activityLog.map((item, index) => (
+                                    <div key={index} className="flex items-start gap-4">
+                                    <Avatar className="h-9 w-9">
+                                        <AvatarImage src={item.avatar} alt={item.user} />
+                                        <AvatarFallback>
+                                        {item.user.split(' ').map(n => n[0]).join('')}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <div className="text-sm">
+                                        <p>
+                                        <span className="font-semibold">{item.user}</span> {item.action}
+                                        </p>
+                                        <p className="text-xs text-muted-foreground">{item.timestamp}</p>
+                                    </div>
+                                    </div>
+                                ))}
+                                </div>
                             </CardContent>
                         </Card>
                     </div>

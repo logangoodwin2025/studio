@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState } from "react";
@@ -53,6 +54,7 @@ import { DashboardHeader } from "./dashboard-header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { roles } from "@/lib/mock-data";
+import { usePathname } from "next/navigation";
 
 type User = {
   id: string;
@@ -70,6 +72,7 @@ const userSchema = z.object({
 
 export function UsersDataTable({ initialUsers }: { initialUsers: User[] }) {
   const { toast } = useToast();
+  const pathname = usePathname();
   const [users, setUsers] = useState(initialUsers);
   const [isSheetOpen, setSheetOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -111,7 +114,7 @@ export function UsersDataTable({ initialUsers }: { initialUsers: User[] }) {
     <Card>
       <CardHeader>
         <CardTitle className="font-headline">User Management</CardTitle>
-        <CardDescription>Add, edit, or remove users from your company.</CardDescription>
+        <CardDescription>Add, edit, or remove users from this company.</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
@@ -161,8 +164,8 @@ export function UsersDataTable({ initialUsers }: { initialUsers: User[] }) {
     </Card>
   );
 
-  // If this component is rendered on its own page, wrap it in the header and main layout
-  if (initialUsers) {
+  // If this component is rendered on its own user management page, wrap it in the header and main layout
+  if (pathname.endsWith("/users")) {
     return (
       <>
         <DashboardHeader title="User Management">
@@ -246,6 +249,6 @@ export function UsersDataTable({ initialUsers }: { initialUsers: User[] }) {
     );
   }
 
-  // Otherwise, just return the card content (for embedding in other dashboards)
+  // Otherwise, just return the card content (for embedding in other dashboards like the tenant details page)
   return content;
 }
