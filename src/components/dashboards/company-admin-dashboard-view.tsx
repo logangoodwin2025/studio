@@ -7,11 +7,11 @@ import { UsersDataTable } from "../users-data-table";
 import { userList } from "@/lib/mock-data";
 import { CompanyAdminSettings } from "../company-admin-settings";
 import { StatCard } from "../stat-card";
-import { BadgeDollarSign, Users, PieChart, CalendarCheck2, BarChart2, UserPlus, Download, LineChart } from "lucide-react";
+import { BadgeDollarSign, Users, PieChart, CalendarCheck2, UserPlus, Download } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ResponsiveContainer, Bar, XAxis, YAxis, Tooltip, Pie, Cell } from "recharts";
+import { ResponsiveContainer, Bar, BarChart, XAxis, YAxis, Tooltip, Pie, Cell } from "recharts";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { format } from "date-fns";
 
