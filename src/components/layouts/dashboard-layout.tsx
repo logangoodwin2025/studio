@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import React from "react";
@@ -20,7 +21,8 @@ import {
   CheckCircle,
   AlertCircle,
   Eye,
-  User
+  User,
+  PackageSelect
 } from "lucide-react";
 
 import {
@@ -89,6 +91,11 @@ const userNotifications = {
     ]
 }
 
+const companyNames: Record<string, string> = {
+    "techcorp": "TechCorp Solutions",
+    "pigeon-tech": "Pigeon-Tech",
+}
+
 function Header() {
   const searchParams = useSearchParams();
   const name = searchParams.get('name') || "User";
@@ -98,6 +105,7 @@ function Header() {
   const notifications = (role && userNotifications[role as keyof typeof userNotifications]) || [];
   const params = useParams();
   const companySlug = params.company as string;
+  const companyName = companySlug ? companyNames[companySlug] || "Select Company" : "Select Company";
   
   const createHref = (href: string) => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
@@ -109,7 +117,7 @@ function Header() {
         <div className="flex items-center gap-2">
             <h1 className="font-bold text-lg font-headline flex items-center gap-2">
               <Building className="h-5 w-5 text-muted-foreground"/>
-              <span>TechCorp Solutions</span>
+              <span>{companyName}</span>
             </h1>
         </div>
 
@@ -163,6 +171,14 @@ function Header() {
                 <DropdownMenuItem asChild>
                   <Link href={createHref('/settings')}>Profile</Link>
                 </DropdownMenuItem>
+                 {role === "CEO/Executive" && (
+                    <DropdownMenuItem asChild>
+                       <Link href={`/select-company?${searchParams.toString()}`}>
+                           <PackageSelect className="mr-2 h-4 w-4"/>
+                           Select Company
+                       </Link>
+                    </DropdownMenuItem>
+                 )}
                 <DropdownMenuSeparator />
                 <Link href="/login">
                   <DropdownMenuItem className="text-destructive">

@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import React from "react";
@@ -37,7 +38,7 @@ const allNavItems = {
         { href: "/admin/support-tickets", icon: MessageSquare, label: "Support", roles: ["Platform Manager"] },
     ],
     COMPANY_ADMIN: [
-        { href: "/admin/dashboard", icon: LayoutDashboard, label: "Admin Dashboard", roles: ["Company Admin"] },
+        { href: "/dashboard", icon: LayoutDashboard, label: "CEO Dashboard", roles: ["Company Admin"] },
         { href: "/users", icon: Users, label: "Users", roles: ["Company Admin"] },
         { href: "/roles", icon: Shield, label: "Roles", roles: ["Company Admin"] },
     ]
@@ -59,6 +60,11 @@ const adminNotifications = {
     ]
 }
 
+const companyNames: Record<string, string> = {
+    "techcorp": "TechCorp Solutions",
+    "pigeon-tech": "Pigeon-Tech",
+}
+
 function Header() {
   const searchParams = useSearchParams();
   const name = searchParams.get('name') || "Admin";
@@ -68,6 +74,7 @@ function Header() {
   const notifications = (role && adminNotifications[role as keyof typeof adminNotifications]) || [];
   const params = useParams();
   const companySlug = params.company as string || "techcorp";
+  const companyName = companySlug ? companyNames[companySlug] || "TechCorp Solutions" : "TechCorp Solutions";
 
   const createHref = (href: string) => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
@@ -80,7 +87,7 @@ function Header() {
         <div className="flex items-center gap-2">
             <h1 className="font-bold text-lg font-headline flex items-center gap-2">
               <Building className="h-5 w-5 text-muted-foreground"/>
-              <span>TechCorp Solutions</span>
+              <span>{companyName}</span>
             </h1>
         </div>
 
@@ -159,8 +166,14 @@ function SidebarHeaderContent({ href }: { href: string }) {
 function getVisibleNavItems(role: string | null) {
     if (!role) return [];
 
-    const allItems = [...allNavItems.PLATFORM, ...allNavItems.COMPANY_ADMIN];
-    return allItems.filter(item => item.roles.includes(role));
+    let items = [];
+    if (role === "Company Admin") {
+        items = allNavItems.COMPANY_ADMIN;
+    } else {
+        items = allNavItems.PLATFORM;
+    }
+    
+    return items.filter(item => item.roles.includes(role));
 }
 
 
@@ -184,7 +197,7 @@ export function AdminLayout({
     
     if (role === 'Company Admin') {
         const companySlug = params.company as string || "techcorp"; 
-        const finalHref = href.startsWith('/admin') ? href : `/${companySlug}${href}`;
+        const finalHref = href.startsWith('/admin') ? `/${companySlug}${href}` : `/${companySlug}${href}`;
         return `${finalHref}?${newSearchParams.toString()}`;
     }
     

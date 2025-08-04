@@ -3,19 +3,20 @@
 import { FileText, Users, Lightbulb, Activity } from "lucide-react";
 
 export const userList = [
+  // TechCorp Solutions Users
   {
     id: "usr_1",
     name: "Alice Johnson",
     email: "admin@techcorp.com",
     role: "Company Admin",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
   },
   {
     id: "usr_2",
     name: "Robert Williams",
     email: "finance@techcorp.com",
     role: "Finance Team",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704e",
   },
   {
     id: "usr_3",
@@ -43,19 +44,63 @@ export const userList = [
     name: "Francis Castle",
     email: "ceo@techcorp.com",
     role: "CEO/Executive",
-    avatar: "https://i.pravatar.cc/150?u=ceo",
+    avatar: "https://i.pravatar.cc/150?u=ceo-techcorp",
   },
+  // Pigeon-Tech Users
+  {
+    id: "usr_11",
+    name: "Peter Quill",
+    email: "ceo@pigeon-tech.com",
+    role: "CEO/Executive",
+    avatar: "https://i.pravatar.cc/150?u=ceo-pigeon",
+  },
+  {
+    id: "usr_12",
+    name: "Gamora Titan",
+    email: "admin@pigeon-tech.com",
+    role: "Company Admin",
+    avatar: "https://i.pravatar.cc/150?u=admin-pigeon",
+  },
+  {
+    id: "usr_13",
+    name: "Drax Destroyer",
+    email: "ops@pigeon-tech.com",
+    role: "Operations Team",
+    avatar: "https://i.pravatar.cc/150?u=ops-pigeon",
+  },
+  {
+    id: "usr_14",
+    name: "Rocket Raccoon",
+    email: "finance@pigeon-tech.com",
+    role: "Finance Team",
+    avatar: "https://i.pravatar.cc/150?u=finance-pigeon",
+  },
+  {
+    id: "usr_15",
+    name: "Groot Flora",
+    email: "sales@pigeon-tech.com",
+    role: "Sales & Marketing",
+    avatar: "https://i.pravatar.cc/150?u=sales-pigeon",
+  },
+   {
+    id: "usr_16",
+    name: "Mantis empath",
+    email: "user@pigeon-tech.com",
+    role: "Basic User",
+    avatar: "https://i.pravatar.cc/150?u=user-pigeon",
+  },
+  // Platform-level Users
   {
     id: "usr_7",
     name: "Grace Lee",
-    email: "super@techcorp.com",
+    email: "super@pinnsight.com",
     role: "Platform Super Admin",
     avatar: "https://i.pravatar.cc/150?u=super",
   },
   {
     id: "usr_8",
     name: "Helen Turner",
-    email: "manager@techcorp.com",
+    email: "manager@pinnsight.com",
     role: "Platform Manager",
     avatar: "https://i.pravatar.cc/150?u=manager",
   },
@@ -94,6 +139,7 @@ export type Tenant = {
 
 export const tenants: Tenant[] = [
     { id: "ten_1", name: "TechCorp Solutions", plan: "Enterprise", users: 25, lastActive: "2 hours ago", status: "Active" },
+    { id: "ten_pigeon", name: "Pigeon-Tech", plan: "Enterprise", users: 6, lastActive: "5 minutes ago", status: "Active" },
     { id: "ten_2", name: "Innovate Inc.", plan: "Paid", users: 10, lastActive: "1 day ago", status: "Active" },
     { id: "ten_3", name: "Synergy Labs", plan: "Trial", users: 5, lastActive: "3 days ago", status: "Provisioning" },
     { id: "ten_4", name: "QuantumLeap", plan: "Paid", users: 15, lastActive: "5 hours ago", status: "Active" },

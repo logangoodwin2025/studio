@@ -1,15 +1,22 @@
+
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import { Logo } from "@/components/icons";
 
 const companies = [
-  { name: "TechCorp Solutions", slug: "techcorp-solutions", description: "Pioneering the future of technology." },
-  { name: "QuantumLeap Corp.", slug: "quantumleap-corp", description: "Advancing quantum computing solutions." },
+  { name: "TechCorp Solutions", slug: "techcorp", description: "Pioneering the future of technology." },
+  { name: "Pigeon-Tech", slug: "pigeon-tech", description: "AI-powered pigeon communication platform." },
   { name: "Synergy Solutions", slug: "synergy-solutions", description: "Integrating systems for optimal performance." },
 ];
 
-export default function SelectCompanyPage() {
+export default function SelectCompanyPage({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined }}) {
+  
+  const createHref = (slug: string) => {
+      const sp = new URLSearchParams(searchParams as Record<string, string>);
+      return `/${slug}/dashboard?${sp.toString()}`;
+  }
+  
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-8">
       <div className="mb-8 text-center">
@@ -21,7 +28,7 @@ export default function SelectCompanyPage() {
       </div>
       <div className="grid w-full max-w-4xl grid-cols-1 gap-6 md:grid-cols-3">
         {companies.map((company) => (
-          <Link href={`/${company.slug}/dashboard`} key={company.slug} className="block">
+          <Link href={createHref(company.slug)} key={company.slug} className="block">
             <Card className="group transform transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between font-headline">

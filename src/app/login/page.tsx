@@ -25,7 +25,9 @@ export default function LoginPage() {
 
     if (user) {
       // In a real app, you'd verify the password hash
-      const companySlug = user.email.split('@')[1].split('.')[0];
+      const companyDomain = user.email.split('@')[1];
+      const companySlug = companyDomain.split('.')[0];
+      
       const searchParams = new URLSearchParams({
         role: user.role,
         name: user.name,
@@ -33,11 +35,16 @@ export default function LoginPage() {
       }).toString();
       
       const isAdminRole = ["Platform Super Admin", "Platform Manager"].includes(user.role);
-      const isCompanyAdmin = user.role === "Company Admin" && companySlug === 'techcorp';
+      const isCompanyAdmin = user.role === "Company Admin";
       const isBasicUser = user.role === "Basic User";
+      const isCEO = user.role === "CEO/Executive";
 
-      if (isAdminRole || isCompanyAdmin) {
+      if (isAdminRole) {
          router.push(`/admin/dashboard?${searchParams}`);
+      } else if (isCEO && email === 'ceo@techcorp.com') { // Special case for a multi-company CEO
+         router.push(`/select-company?${searchParams}`);
+      } else if (isCompanyAdmin) {
+        router.push(`/${companySlug}/users?${searchParams}`)
       } else if (isBasicUser) {
         router.push(`/${companySlug}/my-dashboard?${searchParams}`);
       }
