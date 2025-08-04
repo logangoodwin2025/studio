@@ -47,7 +47,7 @@ export function CeoOverviewTab({ stats, chartData }: CeoOverviewTabProps) {
                 <CardDescription>Market share and NPS vs. industry benchmarks.</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="h-48 flex items-center justify-center text-muted-foreground">
+                <div className="h-48 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
                    (Chart placeholder: Market Share vs. Competitors)
                 </div>
             </CardContent>
@@ -63,7 +63,7 @@ export function CeoOverviewTab({ stats, chartData }: CeoOverviewTabProps) {
                 <CardDescription>Model potential business scenarios.</CardDescription>
             </CardHeader>
             <CardContent>
-                 <div className="h-48 flex items-center justify-center text-muted-foreground">
+                 <div className="h-48 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
                    (AI scenario planner placeholder)
                 </div>
             </CardContent>

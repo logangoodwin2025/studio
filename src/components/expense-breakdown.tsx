@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useMemo } from "react";
@@ -15,14 +14,14 @@ const aggregateExpenses = (data: FinancialRecord[]) => {
     if (totalExpenses === 0) return [];
 
     // Simulate a breakdown - in a real app this would come from detailed data
-    const personnel = totalExpenses * 0.45;
+    const salaries = totalExpenses * 0.45;
     const operations = totalExpenses * 0.25;
     const marketing = totalExpenses * 0.15;
     const technology = totalExpenses * 0.10;
     const other = totalExpenses * 0.05;
 
     return [
-      { name: 'Personnel', value: personnel, color: 'hsl(var(--chart-1))' },
+      { name: 'Salaries', value: salaries, color: 'hsl(var(--chart-1))' },
       { name: 'Operations', value: operations, color: 'hsl(var(--chart-2))' },
       { name: 'Marketing', value: marketing, color: 'hsl(var(--chart-3))' },
       { name: 'Technology', value: technology, color: 'hsl(var(--chart-4))' },

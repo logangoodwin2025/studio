@@ -19,6 +19,7 @@ import {
   Lightbulb,
   CheckCircle,
   AlertCircle,
+  Eye
 } from "lucide-react";
 
 import {
@@ -47,7 +48,8 @@ import { useUserRole } from "@/hooks/use-user-role";
 
 const allNavItems = {
     GENERAL: [
-      { href: "/dashboard", icon: LayoutDashboard, label: "CEO Dashboard", roles: ["CEO/Executive"] },
+      { href: "/overview", icon: Eye, label: "Overview", roles: ["CEO/Executive"] },
+      { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard", roles: ["CEO/Executive"] },
       { href: "/financial-dashboard", icon: DollarSign, label: "Financial Dashboard", roles: ["Finance Team"] },
       { href: "/sales-marketing-dashboard", icon: Lightbulb, label: "Sales & Marketing", roles: ["Sales & Marketing"] },
       { href: "/operations-dashboard", icon: Activity, label: "Operations Dashboard", roles: ["Operations Team"] },
@@ -227,7 +229,7 @@ export function DashboardLayout({
               <SidebarMenuItem key={item.href}>
                 <Link href={createHref(item.href)}>
                   <SidebarMenuButton
-                    isActive={pathname.includes(item.href)}
+                    isActive={pathname.endsWith(item.href)}
                     className="w-full"
                   >
                     <item.icon className="h-4 w-4" />

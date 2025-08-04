@@ -15,16 +15,11 @@ import { useFinancialData } from "@/context/financial-data-context";
 import { getChartDataForPeriod, getStatsForPeriod } from "@/lib/financial-aggregator";
 import type { FinancialRecord } from "@/context/financial-data-context";
 import type { FinancialStats } from "@/lib/financial-aggregator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FinanceDashboardView } from "@/components/dashboards/finance-dashboard-view";
-import { SalesMarketingDashboardView } from "@/components/dashboards/sales-marketing-dashboard-view";
-import { OperationsDashboardView } from "@/components/dashboards/operations-dashboard-view";
-import { MembershipMetrics } from "@/components/dashboards/membership-metrics";
-import { MembershipDashboardView } from "@/components/dashboards/membership-dashboard-view";
+import { CeoOverviewTab } from "@/components/dashboards/tabs/ceo-overview-tab";
 
-const REQUIRED_ROLES = ["CEO/Executive", "Company Admin"];
+const REQUIRED_ROLES = ["CEO/Executive"];
 
-function DashboardPageContent() {
+function OverviewPageContent() {
     const { role, isLoaded } = useUserRole();
     const router = useRouter();
     const pathname = usePathname();
@@ -94,8 +89,8 @@ function DashboardPageContent() {
     return (
         <>
             <DashboardHeader
-                title="CEO Dashboard"
-                description="Department-level metrics and performance indicators for your organization."
+                title="Business Overview"
+                description="A comprehensive, cross-functional summary of your entire organization."
             >
                 <PeriodPicker 
                     period={period} 
@@ -105,35 +100,16 @@ function DashboardPageContent() {
                 />
             </DashboardHeader>
             <main className="flex-1 space-y-6 p-4 sm:px-6 lg:px-8">
-                <Tabs defaultValue="financials" className="w-full">
-                    <TabsList className="grid w-full grid-cols-4">
-                        <TabsTrigger value="financials">Financials</TabsTrigger>
-                        <TabsTrigger value="membership">Membership</TabsTrigger>
-                        <TabsTrigger value="sales">Sales & Marketing</TabsTrigger>
-                        <TabsTrigger value="operations">Operations</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="financials" className="mt-6">
-                        <FinanceDashboardView stats={stats} chartData={chartData} />
-                    </TabsContent>
-                    <TabsContent value="membership" className="mt-6">
-                        <MembershipDashboardView stats={stats} />
-                    </TabsContent>
-                    <TabsContent value="sales" className="mt-6">
-                        <SalesMarketingDashboardView stats={stats} />
-                    </TabsContent>
-                    <TabsContent value="operations" className="mt-6">
-                        <OperationsDashboardView stats={stats} />
-                    </TabsContent>
-                </Tabs>
+                <CeoOverviewTab stats={stats} chartData={chartData} />
             </main>
         </>
     );
 }
 
-export default function DashboardPage() {
+export default function OverviewPage() {
     return (
         <Suspense>
-            <DashboardPageContent />
+            <OverviewPageContent />
         </Suspense>
     )
 }
