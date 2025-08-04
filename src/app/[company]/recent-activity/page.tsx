@@ -5,7 +5,7 @@ import { useUserRole } from "@/hooks/use-user-role";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { CheckCircle, TrendingUp, AlertTriangle, Target, HandCoins, User, Lightbulb, Activity, FileText } from "lucide-react";
+import { CheckCircle, TrendingUp, AlertTriangle, Target, HandCoins, User, Lightbulb, Activity, FileText, Clock } from "lucide-react";
 import { Loading } from "@/components/loading";
 
 const metricActivityLog = [
