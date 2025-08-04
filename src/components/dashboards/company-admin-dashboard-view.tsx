@@ -185,7 +185,17 @@ export function CompanyAdminDashboardView() {
                             <PieChart>
                                 <Tooltip formatter={(value, name, props) => [`${(props.payload.value === 1 ? 'Complete' : 'Pending')}`, name]}/>
                                 <Legend />
-                                <Pie data={complianceData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} innerRadius={50} labelLine={false} label={({name, value}) => `${name}: ${value === 1 ? 'Complete' : 'Pending'}`}>
+                                <Pie 
+                                    data={complianceData} 
+                                    dataKey="value" 
+                                    nameKey="name" 
+                                    cx="50%" 
+                                    cy="50%" 
+                                    outerRadius={80} 
+                                    innerRadius={50} 
+                                    labelLine={false} 
+                                    label={({ name, value }) => `${name}: ${value === 1 ? "Complete" : "Pending"}`}
+                                >
                                     {complianceData.map(entry => (
                                         <Cell key={`cell-${entry.name}`} fill={entry.color} />
                                     ))}
