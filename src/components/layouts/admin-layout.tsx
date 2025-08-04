@@ -172,10 +172,15 @@ export function AdminLayout({
 
   const createHref = (href: string) => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
-    // For company admin, we need to preserve the company slug in the URLs
+    
+    // For Company Admin, we need to construct a different URL structure that includes the company slug
     if (role === 'Company Admin') {
-        return `/techcorp-solutions${href}?${newSearchParams.toString()}`;
+        const companySlug = "techcorp-solutions"; // This would typically come from user data or params
+        const finalHref = href.startsWith('/admin') ? `/${companySlug}${href.replace('/admin', '')}` : `/${companySlug}${href}`;
+        return `${finalHref}?${newSearchParams.toString()}`;
     }
+    
+    // For platform-level roles
     return `${href}?${newSearchParams.toString()}`;
   }
 
