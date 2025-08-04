@@ -51,12 +51,12 @@ function ReportsPageContent() {
                 title="Reports"
                 description="Generate and download departmental reports."
             >
-              <div className="flex flex-col sm:flex-row gap-2">
+              <div className="flex flex-col sm:flex-row items-center gap-2">
                 <Input
                   placeholder="Filter reports..."
                   value={filter}
                   onChange={(e) => setFilter(e.target.value)}
-                  className="w-full sm:w-[250px]"
+                  className="w-full sm:w-auto md:w-[250px]"
                 />
                 <PeriodPicker 
                     period={period} 
@@ -68,7 +68,7 @@ function ReportsPageContent() {
             </DashboardHeader>
             <main className="flex-1 p-4 sm:px-6 lg:px-8 space-y-6">
                 <Tabs defaultValue="financials" className="w-full">
-                    <TabsList className="grid w-full grid-cols-4">
+                    <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
                         <TabsTrigger value="financials">Financials</TabsTrigger>
                         <TabsTrigger value="membership">Membership</TabsTrigger>
                         <TabsTrigger value="sales">Sales & Marketing</TabsTrigger>
