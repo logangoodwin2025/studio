@@ -28,7 +28,6 @@ import { useToast } from "@/hooks/use-toast";
 import { DashboardHeader } from "./dashboard-header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { roles } from "@/lib/mock-data";
 import { usePathname } from "next/navigation";
 import { FormSheet } from "./form-sheet";
 
@@ -46,9 +45,8 @@ const userSchema = z.object({
   role: z.string(),
 });
 
-export function UsersDataTable({ initialUsers }: { initialUsers: User[] }) {
+export function UsersDataTable({ initialUsers, showHeader = true }: { initialUsers: User[], showHeader?: boolean }) {
   const { toast } = useToast();
-  const pathname = usePathname();
   const [users, setUsers] = useState(initialUsers);
   const [isSheetOpen, setSheetOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -85,13 +83,26 @@ export function UsersDataTable({ initialUsers }: { initialUsers: User[] }) {
     }, 500);
   };
   
-  const content = (
-    <Card>
-      <CardHeader>
-        <CardTitle className="font-headline">User Management</CardTitle>
-        <CardDescription>Add, edit, or remove users from this company.</CardDescription>
+  const cardHeader = showHeader ? (
+    <CardHeader>
+        <div className="flex justify-between items-center">
+          <div>
+            <CardTitle className="font-headline">User Management</CardTitle>
+            <CardDescription>Add, edit, or remove users from this company.</CardDescription>
+          </div>
+          <Button onClick={handleAddNew} size="sm">
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add New User
+          </Button>
+        </div>
       </CardHeader>
-      <CardContent>
+  ) : null;
+
+  return (
+    <>
+    <Card>
+      {cardHeader}
+      <CardContent className={showHeader ? "" : "pt-6"}>
         <Table>
           <TableHeader>
             <TableRow>
@@ -137,35 +148,16 @@ export function UsersDataTable({ initialUsers }: { initialUsers: User[] }) {
         </Table>
       </CardContent>
     </Card>
+      <FormSheet 
+          isOpen={isSheetOpen}
+          onOpenChange={setSheetOpen}
+          isEditing={!!editingUser}
+          form={form}
+          onSubmit={onSubmit}
+          schema={userSchema}
+          title={editingUser ? "Edit User" : "Add New User"}
+          description={editingUser ? "Update the user's details below." : "Fill in the form to add a new user."}
+      />
+    </>
   );
-
-  // If this component is rendered on its own user management page, wrap it in the header and main layout
-  if (pathname.endsWith("/users")) {
-    return (
-      <>
-        <DashboardHeader title="User Management">
-          <Button onClick={handleAddNew}>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add New User
-          </Button>
-        </DashboardHeader>
-        <main className="flex-1 p-4 sm:px-6 lg:px-8">
-          {content}
-        </main>
-        <FormSheet 
-            isOpen={isSheetOpen}
-            onOpenChange={setSheetOpen}
-            isEditing={!!editingUser}
-            form={form}
-            onSubmit={onSubmit}
-            schema={userSchema}
-            title={editingUser ? "Edit User" : "Add New User"}
-            description={editingUser ? "Update the user's details below." : "Fill in the form to add a new user."}
-        />
-      </>
-    );
-  }
-
-  // Otherwise, just return the card content (for embedding in other dashboards like the tenant details page)
-  return content;
 }

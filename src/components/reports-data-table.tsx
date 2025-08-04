@@ -159,12 +159,7 @@ export function ReportsDataTable() {
   });
 
   return (
-    <>
-      <DashboardHeader
-        title="Reports"
-        description="Generate and download financial reports for sharing and documentation."
-      />
-      <main className="flex-1 p-4 sm:px-6 lg:px-8 space-y-6">
+    <div className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle className="font-headline">Report Generation</CardTitle>
@@ -219,9 +214,6 @@ export function ReportsDataTable() {
             </Table>
           </CardContent>
         </Card>
-      </main>
-    </>
+      </div>
   );
 }
-
-    

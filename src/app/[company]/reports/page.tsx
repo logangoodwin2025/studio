@@ -5,9 +5,7 @@ import { useUserRole } from "@/hooks/use-user-role";
 import { AccessDenied } from "@/components/access-denied";
 import { ReportsDataTable } from "@/components/reports-data-table";
 import { Suspense } from "react";
-
-// In a real app, you might have different report configurations per role.
-// For this prototype, we'll show the same report table to anyone with access.
+import { DashboardHeader } from "@/components/dashboard-header";
 
 function ReportsPageContent() {
   const { role, isLoaded } = useUserRole();
@@ -16,7 +14,6 @@ function ReportsPageContent() {
     return null; // or a loading spinner
   }
 
-  // Example of role-based access to the reports page itself
   const canViewReports =
     role && ["Finance Team", "Sales & Marketing", "Operations Team", "CEO/Executive", "Company Admin"].includes(role);
 
@@ -24,7 +21,17 @@ function ReportsPageContent() {
     return <AccessDenied />;
   }
 
-  return <ReportsDataTable />;
+  return (
+    <>
+      <DashboardHeader
+        title="Reports"
+        description="Generate and download financial reports for sharing and documentation."
+      />
+      <main className="flex-1 p-4 sm:px-6 lg:px-8 space-y-6">
+        <ReportsDataTable />
+      </main>
+    </>
+  );
 }
 
 

@@ -71,7 +71,7 @@ function Header() {
   const createHref = (href: string) => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
     const companySlug = "techcorp-solutions"; // This would typically come from user data or params
-    const finalHref = `${href.startsWith('/admin') ? '' : `/${companySlug}`}${href}`;
+    const finalHref = href.startsWith('/admin') ? href : `/${companySlug}${href}`;
     return `${finalHref}?${newSearchParams.toString()}`;
   }
 
@@ -184,10 +184,9 @@ export function AdminLayout({
   const createHref = (href: string) => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
     
-    // For Company Admin, we need to construct a different URL structure that includes the company slug
     if (role === 'Company Admin') {
         const companySlug = "techcorp-solutions"; // This would typically come from user data or params
-        const finalHref = href.startsWith('/admin') ? `/${companySlug}${href.replace('/admin', '')}` : `/${companySlug}${href}`;
+        const finalHref = href.startsWith('/admin') ? href : `/${companySlug}${href}`;
         return `${finalHref}?${newSearchParams.toString()}`;
     }
     
@@ -211,7 +210,7 @@ export function AdminLayout({
                   <SidebarMenuItem key={item.href}>
                     <Link href={createHref(item.href)}>
                       <SidebarMenuButton
-                        isActive={pathname.includes(item.href)}
+                        isActive={pathname.endsWith(item.href)}
                         className="w-full"
                       >
                         <item.icon className="h-4 w-4" />
