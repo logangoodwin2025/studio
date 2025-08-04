@@ -5,7 +5,6 @@ import { Suspense, useCallback, useMemo, useState } from "react";
 import { useUserRole } from "@/hooks/use-user-role";
 import { AccessDenied } from "@/components/access-denied";
 import { DashboardHeader } from "@/components/dashboard-header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MembershipMetrics } from "@/components/dashboards/membership-metrics";
 import { PeriodPicker } from "@/components/period-picker";
 import type { Period } from "@/lib/types";
@@ -82,14 +81,7 @@ function MembershipDashboardPageContent() {
                 />
             </DashboardHeader>
             <main className="flex-1 space-y-6 p-4 sm:px-6 lg:px-8">
-               <Card>
-                    <CardHeader>
-                        <CardTitle className="font-headline">Membership Metrics</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <MembershipMetrics />
-                    </CardContent>
-                </Card>
+               <MembershipMetrics />
             </main>
         </>
     );

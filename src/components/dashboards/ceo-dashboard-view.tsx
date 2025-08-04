@@ -22,17 +22,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { MembershipMetrics } from "./membership-metrics";
 import { SalesMarketingMetrics } from "./sales-marketing-metrics";
 import { OperationalMetrics } from "./operational-metrics";
+import { Loading } from "../loading";
 
 function CeoDashboardViewContent() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { data: allData } = useFinancialData();
   const [isLoading, setIsLoading] = useState(true);
 
   const [stats, setStats] = useState<any>(null);
   const [chartData, setChartData] = useState<FinancialRecord[]>([]);
 
+  const searchParams = useSearchParams();
   const period = (searchParams.get('period') as Period) || 'D';
   
   const dateRange = useMemo(() => {
@@ -59,37 +58,13 @@ function CeoDashboardViewContent() {
   }, [allData, period, dateRange]);
 
 
-  const handlePeriodChange = useCallback((newPeriod: Period) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('period', newPeriod);
-    if (newPeriod !== 'CUSTOM') {
-      params.delete('from');
-      params.delete('to');
-    }
-    router.push(`${pathname}?${params.toString()}`);
-  }, [pathname, router, searchParams]);
-
-  const handleDateRangeChange = useCallback((newDateRange: DateRange | undefined) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (newDateRange?.from) {
-      params.set('period', 'CUSTOM');
-      params.set('from', formatISO(newDateRange.from, { representation: 'date' }));
-      if (newDateRange.to) {
-        params.set('to', formatISO(newDateRange.to, { representation: 'date' }));
-      } else {
-        params.delete('to');
-      }
-      router.push(`${pathname}?${params.toString()}`);
-    }
-  }, [pathname, router, searchParams]);
-
    if (isLoading || !stats) {
     return <LoadingSkeleton />;
   }
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold font-headline">Financial Metrics</h2>
+      <h2 className="text-xl font-bold font-headline">Financial Health</h2>
       <FinancialStats stats={stats} />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         <div className="lg:col-span-3">
@@ -110,11 +85,11 @@ function CeoDashboardViewContent() {
             <AccountsTable type="Payable" />
         </div>
       </div>
-      <h2 className="text-xl font-bold font-headline pt-4">Membership Metrics</h2>
+      <h2 className="text-xl font-bold font-headline pt-4">Membership Trends</h2>
       <MembershipMetrics />
-      <h2 className="text-xl font-bold font-headline pt-4">Sales & Marketing Metrics</h2>
+      <h2 className="text-xl font-bold font-headline pt-4">Sales & Marketing</h2>
       <SalesMarketingMetrics />
-      <h2 className="text-xl font-bold font-headline pt-4">Operational Metrics</h2>
+      <h2 className="text-xl font-bold font-headline pt-4">Operational Efficiency</h2>
       <OperationalMetrics />
     </div>
   );
@@ -131,9 +106,6 @@ export function CeoDashboardView() {
 function LoadingSkeleton() {
   return (
      <div className="space-y-6">
-      <div className="flex items-center gap-2 bg-card p-1 rounded-lg border h-[44px] w-[420px]">
-          <Skeleton className="h-9 w-full" />
-      </div>
        <h2 className="text-xl font-bold font-headline"><Skeleton className="h-7 w-64" /></h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
             {[...Array(7)].map((_, i) => <Skeleton key={i} className="h-[98px] rounded-lg" />)}
