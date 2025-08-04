@@ -77,7 +77,7 @@ function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-             <DropdownMenu>
+             <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="relative">
                         <Bell className="h-5 w-5"/>
