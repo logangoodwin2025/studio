@@ -2,6 +2,17 @@
 import { DashboardHeader } from "@/components/dashboard-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import { Badge } from "../ui/badge";
+
+const dummyTenants = [
+    { name: "TechCorp Solutions", plan: "Enterprise", users: 25, lastActive: "2 hours ago", status: "Active" },
+    { name: "Innovate Inc.", plan: "Paid", users: 10, lastActive: "1 day ago", status: "Active" },
+    { name: "Synergy Labs", plan: "Trial", users: 5, lastActive: "3 days ago", status: "Provisioning" },
+    { name: "QuantumLeap", plan: "Paid", users: 15, lastActive: "5 hours ago", status: "Active" },
+    { name: "DataWeavers", plan: "Free", users: 2, lastActive: "1 week ago", status: "Suspended" },
+];
+
 
 export function SuperAdminDashboardView() {
   return (
@@ -57,8 +68,28 @@ export function SuperAdminDashboardView() {
                         <CardDescription>View, suspend, or delete tenant accounts.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        {/* Placeholder for tenant table */}
-                        <p className="text-muted-foreground">(Tenant management table goes here)</p>
+                       <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Company</TableHead>
+                                <TableHead>Plan</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead className="text-right">Users</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {dummyTenants.map(tenant => (
+                                <TableRow key={tenant.name}>
+                                    <TableCell className="font-medium">{tenant.name}</TableCell>
+                                    <TableCell>{tenant.plan}</TableCell>
+                                    <TableCell>
+                                        <Badge variant={tenant.status === 'Active' ? 'secondary' : 'destructive'}>{tenant.status}</Badge>
+                                    </TableCell>
+                                    <TableCell className="text-right">{tenant.users}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                       </Table>
                     </CardContent>
                 </Card>
             </div>
