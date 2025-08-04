@@ -98,6 +98,26 @@ export const tenants: Tenant[] = [
     { id: "ten_5", name: "DataWeavers", plan: "Free", users: 2, lastActive: "1 week ago", status: "Suspended" },
 ];
 
+export type SupportTicket = {
+    id: string;
+    subject: string;
+    tenant: string;
+    user: string;
+    priority: "Low" | "Medium" | "High";
+    status: "Open" | "In Progress" | "Resolved" | "Closed";
+    created: Date;
+    lastUpdated: Date;
+};
+
+export const supportTickets: SupportTicket[] = [
+    { id: "T-1234", subject: "Integration with Salesforce failing", tenant: "Innovate Inc.", user: "finance@innovate.com", priority: "High", status: "Open", created: new Date("2025-07-25T10:00:00Z"), lastUpdated: new Date("2025-07-25T14:30:00Z") },
+    { id: "T-1235", subject: "How to add a new user?", tenant: "QuantumLeap", user: "admin@quantum.com", priority: "Low", status: "Closed", created: new Date("2025-07-24T11:00:00Z"), lastUpdated: new Date("2025-07-24T11:30:00Z") },
+    { id: "T-1236", subject: "API rate limit exceeded", tenant: "DataWeavers", user: "dev@dataweavers.com", priority: "Medium", status: "In Progress", created: new Date("2025-07-25T09:00:00Z"), lastUpdated: new Date("2025-07-25T16:00:00Z") },
+    { id: "T-1237", subject: "Cannot access reports", tenant: "TechCorp Solutions", user: "ceo@techcorp.com", priority: "High", status: "Open", created: new Date("2025-07-25T15:00:00Z"), lastUpdated: new Date("2025-07-25T15:05:00Z") },
+    { id: "T-1238", subject: "Feature request: Dark mode", tenant: "Synergy Labs", user: "user@synergy.com", priority: "Low", status: "Resolved", created: new Date("2025-07-22T18:00:00Z"), lastUpdated: new Date("2025-07-23T10:00:00Z") },
+    { id: "T-1239", subject: "Billing question", tenant: "Innovate Inc.", user: "finance@innovate.com", priority: "Medium", status: "Open", created: new Date("2025-07-26T08:00:00Z"), lastUpdated: new Date("2025-07-26T08:15:00Z") },
+];
+
 
 export const monthlyRevenueData = [
   { month: "Jan", revenue: 4000 }, { month: "Feb", revenue: 3000 },
