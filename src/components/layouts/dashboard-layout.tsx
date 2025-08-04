@@ -184,16 +184,10 @@ function SidebarHeaderContent({ href }: { href: string }) {
 
 function getVisibleNavItems(role: string | null) {
     if (!role) {
-        return { GENERAL: [], MANAGEMENT: [] };
+        return [];
     }
-
-    const filterItems = (items: typeof allNavItems.GENERAL) => 
-        items.filter(item => item.roles.includes(role));
-
-    return {
-        GENERAL: filterItems(allNavItems.GENERAL),
-        MANAGEMENT: filterItems(allNavItems.MANAGEMENT)
-    }
+    const allItems = [...allNavItems.GENERAL, ...allNavItems.MANAGEMENT];
+    return allItems.filter(item => item.roles.includes(role));
 }
 
 
@@ -229,23 +223,18 @@ export function DashboardLayout({
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
-            {Object.entries(navItems).map(([label, items]) => (
-              <React.Fragment key={label}>
-                {items.length > 0 && <SidebarLabel>{label}</SidebarLabel>}
-                {items.map((item) => (
-                  <SidebarMenuItem key={item.href}>
-                    <Link href={createHref(item.href)}>
-                      <SidebarMenuButton
-                        isActive={pathname.includes(item.href)}
-                        className="w-full"
-                      >
-                        <item.icon className="h-4 w-4" />
-                        <span>{item.label}</span>
-                      </SidebarMenuButton>
-                    </Link>
-                  </SidebarMenuItem>
-                ))}
-              </React.Fragment>
+            {navItems.map((item) => (
+              <SidebarMenuItem key={item.href}>
+                <Link href={createHref(item.href)}>
+                  <SidebarMenuButton
+                    isActive={pathname.includes(item.href)}
+                    className="w-full"
+                  >
+                    <item.icon className="h-4 w-4" />
+                    <span>{item.label}</span>
+                  </SidebarMenuButton>
+                </Link>
+              </SidebarMenuItem>
             ))}
           </SidebarMenu>
         </SidebarContent>
