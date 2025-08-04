@@ -12,9 +12,9 @@ export function InfoTooltip({ children }: { children: React.ReactNode }) {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <button type="button" className="ml-2 text-muted-foreground hover:text-foreground transition-colors" aria-label="More info">
+          <div className="ml-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" aria-label="More info">
             <Info className="h-4 w-4" />
-          </button>
+          </div>
         </TooltipTrigger>
         <TooltipContent className="max-w-xs">
           <p>{children}</p>
