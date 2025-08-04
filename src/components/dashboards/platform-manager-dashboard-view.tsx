@@ -9,7 +9,7 @@ import { DashboardHeader } from "@/components/dashboard-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatCard } from "../stat-card";
-import { UserPlus, Users, MessageSquareWarning, Clock, BarChart2, LineChart as LineChartIcon, Database, ExternalLink } from "lucide-react";
+import { UserPlus, Users, MessageSquareWarning, Clock, BarChart2, LineChart as LineChartIcon, Database, ExternalLink, AlertTriangle, CheckCircle, Info } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { tenants, supportTickets, userList } from "@/lib/mock-data";
