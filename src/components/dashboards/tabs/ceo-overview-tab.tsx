@@ -7,17 +7,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { FinancialStats as FinancialStatsCards } from "@/components/financial-stats";
 import { RevenueProfitTrend } from "@/components/revenue-profit-trend";
 import { ExpenseBreakdown } from "@/components/expense-breakdown";
-import { MembershipMetrics } from "./membership-metrics";
-import { SalesMarketingMetrics } from "./sales-marketing-metrics";
-import { OperationalMetrics } from "./operational-metrics";
-import { InfoTooltip } from "../info-tooltip";
+import { MembershipMetrics } from "../membership-metrics";
+import { SalesMarketingMetrics } from "../sales-marketing-metrics";
+import { OperationalMetrics } from "../operational-metrics";
+import { InfoTooltip } from "@/components/info-tooltip";
 
-interface CeoDashboardViewProps {
+interface CeoOverviewTabProps {
   stats: FinancialStats;
   chartData: FinancialRecord[];
 }
 
-export function CeoDashboardView({ stats, chartData }: CeoDashboardViewProps) {
+export function CeoOverviewTab({ stats, chartData }: CeoOverviewTabProps) {
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-bold font-headline flex items-center">
@@ -55,16 +55,16 @@ export function CeoDashboardView({ stats, chartData }: CeoDashboardViewProps) {
            <Card>
             <CardHeader>
                 <CardTitle className="font-headline flex items-center">
-                  Executive Summary
+                  Scenario Planner
                    <InfoTooltip>
-                    AI-generated insights summarizing performance and a scenario planner to model potential outcomes.
+                    AI-powered tool to model potential outcomes based on different business decisions.
                   </InfoTooltip>
                 </CardTitle>
-                <CardDescription>AI-generated insights and scenario planner.</CardDescription>
+                <CardDescription>Model potential business scenarios.</CardDescription>
             </CardHeader>
             <CardContent>
                  <div className="h-48 flex items-center justify-center text-muted-foreground">
-                   (AI insights placeholder)
+                   (AI scenario planner placeholder)
                 </div>
             </CardContent>
           </Card>
