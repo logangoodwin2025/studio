@@ -16,7 +16,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import type { Period } from "@/app/[company]/financial-dashboard/page"
+import type { Period } from "@/lib/types"
 import { Separator } from "./ui/separator"
 
 interface PeriodPickerProps {
@@ -103,7 +103,7 @@ export function PeriodPicker({
                   onSelect={setLocalDateRange}
                   numberOfMonths={2}
               />
-              <div className="p-2 border-t flex justify-end bg-secondary">
+              <div className="p-2 border-t flex justify-end bg-card">
                 <Button onClick={handleApplyDateRange} size="sm">
                   <Check className="h-4 w-4 mr-2" />
                   Apply

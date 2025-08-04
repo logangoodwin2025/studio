@@ -3,7 +3,7 @@
 
 import * as React from "react"
 import { format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
+import { Calendar as CalendarIcon, Check } from "lucide-react"
 import { DateRange } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
@@ -26,15 +26,27 @@ export function DateRangePicker({
   onDateChange,
   className,
 }: DateRangePickerProps) {
+    const [popoverOpen, setPopoverOpen] = React.useState(false);
+    const [localDateRange, setLocalDateRange] = React.useState<DateRange | undefined>(date);
+
+    React.useEffect(() => {
+        setLocalDateRange(date);
+    }, [date]);
+
+    const handleApply = () => {
+        onDateChange(localDateRange);
+        setPopoverOpen(false);
+    };
+
   return (
     <div className={cn("grid gap-2", className)}>
-      <Popover>
+      <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
         <PopoverTrigger asChild>
           <Button
             id="date"
             variant={"outline"}
             className={cn(
-              "w-[300px] justify-start text-left font-normal",
+              "w-full sm:w-[300px] justify-start text-left font-normal",
               !date && "text-muted-foreground"
             )}
           >
@@ -57,11 +69,17 @@ export function DateRangePicker({
           <Calendar
             initialFocus
             mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={onDateChange}
+            defaultMonth={localDateRange?.from}
+            selected={localDateRange}
+            onSelect={setLocalDateRange}
             numberOfMonths={2}
           />
+           <div className="p-2 border-t flex justify-end bg-card">
+              <Button onClick={handleApply} size="sm">
+                <Check className="h-4 w-4 mr-2" />
+                Apply
+              </Button>
+            </div>
         </PopoverContent>
       </Popover>
     </div>

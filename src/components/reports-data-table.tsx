@@ -3,7 +3,7 @@
 "use client";
 
 import * as React from "react";
-import { Calendar as CalendarIcon, Download, FileText, MoreHorizontal } from "lucide-react";
+import { Check, Download, FileText, MoreHorizontal } from "lucide-react";
 import { addDays, format } from "date-fns";
 import type { DateRange } from "react-day-picker";
 import {
@@ -18,10 +18,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { DashboardHeader } from "./dashboard-header";
@@ -33,6 +30,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { DateRangePicker } from "./date-range-picker";
 
 type Report = {
   id: string;
@@ -173,17 +171,7 @@ export function ReportsDataTable() {
             <CardDescription>Select a period and generate reports from the list below.</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button id="date" variant={"outline"} className={cn("w-full sm:w-[300px] justify-start text-left font-normal", !date && "text-muted-foreground")}>
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date?.from ? (date.to ? (<>{format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}</>) : (format(date.from, "LLL dd, y"))) : (<span>Pick a date</span>)}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar initialFocus mode="range" defaultMonth={date?.from} selected={date} onSelect={setDate} numberOfMonths={2} />
-              </PopoverContent>
-            </Popover>
+            <DateRangePicker date={date} onDateChange={setDate} />
              <Input
                 placeholder="Filter reports by name..."
                 value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
