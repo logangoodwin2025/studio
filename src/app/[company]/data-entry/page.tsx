@@ -1,5 +1,6 @@
+
 import { DashboardHeader } from "@/components/dashboard-header";
-import { DataEntryForm } from "@/components/data-entry-form";
+import { DataEntryView } from "@/components/data-entry/data-entry-view";
 import { Button } from "@/components/ui/button";
 import { Download, Upload } from "lucide-react";
 
@@ -22,8 +23,8 @@ export default function DataEntryPage() {
         </div>
       </DashboardHeader>
       <main className="flex-1 p-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl">
-            <DataEntryForm />
+        <div className="mx-auto max-w-5xl">
+            <DataEntryView />
         </div>
       </main>
     </>

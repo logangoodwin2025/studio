@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useForm, useWatch } from "react-hook-form";
@@ -87,9 +88,17 @@ export function DataEntryForm() {
   }, [revenue, expenses, form]);
 
   const onSubmit = (data: DataEntryFormValues) => {
+    if (!data.period.from) {
+        toast({
+            variant: "destructive",
+            title: "Validation Error",
+            description: "Please select a reporting period.",
+        });
+        return;
+    }
     const recordToSave = {
         ...data,
-        period: data.period.from!,
+        period: data.period.from,
     };
     addFinancialRecord(recordToSave);
     toast({
@@ -209,7 +218,7 @@ export function DataEntryForm() {
                     <FormItem>
                       <FormLabel>Gross Profit ($)</FormLabel>
                       <FormControl>
-                        <Input type="text" inputMode="decimal" placeholder="Auto-calculated" {...field} value={field.value || ''} readOnly className="bg-muted/50" />
+                        <Input type="text" inputMode="decimal" placeholder="Auto-calculated" {...field} value={field.value ?? ''} readOnly className="bg-muted/50" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
