@@ -105,13 +105,17 @@ function DashboardPageContent() {
                 />
             </DashboardHeader>
             <main className="flex-1 space-y-6 p-4 sm:px-6 lg:px-8">
-                <Tabs defaultValue="financials" className="w-full">
-                    <TabsList className="grid w-full grid-cols-4">
+                <Tabs defaultValue="overview" className="w-full">
+                    <TabsList className="grid w-full grid-cols-5">
+                        <TabsTrigger value="overview">Overview</TabsTrigger>
                         <TabsTrigger value="financials">Financials</TabsTrigger>
                         <TabsTrigger value="membership">Membership</TabsTrigger>
                         <TabsTrigger value="sales">Sales & Marketing</TabsTrigger>
                         <TabsTrigger value="operations">Operations</TabsTrigger>
                     </TabsList>
+                    <TabsContent value="overview" className="mt-6">
+                        <CeoOverviewTab stats={stats} chartData={chartData} />
+                    </TabsContent>
                     <TabsContent value="financials" className="mt-6">
                         <FinanceDashboardView stats={stats} chartData={chartData} />
                     </TabsContent>

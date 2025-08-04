@@ -3,6 +3,22 @@ import { SalesMarketingMetrics } from "./sales-marketing-metrics";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "../ui/card";
 import type { FinancialStats } from "@/lib/financial-aggregator";
 import { InfoTooltip } from "../info-tooltip";
+import { BarChart, Funnel, FunnelChart, LabelList, ResponsiveContainer, Tooltip, Bar, XAxis, YAxis } from "recharts";
+
+const leadFunnelData = [
+  { value: 1200, name: 'Leads', fill: 'hsl(var(--chart-1))' },
+  { value: 850, name: 'Qualified', fill: 'hsl(var(--chart-2))' },
+  { value: 550, name: 'Proposals', fill: 'hsl(var(--chart-3))' },
+  { value: 250, name: 'Negotiation', fill: 'hsl(var(--chart-4))' },
+  { value: 62, name: 'Won', fill: 'hsl(var(--chart-5))' },
+];
+
+const campaignRoiData = [
+    { name: 'Summer Sale', roi: 4.5, fill: 'hsl(var(--chart-1))' },
+    { name: 'Q3 Social', roi: 3.2, fill: 'hsl(var(--chart-2))' },
+    { name: 'Referral Program', roi: 7.8, fill: 'hsl(var(--chart-3))' },
+    { name: 'Email Campaign', roi: 5.1, fill: 'hsl(var(--chart-4))' },
+];
 
 interface SalesMarketingDashboardViewProps {
   stats: FinancialStats;
@@ -22,8 +38,21 @@ export function SalesMarketingDashboardView({ stats }: SalesMarketingDashboardVi
                     <CardDescription>Lead volume by source and conversion trends.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="h-60 flex items-center justify-center text-muted-foreground">
-                        (Chart placeholder: Lead Funnel)
+                    <div className="h-60">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <FunnelChart>
+                                <Tooltip
+                                    contentStyle={{
+                                        backgroundColor: "hsl(var(--card))",
+                                        borderColor: "hsl(var(--border))",
+                                        borderRadius: "var(--radius)"
+                                    }}
+                                />
+                                <Funnel dataKey="value" data={leadFunnelData} isAnimationActive>
+                                    <LabelList position="right" fill="#000" stroke="none" dataKey="name" />
+                                </Funnel>
+                            </FunnelChart>
+                        </ResponsiveContainer>
                     </div>
                 </CardContent>
             </Card>
@@ -36,8 +65,23 @@ export function SalesMarketingDashboardView({ stats }: SalesMarketingDashboardVi
                     <CardDescription>Marketing ROI by campaign.</CardDescription>
                 </CardHeader>
                  <CardContent>
-                    <div className="h-60 flex items-center justify-center text-muted-foreground">
-                        (Chart placeholder: Campaign ROI)
+                    <div className="h-60">
+                         <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={campaignRoiData} margin={{left: 10}}>
+                                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}x`} />
+                                <Tooltip
+                                    formatter={(value: number) => [`${value}x ROI`, 'ROI']}
+                                    cursor={{fill: 'hsl(var(--secondary))'}}
+                                    contentStyle={{
+                                        backgroundColor: "hsl(var(--card))",
+                                        borderColor: "hsl(var(--border))",
+                                        borderRadius: "var(--radius)"
+                                    }}
+                                />
+                                <Bar dataKey="roi" radius={[4, 4, 0, 0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
                     </div>
                 </CardContent>
             </Card>
