@@ -15,6 +15,7 @@ import {
   SidebarMenuButton,
   SidebarInset,
   SidebarLabel,
+  SidebarProvider,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -186,7 +187,7 @@ export function AdminLayout({
 
 
   return (
-    <>
+    <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
           <SidebarHeaderContent />
@@ -220,6 +221,6 @@ export function AdminLayout({
             {children}
         </SidebarInset>
       </div>
-    </>
+    </SidebarProvider>
   );
 }

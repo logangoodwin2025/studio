@@ -8,7 +8,6 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import { FinancialDataProvider } from '@/context/financial-data-context';
-import { SidebarProvider } from '@/components/ui/sidebar';
 import { AdminLayout } from '@/components/layouts/admin-layout';
 import { DashboardLayout } from '@/components/layouts/dashboard-layout';
 
@@ -41,20 +40,10 @@ export default function RootLayout({
     if (isLoginPage) {
         return <>{children}</>
     }
-    
-    return (
-        <SidebarProvider>
-            {isAdminRoute ? (
-              <AdminLayout>
-                {children}
-              </AdminLayout>
-            ) : (
-              <DashboardLayout>
-                {children}
-              </DashboardLayout>
-            )}
-        </SidebarProvider>
-    )
+    if (isAdminRoute) {
+        return <AdminLayout>{children}</AdminLayout>;
+    }
+    return <DashboardLayout>{children}</DashboardLayout>;
   }
 
   return (

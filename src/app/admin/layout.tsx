@@ -1,16 +1,12 @@
 
 "use client";
 
-import { AdminLayout as AdminLayoutComponent } from "@/components/layouts/admin-layout";
-
-export default function AdminLayout({
+// This layout simply passes children through. 
+// The actual layout component is applied in the root layout.
+export default function AdminSegmentLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <AdminLayoutComponent>
-        {children}
-    </AdminLayoutComponent>
-  );
+  return <>{children}</>;
 }

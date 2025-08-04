@@ -31,6 +31,7 @@ import {
   SidebarMenuButton,
   SidebarInset,
   SidebarLabel,
+  SidebarProvider,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -208,7 +209,7 @@ export function DashboardLayout({
 
 
   return (
-    <>
+    <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
           <SidebarHeaderContent />
@@ -242,6 +243,6 @@ export function DashboardLayout({
             {children}
         </SidebarInset>
       </div>
-    </>
+    </SidebarProvider>
   );
 }
