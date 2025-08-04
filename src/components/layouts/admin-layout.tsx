@@ -54,7 +54,7 @@ const adminNotifications = {
         { icon: AlertCircle, text: "Support ticket #T-1234 escalated to high priority.", time: "6h ago", color: "text-orange-500" },
     ],
     "Company Admin": [
-        { icon: CheckCircle, text: "User 'Bob Williams' has been added to the Finance Team.", time: "30m ago", color: "text-green-500" },
+        { icon: CheckCircle, text: "User 'Jane Doe' has been added to the Finance Team.", time: "30m ago", color: "text-green-500" },
         { icon: AlertCircle, text: "Your company subscription will renew in 7 days.", time: "1d ago", color: "text-orange-500" },
     ]
 }
@@ -66,6 +66,13 @@ function Header() {
   const userRole = searchParams.get('role') || "Administrator";
   const avatarUrl = searchParams.get('avatar');
   const notifications = (role && adminNotifications[role as keyof typeof adminNotifications]) || [];
+
+  const createHref = (href: string) => {
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    const companySlug = "techcorp-solutions"; // This would typically come from user data or params
+    const finalHref = `${href.startsWith('/admin') ? '' : `/${companySlug}`}${href}`;
+    return `${finalHref}?${newSearchParams.toString()}`;
+  }
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 flex h-16 items-center justify-between border-b bg-background px-4 md:left-64">
@@ -122,7 +129,9 @@ function Header() {
             <DropdownMenuContent className="w-56 mt-2" align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href={createHref('/settings')}>Profile</Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <Link href="/login">
                   <DropdownMenuItem className="text-destructive">

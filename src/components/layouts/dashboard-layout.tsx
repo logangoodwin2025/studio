@@ -93,6 +93,13 @@ function Header() {
   const userRole = searchParams.get('role') || "User";
   const avatarUrl = searchParams.get('avatar');
   const notifications = (role && userNotifications[role as keyof typeof userNotifications]) || [];
+  const params = useParams();
+  const companySlug = params.company as string;
+  
+  const createHref = (href: string) => {
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    return `/${companySlug}${href}?${newSearchParams.toString()}`;
+  }
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 flex h-16 items-center justify-between border-b bg-background px-4 md:left-64">
@@ -150,8 +157,9 @@ function Header() {
             <DropdownMenuContent className="w-56 mt-2" align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href={createHref('/settings')}>Profile</Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <Link href="/login">
                   <DropdownMenuItem className="text-destructive">
