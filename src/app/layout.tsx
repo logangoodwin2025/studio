@@ -35,6 +35,27 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
   const isAdminRoute = pathname.startsWith('/admin');
+  const isLoginPage = pathname === '/login';
+
+  const renderLayout = () => {
+    if (isLoginPage) {
+        return <>{children}</>
+    }
+    
+    return (
+        <SidebarProvider>
+            {isAdminRoute ? (
+              <AdminLayout>
+                {children}
+              </AdminLayout>
+            ) : (
+              <DashboardLayout>
+                {children}
+              </DashboardLayout>
+            )}
+        </SidebarProvider>
+    )
+  }
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -46,17 +67,7 @@ export default function RootLayout({
         )}
       >
         <FinancialDataProvider>
-           <SidebarProvider>
-            {isAdminRoute ? (
-              <AdminLayout>
-                {children}
-              </AdminLayout>
-            ) : (
-              <DashboardLayout>
-                {children}
-              </DashboardLayout>
-            )}
-           </SidebarProvider>
+           {renderLayout()}
         </FinancialDataProvider>
         <Toaster />
       </body>
