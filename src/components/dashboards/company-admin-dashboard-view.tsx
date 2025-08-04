@@ -11,7 +11,7 @@ import { BadgeDollarSign, Users, PieChart as PieChartIcon, CalendarCheck2, UserP
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Pie, PieChart, Cell, Legend, Bar } from "recharts";
+import { BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Bar } from "recharts";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { format } from "date-fns";
 import { InfoTooltip } from "../info-tooltip";
@@ -22,12 +22,6 @@ const userLoginsData = [
     { name: 'Ops', logins: 180 },
     { name: 'Admin', logins: 45 },
     { name: 'Other', logins: 90 },
-];
-
-const complianceData = [
-    { name: 'Finance', value: 1, color: 'hsl(var(--chart-1))', label: "Complete" },
-    { name: 'Sales', value: 1, color: 'hsl(var(--chart-2))', label: "Complete" },
-    { name: 'Operations', value: 0, color: 'hsl(var(--chart-5))', label: "Pending" },
 ];
 
 const revenueHistory = [
@@ -149,7 +143,7 @@ export function CompanyAdminDashboardView() {
             </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
             <Card>
                 <CardHeader>
                     <CardTitle className="font-headline flex items-center">
@@ -167,40 +161,6 @@ export function CompanyAdminDashboardView() {
                                 <Tooltip />
                                 <Bar dataKey="logins" fill="hsl(var(--chart-2))" radius={[4,4,0,0]} />
                             </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-                </CardContent>
-            </Card>
-             <Card>
-                <CardHeader>
-                    <CardTitle className="font-headline flex items-center">
-                        Data Entry Compliance
-                         <InfoTooltip>Shows which departments have met their data entry deadlines.</InfoTooltip>
-                    </CardTitle>
-                    <CardDescription>Percentage of departments meeting data entry deadlines.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                   <div className="h-60 flex items-center justify-center">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                                <Tooltip formatter={(value, name, props) => [`${(props.payload.value === 1 ? 'Complete' : 'Pending')}`, name]}/>
-                                <Legend />
-                                <Pie 
-                                    data={complianceData} 
-                                    dataKey="value" 
-                                    nameKey="name" 
-                                    cx="50%" 
-                                    cy="50%" 
-                                    outerRadius={80} 
-                                    innerRadius={50} 
-                                    labelLine={false} 
-                                    label={({ name, value }) => `${name}: ${value === 1 ? "Complete" : "Pending"}`}
-                                >
-                                    {complianceData.map(entry => (
-                                        <Cell key={`cell-${entry.name}`} fill={entry.color} />
-                                    ))}
-                                </Pie>
-                            </PieChart>
                         </ResponsiveContainer>
                     </div>
                 </CardContent>
