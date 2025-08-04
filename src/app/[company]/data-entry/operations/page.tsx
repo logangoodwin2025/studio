@@ -29,12 +29,12 @@ export default function OperationsDataEntryPage() {
       >
         <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
             <DateRangePicker date={dateRange} onDateChange={setDateRange} className="w-full sm:w-auto" />
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <Button variant="outline" onClick={() => handleActionClick("Download")} className="flex-1 sm:flex-initial">
+            <div className="flex items-center gap-2 w-full sm:w-auto border p-1 rounded-lg">
+              <Button variant="outline" onClick={() => handleActionClick("Download")} className="flex-1 sm:flex-initial text-xs">
                 <Download className="h-4 w-4 mr-2" />
-                Download
+                Download Template
               </Button>
-              <Button onClick={() => handleActionClick("Upload")} className="flex-1 sm:flex-initial">
+              <Button onClick={() => handleActionClick("Upload")} className="flex-1 sm:flex-initial text-xs">
                 <Upload className="h-4 w-4 mr-2" />
                 Upload
               </Button>
