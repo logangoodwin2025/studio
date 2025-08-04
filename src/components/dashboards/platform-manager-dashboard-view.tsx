@@ -9,13 +9,14 @@ import { DashboardHeader } from "@/components/dashboard-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatCard } from "../stat-card";
-import { UserPlus, Users, MessageSquareWarning, Clock, AlertTriangle, CheckCircle, Info, BarChart2, LineChart, Database, ExternalLink } from "lucide-react";
+import { UserPlus, Users, MessageSquareWarning, Clock, BarChart2, LineChart as LineChartIcon, Database, ExternalLink } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { tenants, supportTickets, userList } from "@/lib/mock-data";
 import { Badge } from "../ui/badge";
 import { PeriodPicker } from "../period-picker";
-import { SupportTicketsDataTable } from "../support-tickets-data-table";
+import { BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Bar } from "recharts";
+
 
 const alerts = [
     { 
@@ -40,6 +41,18 @@ const alerts = [
         color: "text-blue-500"
     },
 ];
+
+const newSignupsData = [
+    { date: "Jan", signups: 5 }, { date: "Feb", signups: 8 }, { date: "Mar", signups: 12 },
+    { date: "Apr", signups: 10 }, { date: "May", signups: 15 }, { date: "Jun", signups: 18 },
+];
+
+const supportTicketsData = [
+    { priority: "Low", open: 10, resolved: 30 },
+    { priority: "Medium", open: 8, resolved: 25 },
+    { priority: "High", open: 5, resolved: 15 },
+];
+
 
 const recentSignups = tenants.slice(0, 3);
 const activeUsers = userList.slice(0, 5);
@@ -148,7 +161,7 @@ export function PlatformManagerDashboardView() {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             <Card className="xl:col-span-2">
-                <CardHeader className="flex flex-row items-center justify-between">
+                <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                     <div>
                         <CardTitle className="font-headline">Tenant Activity</CardTitle>
                         <CardDescription>New signups trend over the selected period.</CardDescription>
@@ -159,14 +172,22 @@ export function PlatformManagerDashboardView() {
                     />
                 </CardHeader>
                 <CardContent>
-                    <div className="h-60 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
-                        <LineChart className="h-16 w-16" />
-                        (Chart Placeholder: New Signups)
+                    <div className="h-60">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={newSignupsData}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                <XAxis dataKey="date" fontSize={12} />
+                                <YAxis fontSize={12} />
+                                <Tooltip />
+                                <Legend />
+                                <Line type="monotone" dataKey="signups" stroke="hsl(var(--primary))" strokeWidth={2} />
+                            </LineChart>
+                        </ResponsiveContainer>
                     </div>
                 </CardContent>
             </Card>
              <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
+                <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                      <div>
                         <CardTitle className="font-headline">Support Tickets</CardTitle>
                         <CardDescription>Open vs. Resolved by priority.</CardDescription>
@@ -177,9 +198,18 @@ export function PlatformManagerDashboardView() {
                     />
                 </CardHeader>
                 <CardContent>
-                     <div className="h-60 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
-                        <BarChart2 className="h-16 w-16" />
-                        (Chart Placeholder: Support Tickets)
+                     <div className="h-60">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={supportTicketsData}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                <XAxis dataKey="priority" fontSize={12} />
+                                <YAxis fontSize={12} />
+                                <Tooltip />
+                                <Legend />
+                                <Bar dataKey="open" fill="hsl(var(--chart-3))" name="Open" radius={[4,4,0,0]}/>
+                                <Bar dataKey="resolved" fill="hsl(var(--chart-2))" name="Resolved" radius={[4,4,0,0]}/>
+                            </BarChart>
+                        </ResponsiveContainer>
                     </div>
                 </CardContent>
             </Card>
@@ -187,7 +217,7 @@ export function PlatformManagerDashboardView() {
          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             <div className="xl:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
-                    <CardHeader className="flex flex-row items-center justify-between">
+                    <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                         <div>
                             <CardTitle className="font-headline">Resource Utilization</CardTitle>
                             <CardDescription>Storage usage per tenant.</CardDescription>
@@ -205,7 +235,7 @@ export function PlatformManagerDashboardView() {
                     </CardContent>
                 </Card>
                 <Card>
-                    <CardHeader className="flex flex-row items-center justify-between">
+                    <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                         <div>
                             <CardTitle className="font-headline">API Calls</CardTitle>
                             <CardDescription>Peak usage times.</CardDescription>
@@ -216,9 +246,17 @@ export function PlatformManagerDashboardView() {
                         />
                     </CardHeader>
                     <CardContent>
-                        <div className="h-60 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
-                           <LineChart className="h-16 w-16" />
-                           (Line Chart Placeholder)
+                        <div className="h-60">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={newSignupsData.map(d => ({ ...d, calls: d.signups * 1000 * (Math.random() + 0.5) }))}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                    <XAxis dataKey="date" fontSize={12} />
+                                    <YAxis fontSize={12} tickFormatter={(val) => `${val/1000}k`} />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Line type="monotone" dataKey="calls" name="API Calls" stroke="hsl(var(--chart-5))" strokeWidth={2} />
+                                </LineChart>
+                            </ResponsiveContainer>
                         </div>
                     </CardContent>
                 </Card>

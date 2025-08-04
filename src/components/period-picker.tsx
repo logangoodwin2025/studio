@@ -73,7 +73,7 @@ export function PeriodPicker({
                 size={period === 'CUSTOM' && dateRange ? "default" : "icon"}
                 className={cn(
                 "justify-start text-left font-normal h-9 transition-all duration-200",
-                period === 'CUSTOM' && dateRange ? "w-[260px]" : "w-9",
+                period === 'CUSTOM' && dateRange ? "w-auto" : "w-9",
                 "bg-transparent hover:bg-secondary",
                 !dateRange && "text-muted-foreground",
                 period === 'CUSTOM' && "text-primary ring-2 ring-primary"
