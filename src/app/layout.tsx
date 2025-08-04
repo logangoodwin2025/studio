@@ -15,7 +15,7 @@ const fontHeadline = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: 'CEO Dashboard',
+  title: 'PinnSight',
   description: 'A dashboard for CEOs to manage their business.',
 };
 

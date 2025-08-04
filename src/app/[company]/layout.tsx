@@ -127,7 +127,7 @@ function SidebarHeaderContent() {
     return (
         <div className="flex items-center gap-2">
           <Logo className="h-6 w-6 text-primary" />
-          <h1 className="font-bold text-lg font-headline">CEO Dashboard</h1>
+          <h1 className="font-bold text-lg font-headline">PinnSight</h1>
         </div>
     )
 }

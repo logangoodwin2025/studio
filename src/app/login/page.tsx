@@ -15,8 +15,8 @@ import { userList } from "@/lib/mock-data";
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [email, setEmail] = useState("ceo@techcorp.com");
-  const [password, setPassword] = useState("password");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
@@ -43,8 +43,7 @@ export default function LoginPage() {
           <div className="mb-4 flex justify-center">
             <Logo className="h-10 w-10 text-primary" />
           </div>
-          <CardTitle className="font-headline text-2xl">CEO Dashboard</CardTitle>
-          <p className="text-sm text-muted-foreground">for TechCorp Solutions</p>
+          <CardTitle className="font-headline text-2xl">PinnSight</CardTitle>
           <CardDescription className="pt-2">Enter your credentials to access your dashboard</CardDescription>
         </CardHeader>
         <CardContent>
