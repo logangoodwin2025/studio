@@ -4,7 +4,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { LogOut, ChevronDown, Bell, LayoutDashboard, Users, Shield, Settings, User, Component, AlertCircle, CheckCircle, MessageSquare } from "lucide-react";
+import { LogOut, ChevronDown, Bell, LayoutDashboard, Users, Shield, User, Component, AlertCircle, CheckCircle, MessageSquare } from "lucide-react";
 
 import {
   Sidebar,
@@ -40,7 +40,6 @@ const allNavItems = {
         { href: "/admin/dashboard", icon: LayoutDashboard, label: "Admin Dashboard", roles: ["Company Admin"] },
         { href: "/users", icon: Users, label: "Users", roles: ["Company Admin"] },
         { href: "/roles", icon: Shield, label: "Roles", roles: ["Company Admin"] },
-        { href: "/settings", icon: Settings, label: "Settings", roles: ["Company Admin"] },
     ]
 };
 
@@ -70,7 +69,7 @@ function Header() {
 
   const createHref = (href: string) => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
-    const companySlug = "techcorp-solutions"; // This would typically come from user data or params
+    const companySlug = "techcorp";
     const finalHref = href.startsWith('/admin') ? href : `/${companySlug}${href}`;
     return `${finalHref}?${newSearchParams.toString()}`;
   }
@@ -185,7 +184,7 @@ export function AdminLayout({
     const newSearchParams = new URLSearchParams(searchParams.toString());
     
     if (role === 'Company Admin') {
-        const companySlug = "techcorp-solutions"; // This would typically come from user data or params
+        const companySlug = "techcorp"; 
         const finalHref = href.startsWith('/admin') ? href : `/${companySlug}${href}`;
         return `${finalHref}?${newSearchParams.toString()}`;
     }
