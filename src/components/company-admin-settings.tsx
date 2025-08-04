@@ -6,11 +6,12 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { Check, Upload, Palette, Rocket } from "lucide-react";
+import { Check, Upload, Palette, Rocket, Users, Calendar, DollarSign } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { Badge } from "./ui/badge";
+import { Separator } from "./ui/separator";
 
 const plans = [
     { name: "Standard", price: "$49/mo", features: ["10 Users", "Basic Reporting", "Email Support"] },
@@ -34,61 +35,67 @@ export function CompanyAdminSettings() {
             <Card>
                 <CardHeader>
                     <CardTitle className="font-headline">Subscription</CardTitle>
-                     <CardDescription>Current plan and upgrade options.</CardDescription>
+                     <CardDescription>Current plan details and options.</CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <div className="flex justify-between items-center mb-4">
-                       <p className="font-semibold">Current Plan:</p>
-                       <Badge variant="default">Enterprise</Badge>
+                <CardContent className="space-y-4">
+                    <div className="flex justify-between items-start p-4 border rounded-lg">
+                        <div>
+                            <Badge variant="default">Enterprise Plan</Badge>
+                            <p className="text-sm text-muted-foreground mt-2">Your plan renews on August 1, 2025.</p>
+                        </div>
+                         <Dialog>
+                            <DialogTrigger asChild>
+                               <Button variant="outline" size="sm">
+                                    <Rocket className="h-4 w-4 mr-2" />
+                                    Change Plan
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-4xl">
+                                <DialogHeader>
+                                    <DialogTitle>Choose Your Plan</DialogTitle>
+                                    <DialogDescription>Select the best plan for your company's needs.</DialogDescription>
+                                </DialogHeader>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+                                    {plans.map(plan => (
+                                        <Card 
+                                            key={plan.name} 
+                                            className={cn(
+                                                "flex flex-col cursor-pointer",
+                                                selectedPlan === plan.name && "border-primary ring-2 ring-primary"
+                                            )}
+                                            onClick={() => setSelectedPlan(plan.name)}
+                                        >
+                                            <CardHeader>
+                                                <CardTitle className="flex justify-between items-center">
+                                                    {plan.name}
+                                                    {plan.recommended && <span className="text-xs font-semibold bg-primary text-primary-foreground px-2 py-1 rounded-full">Recommended</span>}
+                                                </CardTitle>
+                                                <p className="text-2xl font-bold">{plan.price}</p>
+                                            </CardHeader>
+                                            <CardContent className="flex-grow">
+                                                <ul className="space-y-2 text-sm">
+                                                    {plan.features.map(feature => (
+                                                        <li key={feature} className="flex items-center gap-2">
+                                                            <Check className="h-4 w-4 text-green-500"/>
+                                                            {feature}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </CardContent>
+                                            <div className="p-6 pt-0">
+                                                <Button className="w-full" disabled={selectedPlan !== plan.name}>Choose Plan</Button>
+                                            </div>
+                                        </Card>
+                                    ))}
+                                </div>
+                            </DialogContent>
+                        </Dialog>
                     </div>
-                    
-                    <Dialog>
-                        <DialogTrigger asChild>
-                           <Button variant="outline" className="w-full mt-4">
-                                <Rocket className="h-4 w-4 mr-2" />
-                                Upgrade Plan
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-4xl">
-                            <DialogHeader>
-                                <DialogTitle>Choose Your Plan</DialogTitle>
-                                <DialogDescription>Select the best plan for your company's needs.</DialogDescription>
-                            </DialogHeader>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
-                                {plans.map(plan => (
-                                    <Card 
-                                        key={plan.name} 
-                                        className={cn(
-                                            "flex flex-col cursor-pointer",
-                                            selectedPlan === plan.name && "border-primary ring-2 ring-primary"
-                                        )}
-                                        onClick={() => setSelectedPlan(plan.name)}
-                                    >
-                                        <CardHeader>
-                                            <CardTitle className="flex justify-between items-center">
-                                                {plan.name}
-                                                {plan.recommended && <span className="text-xs font-semibold bg-primary text-primary-foreground px-2 py-1 rounded-full">Recommended</span>}
-                                            </CardTitle>
-                                            <p className="text-2xl font-bold">{plan.price}</p>
-                                        </CardHeader>
-                                        <CardContent className="flex-grow">
-                                            <ul className="space-y-2 text-sm">
-                                                {plan.features.map(feature => (
-                                                    <li key={feature} className="flex items-center gap-2">
-                                                        <Check className="h-4 w-4 text-green-500"/>
-                                                        {feature}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </CardContent>
-                                        <div className="p-6 pt-0">
-                                            <Button className="w-full" disabled={selectedPlan !== plan.name}>Choose Plan</Button>
-                                        </div>
-                                    </Card>
-                                ))}
-                            </div>
-                        </DialogContent>
-                    </Dialog>
+                    <div className="grid grid-cols-3 gap-4 text-sm">
+                        <div className="flex items-center gap-2 text-muted-foreground"><Users className="h-4 w-4"/><span><span className="font-semibold text-foreground">18 / 25</span> seats used</span></div>
+                        <div className="flex items-center gap-2 text-muted-foreground"><Calendar className="h-4 w-4"/><span>Billed monthly</span></div>
+                        <div className="flex items-center gap-2 text-muted-foreground"><DollarSign className="h-4 w-4"/><span>$2,475 / month</span></div>
+                    </div>
                 </CardContent>
             </Card>
 
