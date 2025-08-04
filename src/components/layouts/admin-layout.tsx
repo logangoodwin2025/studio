@@ -180,6 +180,10 @@ export function AdminLayout({
   const searchParams = useSearchParams();
   const navItems = getVisibleNavItems(role);
 
+  const getDashboardHomeLink = () => {
+    return "/admin/dashboard";
+  }
+
   const createHref = (href: string) => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
     
@@ -198,7 +202,7 @@ export function AdminLayout({
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <SidebarHeaderContent href={createHref('/admin/dashboard')} />
+          <SidebarHeaderContent href={createHref(getDashboardHomeLink())} />
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>

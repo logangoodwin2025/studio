@@ -210,6 +210,12 @@ export function DashboardLayout({
   const searchParams = useSearchParams();
   const navItems = getVisibleNavItems(role);
 
+  const getDashboardHomeLink = () => {
+    if (!role) return '/login';
+    const homeNav = allNavItems.GENERAL.find(item => item.roles.includes(role));
+    return homeNav ? homeNav.href : '/dashboard';
+  }
+  
   const createHref = (href: string) => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
     return `/${companySlug}${href}?${newSearchParams.toString()}`;
@@ -220,7 +226,7 @@ export function DashboardLayout({
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <SidebarHeaderContent href={createHref('/dashboard')} />
+          <SidebarHeaderContent href={createHref(getDashboardHomeLink())} />
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
