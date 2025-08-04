@@ -20,6 +20,7 @@ import { CeoOverviewTab } from "@/components/dashboards/tabs/ceo-overview-tab";
 import { FinanceDashboardView } from "@/components/dashboards/finance-dashboard-view";
 import { SalesMarketingDashboardView } from "@/components/dashboards/sales-marketing-dashboard-view";
 import { OperationsDashboardView } from "@/components/dashboards/operations-dashboard-view";
+import { MembershipMetrics } from "@/components/dashboards/membership-metrics";
 
 const REQUIRED_ROLES = ["CEO/Executive", "Company Admin"];
 
@@ -104,18 +105,18 @@ function DashboardPageContent() {
                 />
             </DashboardHeader>
             <main className="flex-1 space-y-6 p-4 sm:px-6 lg:px-8">
-                <Tabs defaultValue="overview" className="w-full">
+                <Tabs defaultValue="financials" className="w-full">
                     <TabsList className="grid w-full grid-cols-4">
-                        <TabsTrigger value="overview">Overview</TabsTrigger>
                         <TabsTrigger value="financials">Financials</TabsTrigger>
+                        <TabsTrigger value="membership">Membership</TabsTrigger>
                         <TabsTrigger value="sales">Sales & Marketing</TabsTrigger>
                         <TabsTrigger value="operations">Operations</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="overview" className="mt-6">
-                        <CeoOverviewTab stats={stats} chartData={chartData} />
-                    </TabsContent>
                     <TabsContent value="financials" className="mt-6">
                         <FinanceDashboardView stats={stats} chartData={chartData} />
+                    </TabsContent>
+                    <TabsContent value="membership" className="mt-6">
+                        <MembershipMetrics stats={stats} />
                     </TabsContent>
                     <TabsContent value="sales" className="mt-6">
                         <SalesMarketingDashboardView stats={stats} />
