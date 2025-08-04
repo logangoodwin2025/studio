@@ -4,13 +4,33 @@
 import { useUserRole } from "@/hooks/use-user-role";
 import { AccessDenied } from "@/components/access-denied";
 import { ReportsDataTable } from "@/components/reports-data-table";
-import { Suspense } from "react";
+import { Suspense, useState, useMemo, useCallback } from "react";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loading } from "@/components/loading";
+import type { Period } from "@/lib/types";
+import { DateRange } from "react-day-picker";
+import { PeriodPicker } from "@/components/period-picker";
+import { Input } from "@/components/ui/input";
 
 function ReportsPageContent() {
   const { role, isLoaded } = useUserRole();
+  const [period, setPeriod] = useState<Period>("M");
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  const [filter, setFilter] = useState("");
+
+  const handlePeriodChange = useCallback((newPeriod: Period) => {
+    setPeriod(newPeriod);
+    if (newPeriod !== 'CUSTOM') {
+      setDateRange(undefined);
+    }
+  }, []);
+
+  const handleDateRangeChange = useCallback((newDateRange: DateRange | undefined) => {
+    setPeriod('CUSTOM');
+    setDateRange(newDateRange);
+  }, []);
+
 
   if (!isLoaded) {
     return <Loading />;
@@ -30,7 +50,22 @@ function ReportsPageContent() {
             <DashboardHeader
                 title="Reports"
                 description="Generate and download departmental reports."
-            />
+            >
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Input
+                  placeholder="Filter reports..."
+                  value={filter}
+                  onChange={(e) => setFilter(e.target.value)}
+                  className="w-full sm:w-[250px]"
+                />
+                <PeriodPicker 
+                    period={period} 
+                    onPeriodChange={handlePeriodChange}
+                    dateRange={dateRange}
+                    onDateRangeChange={handleDateRangeChange}
+                />
+              </div>
+            </DashboardHeader>
             <main className="flex-1 p-4 sm:px-6 lg:px-8 space-y-6">
                 <Tabs defaultValue="financials" className="w-full">
                     <TabsList className="grid w-full grid-cols-4">
@@ -40,16 +75,16 @@ function ReportsPageContent() {
                         <TabsTrigger value="operations">Operations</TabsTrigger>
                     </TabsList>
                     <TabsContent value="financials" className="mt-6">
-                        <ReportsDataTable reportType="financial"/>
+                        <ReportsDataTable reportType="financial" filterValue={filter} />
                     </TabsContent>
                     <TabsContent value="membership" className="mt-6">
-                        <ReportsDataTable reportType="membership"/>
+                        <ReportsDataTable reportType="membership" filterValue={filter} />
                     </TabsContent>
                     <TabsContent value="sales" className="mt-6">
-                       <ReportsDataTable reportType="sales"/>
+                       <ReportsDataTable reportType="sales" filterValue={filter} />
                     </TabsContent>
                     <TabsContent value="operations" className="mt-6">
-                        <ReportsDataTable reportType="operations"/>
+                        <ReportsDataTable reportType="operations" filterValue={filter} />
                     </TabsContent>
                 </Tabs>
             </main>

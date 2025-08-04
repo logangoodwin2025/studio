@@ -18,9 +18,8 @@ import {
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent } from "./ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Input } from "./ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
 import {
   DropdownMenu,
@@ -28,7 +27,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DateRangePicker } from "./date-range-picker";
 import { type Report, availableReports as allReports } from "@/lib/mock-data";
 
 
@@ -36,11 +34,11 @@ type ReportType = "financial" | "membership" | "sales" | "operations" | "all";
 
 interface ReportsDataTableProps {
   reportType?: ReportType;
+  filterValue?: string;
 }
 
-export function ReportsDataTable({ reportType = "all" }: ReportsDataTableProps) {
+export function ReportsDataTable({ reportType = "all", filterValue = "" }: ReportsDataTableProps) {
   const { toast } = useToast();
-  const [date, setDate] = React.useState<DateRange | undefined>(undefined);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   
@@ -48,12 +46,6 @@ export function ReportsDataTable({ reportType = "all" }: ReportsDataTableProps) 
     ? allReports.financial.concat(allReports.membership, allReports.sales, allReports.operations)
     : allReports[reportType];
 
-  React.useEffect(() => {
-    setDate({
-      from: addDays(new Date(), -30),
-      to: new Date(),
-    });
-  }, []);
 
   const handleExport = (reportTitle: string, format: "PDF" | "CSV" | "XLSX") => {
     toast({
@@ -150,24 +142,12 @@ export function ReportsDataTable({ reportType = "all" }: ReportsDataTableProps) 
     },
   });
 
+  React.useEffect(() => {
+    table.getColumn("title")?.setFilterValue(filterValue)
+  }, [filterValue, table]);
+
   return (
     <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-headline">Report Generation</CardTitle>
-            <CardDescription>Select a period and generate reports from the list below.</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <DateRangePicker date={date} onDateChange={setDate} />
-             <Input
-                placeholder="Filter reports by name..."
-                value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-                onChange={(event) => table.getColumn("title")?.setFilterValue(event.target.value)}
-                className="w-full sm:w-[300px]"
-             />
-          </CardContent>
-        </Card>
-
         <Card>
           <CardContent className="p-0">
             <Table>
