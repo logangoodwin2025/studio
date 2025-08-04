@@ -6,6 +6,32 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Badge } from "../ui/badge";
 import { tenants } from "@/lib/mock-data";
+import { AlertTriangle, Info, XCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const systemAlerts = [
+    {
+      icon: XCircle,
+      iconColor: "text-red-500",
+      title: "Integration Failed: QuickBooks",
+      description: "Tenant: Acme Inc. - Could not sync invoices.",
+      time: "5m ago"
+    },
+    {
+      icon: AlertTriangle,
+      iconColor: "text-orange-500",
+      title: "High Login Attempts",
+      description: "User: user@synergy.com - 15 failed attempts in 1 hour.",
+      time: "45m ago"
+    },
+    {
+      icon: Info,
+      iconColor: "text-blue-500",
+      title: "Database Maintenance",
+      description: "Scheduled for 2 AM tonight. Expect brief downtime.",
+      time: "2h ago"
+    }
+];
 
 
 export function SuperAdminDashboardView() {
@@ -98,9 +124,17 @@ export function SuperAdminDashboardView() {
                         <CardTitle className="font-headline">System Alerts</CardTitle>
                         <CardDescription>Critical platform notifications.</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-2">
-                       <p className="text-sm">Failed integration: QuickBooks for Acme Inc.</p>
-                       <p className="text-sm">High login attempts for user@synergy.com</p>
+                    <CardContent className="space-y-4">
+                        {systemAlerts.map((alert, index) => (
+                            <div key={index} className="flex items-start gap-4">
+                                <alert.icon className={cn("h-6 w-6 flex-shrink-0", alert.iconColor)} />
+                                <div className="flex-grow">
+                                    <p className="font-semibold text-sm">{alert.title}</p>
+                                    <p className="text-sm text-muted-foreground">{alert.description}</p>
+                                    <p className="text-xs text-muted-foreground mt-1">{alert.time}</p>
+                                </div>
+                            </div>
+                        ))}
                     </CardContent>
                 </Card>
                  <Card>
