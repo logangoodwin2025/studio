@@ -25,8 +25,22 @@ export default function LoginPage() {
 
     if (user) {
       // In a real app, you'd verify the password hash
-      const companySlug = user.email.split('@')[1].split('.')[0]; // e.g., 'techcorp'
-      router.push(`/techcorp-solutions/dashboard?role=${encodeURIComponent(user.role)}&name=${encodeURIComponent(user.name)}&avatar=${encodeURIComponent(user.avatar)}`);
+      const companySlug = user.email.split('@')[1].split('.')[0];
+      const searchParams = new URLSearchParams({
+        role: user.role,
+        name: user.name,
+        avatar: user.avatar,
+      }).toString();
+      
+      const isAdminRole = ["Platform Super Admin", "Platform Manager"].includes(user.role);
+      const isCompanyAdmin = user.role === "Company Admin" && companySlug === 'techcorp';
+      
+      if (isAdminRole || isCompanyAdmin) {
+         router.push(`/admin/dashboard?${searchParams}`);
+      } else {
+        router.push(`/${companySlug}/dashboard?${searchParams}`);
+      }
+
     } else {
       toast({
         variant: "destructive",
