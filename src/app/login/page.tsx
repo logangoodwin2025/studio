@@ -34,10 +34,14 @@ export default function LoginPage() {
       
       const isAdminRole = ["Platform Super Admin", "Platform Manager"].includes(user.role);
       const isCompanyAdmin = user.role === "Company Admin" && companySlug === 'techcorp';
-      
+      const isBasicUser = user.role === "Basic User";
+
       if (isAdminRole || isCompanyAdmin) {
          router.push(`/admin/dashboard?${searchParams}`);
-      } else {
+      } else if (isBasicUser) {
+        router.push(`/${companySlug}/my-dashboard?${searchParams}`);
+      }
+      else {
         router.push(`/${companySlug}/dashboard?${searchParams}`);
       }
 

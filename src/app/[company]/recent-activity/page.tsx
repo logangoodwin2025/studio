@@ -118,6 +118,23 @@ const operationsActivityLog = [
   },
 ];
 
+const basicUserActivityLog = [
+    {
+        icon: CheckCircle,
+        title: "Logged In",
+        description: "Successfully logged in to the platform.",
+        timestamp: "5 minutes ago",
+        color: "text-green-500",
+    },
+    {
+        icon: Clock,
+        title: "Viewed Dashboard",
+        description: "Accessed the main dashboard.",
+        timestamp: "2 hours ago",
+        color: "text-primary",
+    }
+];
+
 
 const getRoleSpecificActivity = (role: string | null) => {
     switch (role) {
@@ -156,6 +173,15 @@ const getRoleSpecificActivity = (role: string | null) => {
                 feedTitle: "Recent Operational Actions",
                 feedDescription: "Here are the recent activities from the operations department.",
                 isMetric: false,
+            }
+        case "Basic User":
+            return {
+                log: basicUserActivityLog,
+                title: "Your Recent Activity",
+                description: "A log of your recent actions on the platform.",
+                feedTitle: "Your Activity",
+                feedDescription: "Here are your most recent actions.",
+                isMetric: true,
             }
         default:
             return {

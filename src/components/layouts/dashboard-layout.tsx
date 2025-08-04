@@ -19,7 +19,8 @@ import {
   Lightbulb,
   CheckCircle,
   AlertCircle,
-  Eye
+  Eye,
+  User
 } from "lucide-react";
 
 import {
@@ -48,13 +49,13 @@ import { useUserRole } from "@/hooks/use-user-role";
 
 const allNavItems = {
     GENERAL: [
+      { href: "/my-dashboard", icon: User, label: "My Dashboard", roles: ["Basic User"] },
       { href: "/overview", icon: Eye, label: "Overview", roles: ["CEO/Executive"] },
       { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard", roles: ["CEO/Executive"] },
       { href: "/financial-dashboard", icon: DollarSign, label: "Financial Dashboard", roles: ["Finance Team"] },
       { href: "/sales-marketing-dashboard", icon: Lightbulb, label: "Sales & Marketing", roles: ["Sales & Marketing"] },
       { href: "/operations-dashboard", icon: Activity, label: "Operations Dashboard", roles: ["Operations Team"] },
-      { href: "/membership-dashboard", icon: Users2, label: "Membership Dashboard", roles: ["Sales & Marketing"] },
-      { href: "/recent-activity", icon: History, label: "Recent Activity", roles: ["CEO/Executive", "Finance Team", "Sales & Marketing", "Operations Team"] },
+      { href: "/recent-activity", icon: History, label: "Recent Activity", roles: ["CEO/Executive", "Finance Team", "Sales & Marketing", "Operations Team", "Basic User"] },
     ],
     MANAGEMENT: [
       { href: "/data-entry/finance", icon: ClipboardPlus, label: "Finance Data Entry", roles: ["Finance Team"] },
@@ -82,6 +83,9 @@ const userNotifications = {
     "Operations Team": [
         { icon: AlertCircle, text: "Project 'Phoenix' is at risk of delay.", time: "4h ago", color: "text-red-500" },
         { icon: CheckCircle, text: "Weekly resource utilization report is available.", time: "1d ago", color: "text-green-500" },
+    ],
+    "Basic User": [
+      { icon: CheckCircle, text: "Welcome to the platform!", time: "1m ago", color: "text-green-500" },
     ]
 }
 
