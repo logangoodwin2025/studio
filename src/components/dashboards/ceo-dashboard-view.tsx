@@ -18,7 +18,6 @@ import { ProfitabilityAnalysis } from "@/components/profitability-analysis";
 import { WeeklyCashFlow } from "@/components/weekly-cash-flow";
 import { KeyRatios } from "@/components/key-ratios";
 import { AccountsTable } from "@/components/accounts-table";
-import { PeriodPicker } from "@/components/period-picker";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MembershipMetrics } from "./membership-metrics";
 import { SalesMarketingMetrics } from "./sales-marketing-metrics";
@@ -90,12 +89,6 @@ function CeoDashboardViewContent() {
 
   return (
     <div className="space-y-6">
-      <PeriodPicker 
-        period={period} 
-        onPeriodChange={handlePeriodChange}
-        dateRange={dateRange}
-        onDateRangeChange={handleDateRangeChange}
-      />
       <h2 className="text-xl font-bold font-headline">Financial Metrics</h2>
       <FinancialStats stats={stats} />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">

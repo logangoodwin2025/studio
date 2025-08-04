@@ -72,14 +72,15 @@ function SalesMarketingDashboardPageContent() {
             <DashboardHeader
                 title="Sales & Marketing Dashboard"
                 description="Key metrics for leads, conversions, and marketing performance."
-            />
-            <main className="flex-1 space-y-6 p-4 sm:px-6 lg:px-8">
-                 <PeriodPicker 
+            >
+                <PeriodPicker 
                     period={period} 
                     onPeriodChange={handlePeriodChange}
                     dateRange={dateRange}
                     onDateRangeChange={handleDateRangeChange}
                 />
+            </DashboardHeader>
+            <main className="flex-1 space-y-6 p-4 sm:px-6 lg:px-8">
                 <SalesMarketingDashboardView />
             </main>
         </>

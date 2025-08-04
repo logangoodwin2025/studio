@@ -73,14 +73,15 @@ function MembershipDashboardPageContent() {
             <DashboardHeader
                 title="Membership Dashboard"
                 description="Key metrics for member growth, retention, and satisfaction."
-            />
-            <main className="flex-1 space-y-6 p-4 sm:px-6 lg:px-8">
+            >
                 <PeriodPicker 
                     period={period} 
                     onPeriodChange={handlePeriodChange}
                     dateRange={dateRange}
                     onDateRangeChange={handleDateRangeChange}
                 />
+            </DashboardHeader>
+            <main className="flex-1 space-y-6 p-4 sm:px-6 lg:px-8">
                <Card>
                     <CardHeader>
                         <CardTitle className="font-headline">Membership Metrics</CardTitle>
