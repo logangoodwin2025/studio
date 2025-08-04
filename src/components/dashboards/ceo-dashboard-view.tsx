@@ -23,6 +23,8 @@ import { MembershipMetrics } from "./membership-metrics";
 import { SalesMarketingMetrics } from "./sales-marketing-metrics";
 import { OperationalMetrics } from "./operational-metrics";
 import { Loading } from "../loading";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "../ui/card";
+import { Target } from "lucide-react";
 
 function CeoDashboardViewContent() {
   const { data: allData } = useFinancialData();
@@ -74,21 +76,37 @@ function CeoDashboardViewContent() {
             <ExpenseBreakdown data={chartData} />
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="grid grid-cols-1 gap-6 lg:col-span-2">
-            <ProfitabilityAnalysis data={chartData} />
-            <WeeklyCashFlow data={chartData} />
-        </div>
-        <div className="grid grid-cols-1 gap-6 lg:col-span-1">
-            <KeyRatios />
-            <AccountsTable type="Receivable" />
-            <AccountsTable type="Payable" />
-        </div>
+       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <Card>
+            <CardHeader>
+                <CardTitle className="font-headline">Competitive Position</CardTitle>
+                <CardDescription>Market share and NPS vs. industry benchmarks.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="h-48 flex items-center justify-center text-muted-foreground">
+                   (Chart placeholder: Market Share vs. Competitors)
+                </div>
+            </CardContent>
+          </Card>
+           <Card>
+            <CardHeader>
+                <CardTitle className="font-headline">Executive Summary</CardTitle>
+                <CardDescription>AI-generated insights and scenario planner.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                 <div className="h-48 flex items-center justify-center text-muted-foreground">
+                   (AI insights placeholder)
+                </div>
+            </CardContent>
+          </Card>
       </div>
+
       <h2 className="text-xl font-bold font-headline pt-4">Membership Trends</h2>
       <MembershipMetrics />
+      
       <h2 className="text-xl font-bold font-headline pt-4">Sales & Marketing</h2>
       <SalesMarketingMetrics />
+
       <h2 className="text-xl font-bold font-headline pt-4">Operational Efficiency</h2>
       <OperationalMetrics />
     </div>
