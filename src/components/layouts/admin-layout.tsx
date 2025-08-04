@@ -146,12 +146,12 @@ function Header() {
   )
 }
 
-function SidebarHeaderContent() {
+function SidebarHeaderContent({ href }: { href: string }) {
     return (
-        <div className="flex items-center gap-2">
+        <Link href={href} className="flex items-center gap-2">
           <Logo className="h-6 w-6 text-primary" />
           <h1 className="font-bold text-lg font-headline">PinnSight</h1>
-        </div>
+        </Link>
     )
 }
 
@@ -199,7 +199,7 @@ export function AdminLayout({
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <SidebarHeaderContent />
+          <SidebarHeaderContent href={createHref('/admin/dashboard')} />
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
