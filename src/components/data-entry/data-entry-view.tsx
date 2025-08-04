@@ -1,58 +1,87 @@
 
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useUserRole } from "@/hooks/use-user-role";
 import { FinanceForm } from "./finance-form";
 import { SalesForm } from "./sales-form";
 import { OperationsForm } from "./operations-form";
 import { MembershipForm } from "./membership-form";
-import { DollarSign, Lightbulb, Activity, Users } from "lucide-react";
+import { Suspense } from "react";
+import { DashboardHeader } from "../dashboard-header";
+import { AccessDenied } from "../access-denied";
+import { Loading } from "../loading";
+
+const forms: Record<string, React.ComponentType | undefined> = {
+  "Finance Team": FinanceForm,
+  "Sales & Marketing": SalesForm,
+  "Operations Team": OperationsForm,
+  "CEO/Executive": undefined, // No direct data entry
+  "Company Admin": FinanceForm, // Default for admin for now
+  "Platform Super Admin": undefined,
+  "Basic User": undefined,
+};
+
+const formInfo: Record<string, { title: string; description: string } | undefined> = {
+  "Finance Team": {
+    title: "Finance Data Entry",
+    description: "Input raw financial data. Derived metrics will be calculated automatically.",
+  },
+  "Sales & Marketing": {
+    title: "Sales & Marketing Data Entry",
+    description: "Enter lead generation, conversion, and campaign data.",
+  },
+  "Operations Team": {
+    title: "Operations Data Entry",
+    description: "Input project, time tracking, and headcount data.",
+  },
+  "Company Admin": {
+    title: "Finance Data Entry",
+    description: "Input raw financial data as an administrator.",
+  },
+};
+
+
+function DataEntryViewContent() {
+  const { role, isLoaded } = useUserRole();
+
+  if (!isLoaded) {
+    return <Loading />;
+  }
+
+  if (!role) {
+    return <AccessDenied />;
+  }
+
+  const FormComponent = forms[role];
+  const info = formInfo[role];
+
+  if (!FormComponent || !info) {
+    return (
+        <>
+            <DashboardHeader title="Data Entry" description="No data entry form available for your role." />
+            <main className="flex-1 p-4 sm:px-6 lg:px-8">
+                <p>Your user role does not have a specific data entry form assigned.</p>
+            </main>
+        </>
+    );
+  }
+
+  return (
+    <>
+      <DashboardHeader title={info.title} description={info.description} />
+      <main className="flex-1 p-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-5xl">
+          <FormComponent />
+        </div>
+      </main>
+    </>
+  );
+}
 
 export function DataEntryView() {
-  return (
-    <Tabs defaultValue="finance" className="w-full">
-      <TabsList className="grid w-full grid-cols-4 h-auto">
-        <TabsTrigger value="finance" className="flex items-center gap-2 py-2">
-          <DollarSign className="h-5 w-5" />
-          <div className="text-left">
-            <p className="font-bold">Finance</p>
-            <p className="text-xs text-muted-foreground">Revenue, Expenses, etc.</p>
-          </div>
-        </TabsTrigger>
-        <TabsTrigger value="sales" className="flex items-center gap-2 py-2">
-          <Lightbulb className="h-5 w-5" />
-          <div className="text-left">
-            <p className="font-bold">Sales & Marketing</p>
-            <p className="text-xs text-muted-foreground">Leads, Campaigns, etc.</p>
-          </div>
-        </TabsTrigger>
-        <TabsTrigger value="operations" className="flex items-center gap-2 py-2">
-          <Activity className="h-5 w-5" />
-           <div className="text-left">
-            <p className="font-bold">Operations</p>
-            <p className="text-xs text-muted-foreground">Projects, Headcount, etc.</p>
-          </div>
-        </TabsTrigger>
-        <TabsTrigger value="membership" className="flex items-center gap-2 py-2">
-          <Users className="h-5 w-5" />
-           <div className="text-left">
-            <p className="font-bold">Membership</p>
-            <p className="text-xs text-muted-foreground">Growth, Churn, etc.</p>
-          </div>
-        </TabsTrigger>
-      </TabsList>
-      <TabsContent value="finance">
-        <FinanceForm />
-      </TabsContent>
-      <TabsContent value="sales">
-        <SalesForm />
-      </TabsContent>
-      <TabsContent value="operations">
-        <OperationsForm />
-      </TabsContent>
-      <TabsContent value="membership">
-        <MembershipForm />
-      </TabsContent>
-    </Tabs>
-  );
+    return (
+        <Suspense fallback={<Loading />}>
+            <DataEntryViewContent />
+        </Suspense>
+    )
 }
