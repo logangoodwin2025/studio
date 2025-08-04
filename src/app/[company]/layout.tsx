@@ -3,7 +3,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { usePathname, useParams } from "next/navigation";
+import { usePathname, useParams, useSearchParams } from "next/navigation";
 import {
   DollarSign,
   ClipboardPlus,
@@ -16,6 +16,11 @@ import {
   Building,
   History,
   LayoutDashboard,
+  BarChart3,
+  Users2,
+  Settings,
+  Activity,
+  Lightbulb,
 } from "lucide-react";
 
 import {
@@ -41,19 +46,33 @@ import {
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/icons";
 import { FinancialDataProvider } from "@/context/financial-data-context";
+import { useUserRole } from "@/hooks/use-user-role";
 
-const navItems = {
-  GENERAL: [
-    { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-    { href: "/recent-activity", icon: History, label: "Recent Activity" },
-  ],
-  MANAGEMENT: [
-    { href: "/data-entry", icon: ClipboardPlus, label: "Data Entry" },
-    { href: "/reports", icon: FileBarChart2, label: "Reports" },
-  ],
+const allNavItems = {
+    GENERAL: [
+      { href: "/dashboard", icon: LayoutDashboard, label: "CEO Dashboard", roles: ["CEO/Executive"] },
+      { href: "/financial-dashboard", icon: DollarSign, label: "Financials", roles: ["Finance Team", "Company Admin"] },
+      { href: "/sales-marketing-dashboard", icon: Lightbulb, label: "Sales & Marketing", roles: ["Sales & Marketing", "Company Admin"] },
+      { href: "/operations-dashboard", icon: Activity, label: "Operations", roles: ["Operations Team", "Company Admin"] },
+      { href: "/membership-dashboard", icon: Users2, label: "Membership", roles: ["Sales & Marketing", "Company Admin"] },
+      { href: "/recent-activity", icon: History, label: "Recent Activity", roles: ["Platform Super Admin", "Company Admin", "CEO/Executive", "Finance Team", "Sales & Marketing", "Operations Team"] },
+    ],
+    MANAGEMENT: [
+      { href: "/data-entry", icon: ClipboardPlus, label: "Data Entry", roles: ["Finance Team", "Company Admin"] },
+      { href: "/reports", icon: FileBarChart2, label: "Reports", roles: ["Finance Team", "CEO/Executive", "Company Admin"] },
+      { href: "/users", icon: Users, label: "Users", roles: ["Company Admin", "Platform Super Admin"] },
+      { href: "/roles", icon: Shield, label: "Roles", roles: ["Company Admin", "Platform Super Admin"] },
+      { href: "/settings", icon: Settings, label: "Settings", roles: ["Company Admin"] },
+    ],
 };
 
-function Header({ companySlug }: { companySlug: string }) {
+
+function Header() {
+  const searchParams = useSearchParams();
+  const name = searchParams.get('name') || "User";
+  const role = searchParams.get('role') || "User";
+  const avatarUrl = searchParams.get('avatar');
+
   return (
     <header className="fixed top-0 left-0 right-0 z-40 flex h-16 items-center justify-between border-b bg-background px-4 md:left-64">
         <div className="flex items-center gap-2">
@@ -75,12 +94,12 @@ function Header({ companySlug }: { companySlug: string }) {
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-2 text-sm font-medium">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Emily Rodriguez" />
-                  <AvatarFallback>ER</AvatarFallback>
+                  {avatarUrl && <AvatarImage src={decodeURIComponent(avatarUrl)} alt={name} />}
+                  <AvatarFallback>{name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                 </Avatar>
                 <div className="hidden md:flex flex-col items-start">
-                    <span className="font-semibold">Finance Team</span>
-                    <span className="text-xs text-muted-foreground">finance@techcorp.com</span>
+                    <span className="font-semibold">{name}</span>
+                    <span className="text-xs text-muted-foreground">{role}</span>
                 </div>
                 <ChevronDown className="h-4 w-4 hidden md:block" />
               </button>
@@ -113,6 +132,20 @@ function SidebarHeaderContent() {
     )
 }
 
+function getVisibleNavItems(role: string | null) {
+    if (!role) {
+        return { GENERAL: [], MANAGEMENT: [] };
+    }
+
+    const filterItems = (items: typeof allNavItems.GENERAL) => 
+        items.filter(item => item.roles.includes(role));
+
+    return {
+        GENERAL: filterItems(allNavItems.GENERAL),
+        MANAGEMENT: filterItems(allNavItems.MANAGEMENT)
+    }
+}
+
 
 export default function DashboardLayout({
   children,
@@ -121,7 +154,16 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const params = useParams();
+  const { role } = useUserRole();
   const companySlug = params.company as string;
+  const searchParams = useSearchParams();
+  const navItems = getVisibleNavItems(role);
+
+  const createHref = (href: string) => {
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    return `/${companySlug}${href}?${newSearchParams.toString()}`;
+  }
+
 
   return (
     <FinancialDataProvider>
@@ -134,10 +176,10 @@ export default function DashboardLayout({
             <SidebarMenu>
               {Object.entries(navItems).map(([label, items]) => (
                 <React.Fragment key={label}>
-                  <SidebarLabel>{label}</SidebarLabel>
+                  {items.length > 0 && <SidebarLabel>{label}</SidebarLabel>}
                   {items.map((item) => (
                     <SidebarMenuItem key={item.href}>
-                      <Link href={`/${companySlug}${item.href}`}>
+                      <Link href={createHref(item.href)}>
                         <SidebarMenuButton
                           isActive={pathname.endsWith(item.href)}
                           className="w-full"
@@ -154,7 +196,7 @@ export default function DashboardLayout({
           </SidebarContent>
         </Sidebar>
         <div className="flex flex-1 flex-col md:ml-64">
-          <Header companySlug={companySlug} />
+          <Header />
           <SidebarInset>
               {children}
           </SidebarInset>

@@ -5,15 +5,15 @@ import { Suspense } from "react";
 import { useUserRole } from "@/hooks/use-user-role";
 import { AccessDenied } from "@/components/access-denied";
 import { DashboardHeader } from "@/components/dashboard-header";
-import { CeoDashboardView } from "@/components/dashboards/ceo-dashboard-view";
+import { OperationsDashboardView } from "@/components/dashboards/operations-dashboard-view";
 
-const REQUIRED_ROLES = ["CEO/Executive", "Company Admin"];
+const REQUIRED_ROLES = ["Operations Team", "Company Admin", "CEO/Executive"];
 
-function DashboardPageContent() {
+function OperationsDashboardPageContent() {
     const { role, isLoaded } = useUserRole();
 
     if (!isLoaded) {
-        return null; // or a loading skeleton
+        return null;
     }
     
     if (!role || !REQUIRED_ROLES.includes(role)) {
@@ -23,20 +23,21 @@ function DashboardPageContent() {
     return (
         <>
             <DashboardHeader
-                title="CEO Dashboard"
-                description="Comprehensive metrics and performance indicators for your organization."
+                title="Operations Dashboard"
+                description="Key metrics for operational efficiency and performance."
             />
             <main className="flex-1 space-y-6 p-4 sm:px-6 lg:px-8">
-                <CeoDashboardView />
+                <OperationsDashboardView />
             </main>
         </>
     );
 }
 
-export default function DashboardPage() {
+
+export default function OperationsDashboardPage() {
     return (
         <Suspense>
-            <DashboardPageContent />
+            <OperationsDashboardPageContent />
         </Suspense>
     )
 }

@@ -10,18 +10,23 @@ import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/icons";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff } from "lucide-react";
+import { userList } from "@/lib/mock-data";
 
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [email, setEmail] = useState("finance@techcorp.com");
-  const [password, setPassword] = useState("finance@techcorp123");
+  const [email, setEmail] = useState("ceo@techcorp.com");
+  const [password, setPassword] = useState("password");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email === "finance@techcorp.com" && password === "finance@techcorp123") {
-      router.push("/techcorp-solutions/dashboard");
+    const user = userList.find(u => u.email === email);
+
+    if (user) {
+      // In a real app, you'd verify the password hash
+      const companySlug = user.email.split('@')[1].split('.')[0]; // e.g., 'techcorp'
+      router.push(`/techcorp-solutions/dashboard?role=${encodeURIComponent(user.role)}&name=${encodeURIComponent(user.name)}&avatar=${encodeURIComponent(user.avatar)}`);
     } else {
       toast({
         variant: "destructive",

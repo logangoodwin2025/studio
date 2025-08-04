@@ -5,11 +5,11 @@ import { Suspense } from "react";
 import { useUserRole } from "@/hooks/use-user-role";
 import { AccessDenied } from "@/components/access-denied";
 import { DashboardHeader } from "@/components/dashboard-header";
-import { CeoDashboardView } from "@/components/dashboards/ceo-dashboard-view";
+import { SalesMarketingDashboardView } from "@/components/dashboards/sales-marketing-dashboard-view";
 
-const REQUIRED_ROLES = ["CEO/Executive", "Company Admin"];
+const REQUIRED_ROLES = ["Sales & Marketing", "Company Admin", "CEO/Executive"];
 
-function DashboardPageContent() {
+function SalesMarketingDashboardPageContent() {
     const { role, isLoaded } = useUserRole();
 
     if (!isLoaded) {
@@ -23,20 +23,20 @@ function DashboardPageContent() {
     return (
         <>
             <DashboardHeader
-                title="CEO Dashboard"
-                description="Comprehensive metrics and performance indicators for your organization."
+                title="Sales & Marketing Dashboard"
+                description="Key metrics for leads, conversions, and marketing performance."
             />
             <main className="flex-1 space-y-6 p-4 sm:px-6 lg:px-8">
-                <CeoDashboardView />
+                <SalesMarketingDashboardView />
             </main>
         </>
     );
 }
 
-export default function DashboardPage() {
+export default function SalesMarketingDashboardPage() {
     return (
         <Suspense>
-            <DashboardPageContent />
+            <SalesMarketingDashboardPageContent />
         </Suspense>
     )
 }
