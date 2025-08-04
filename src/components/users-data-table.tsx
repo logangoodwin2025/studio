@@ -24,37 +24,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetFooter,
-  SheetClose,
-} from "@/components/ui/sheet";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { DashboardHeader } from "./dashboard-header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { roles } from "@/lib/mock-data";
 import { usePathname } from "next/navigation";
+import { FormSheet } from "./form-sheet";
 
 type User = {
   id: string;
@@ -67,7 +43,7 @@ type User = {
 const userSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
-  role: z.enum(Object.keys(roles) as [string, ...string[]]),
+  role: z.string(),
 });
 
 export function UsersDataTable({ initialUsers }: { initialUsers: User[] }) {
@@ -76,7 +52,6 @@ export function UsersDataTable({ initialUsers }: { initialUsers: User[] }) {
   const [users, setUsers] = useState(initialUsers);
   const [isSheetOpen, setSheetOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const roleNames = Object.keys(roles);
 
   const form = useForm<z.infer<typeof userSchema>>({
     resolver: zodResolver(userSchema),
@@ -177,74 +152,16 @@ export function UsersDataTable({ initialUsers }: { initialUsers: User[] }) {
         <main className="flex-1 p-4 sm:px-6 lg:px-8">
           {content}
         </main>
-        <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>{editingUser ? "Edit User" : "Add New User"}</SheetTitle>
-              <SheetDescription>
-                {editingUser ? "Update the user's details below." : "Fill in the form to add a new user."}
-              </SheetDescription>
-            </SheetHeader>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 py-8">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="John Doe" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input placeholder="john.doe@example.com" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Role</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a role" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {roleNames.map(role => (
-                            <SelectItem key={role} value={role}>{role}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <SheetFooter>
-                  <SheetClose asChild>
-                    <Button type="button" variant="outline">Cancel</Button>
-                  </SheetClose>
-                  <Button type="submit">Save changes</Button>
-                </SheetFooter>
-              </form>
-            </Form>
-          </SheetContent>
-        </Sheet>
+        <FormSheet 
+            isOpen={isSheetOpen}
+            onOpenChange={setSheetOpen}
+            isEditing={!!editingUser}
+            form={form}
+            onSubmit={onSubmit}
+            schema={userSchema}
+            title={editingUser ? "Edit User" : "Add New User"}
+            description={editingUser ? "Update the user's details below." : "Fill in the form to add a new user."}
+        />
       </>
     );
   }

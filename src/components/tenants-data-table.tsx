@@ -27,36 +27,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetFooter,
-  SheetClose,
-} from "@/components/ui/sheet";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { DashboardHeader } from "./dashboard-header";
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { type Tenant, tenants as initialTenants } from "@/lib/mock-data";
+import { FormSheet } from "./form-sheet";
 
 
 const tenantSchema = z.object({
@@ -179,61 +155,16 @@ export function TenantsDataTable() {
       <main className="flex-1 p-4 sm:px-6 lg:px-8">
         {content}
       </main>
-      <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>{editingTenant ? "Edit Tenant" : "Add New Tenant"}</SheetTitle>
-            <SheetDescription>
-              {editingTenant ? "Update the tenant's details below." : "Fill in the form to add a new tenant."}
-            </SheetDescription>
-          </SheetHeader>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 py-8">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Company Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Acme Inc." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="plan"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Subscription Plan</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a plan" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Trial">Trial</SelectItem>
-                        <SelectItem value="Paid">Paid</SelectItem>
-                        <SelectItem value="Enterprise">Enterprise</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <SheetFooter>
-                <SheetClose asChild>
-                  <Button type="button" variant="outline">Cancel</Button>
-                </SheetClose>
-                <Button type="submit">Save changes</Button>
-              </SheetFooter>
-            </form>
-          </Form>
-        </SheetContent>
-      </Sheet>
+      <FormSheet 
+        isOpen={isSheetOpen}
+        onOpenChange={setSheetOpen}
+        isEditing={!!editingTenant}
+        form={form}
+        onSubmit={onSubmit}
+        schema={tenantSchema}
+        title={editingTenant ? "Edit Tenant" : "Add New Tenant"}
+        description={editingTenant ? "Update the tenant's details below." : "Fill in the form to add a new tenant."}
+       />
     </>
   );
 }

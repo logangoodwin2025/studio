@@ -1,13 +1,27 @@
 
 
+import Link from "next/link";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Badge } from "../ui/badge";
 import { tenants } from "@/lib/mock-data";
-import { AlertTriangle, Info, XCircle } from "lucide-react";
+import { AlertTriangle, Info, XCircle, Shield, BarChart, Server, GanttChartSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { StatCard } from "../stat-card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { Switch } from "../ui/switch";
 
 const systemAlerts = [
     {
@@ -42,48 +56,18 @@ export function SuperAdminDashboardView() {
         description="Platform-wide oversight and management."
       >
          <div className="flex items-center gap-2">
-          <Button>Generate Platform Report</Button>
-          <Button variant="outline">View Audit Logs</Button>
+            <Button asChild>
+                <Link href="/admin/audit-logs">View Audit Logs</Link>
+            </Button>
+            <Button variant="outline">Generate Platform Report</Button>
         </div>
       </DashboardHeader>
       <main className="flex-1 p-4 sm:px-6 lg:px-8 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card>
-                <CardHeader>
-                    <CardTitle>Active Companies</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-2xl font-bold">88</p>
-                    <p className="text-xs text-muted-foreground">+5 this month</p>
-                </CardContent>
-            </Card>
-            <Card>
-                <CardHeader>
-                    <CardTitle>Platform MRR</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-2xl font-bold">$125,430</p>
-                    <p className="text-xs text-muted-foreground">+2.1% from last month</p>
-                </CardContent>
-            </Card>
-             <Card>
-                <CardHeader>
-                    <CardTitle>System Uptime</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-2xl font-bold text-green-600">99.98%</p>
-                    <p className="text-xs text-muted-foreground">in the last 30 days</p>
-                </CardContent>
-            </Card>
-             <Card>
-                <CardHeader>
-                    <CardTitle>API Latency</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-2xl font-bold">85ms</p>
-                    <p className="text-xs text-muted-foreground">average response time</p>
-                </CardContent>
-            </Card>
+            <StatCard icon={GanttChartSquare} title="Active Companies" value="88" change="+5 this month" />
+            <StatCard icon={BarChart} title="Platform MRR" value="$125,430" change="+2.1%" />
+            <StatCard icon={Server} title="System Uptime" value="99.98%" change="30 days" />
+            <StatCard icon={Shield} title="API Latency" value="85ms" change="avg" />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
@@ -142,8 +126,50 @@ export function SuperAdminDashboardView() {
                         <CardTitle className="font-headline">Platform Settings</CardTitle>
                     </CardHeader>
                     <CardContent className="flex flex-col space-y-4">
-                        <Button variant="outline">Toggle Maintenance Mode</Button>
-                        <Button variant="outline">Manage API Rate Limits</Button>
+                         <Dialog>
+                            <DialogTrigger asChild>
+                                <Button variant="outline">Toggle Maintenance Mode</Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Maintenance Mode</DialogTitle>
+                                    <DialogDescription>
+                                        Enable maintenance mode to take the platform offline for updates.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <div className="flex items-center space-x-2">
+                                    <Switch id="maintenance-mode" />
+                                    <Label htmlFor="maintenance-mode">Enable Maintenance Mode</Label>
+                                </div>
+                                <DialogFooter>
+                                    <Button type="submit">Save changes</Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+                         <Dialog>
+                            <DialogTrigger asChild>
+                               <Button variant="outline">Manage API Rate Limits</Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>API Rate Limits</DialogTitle>
+                                    <DialogDescription>
+                                        Set the number of API requests allowed per minute for tenants.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <div className="grid gap-4 py-4">
+                                    <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="rate-limit" className="text-right">
+                                        Requests/min
+                                    </Label>
+                                    <Input id="rate-limit" defaultValue="100" className="col-span-3" />
+                                    </div>
+                                </div>
+                                <DialogFooter>
+                                    <Button type="submit">Save changes</Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
                     </CardContent>
                 </Card>
             </div>
