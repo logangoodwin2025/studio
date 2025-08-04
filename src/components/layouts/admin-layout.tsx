@@ -3,8 +3,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { LogOut, ChevronDown, Bell, LayoutDashboard, Users, Shield, User, Component, AlertCircle, CheckCircle, MessageSquare } from "lucide-react";
+import { usePathname, useSearchParams, useParams } from "next/navigation";
+import { LogOut, ChevronDown, Bell, LayoutDashboard, Users, Shield, User, Component, AlertCircle, CheckCircle, MessageSquare, Building } from "lucide-react";
 
 import {
   Sidebar,
@@ -66,10 +66,11 @@ function Header() {
   const userRole = searchParams.get('role') || "Administrator";
   const avatarUrl = searchParams.get('avatar');
   const notifications = (role && adminNotifications[role as keyof typeof adminNotifications]) || [];
+  const params = useParams();
+  const companySlug = params.company as string || "techcorp";
 
   const createHref = (href: string) => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
-    const companySlug = "techcorp";
     const finalHref = href.startsWith('/admin') ? href : `/${companySlug}${href}`;
     return `${finalHref}?${newSearchParams.toString()}`;
   }
@@ -78,8 +79,8 @@ function Header() {
     <header className="fixed top-0 left-0 right-0 z-40 flex h-16 items-center justify-between border-b bg-background px-4 md:left-64">
         <div className="flex items-center gap-2">
             <h1 className="font-bold text-lg font-headline flex items-center gap-2">
-              <User className="h-5 w-5 text-muted-foreground"/>
-              <span>Platform Administration</span>
+              <Building className="h-5 w-5 text-muted-foreground"/>
+              <span>TechCorp Solutions</span>
             </h1>
         </div>
 
@@ -178,6 +179,7 @@ export function AdminLayout({
   const pathname = usePathname();
   const { role } = useUserRole();
   const searchParams = useSearchParams();
+  const params = useParams();
   const navItems = getVisibleNavItems(role);
 
   const getDashboardHomeLink = () => {
@@ -188,7 +190,7 @@ export function AdminLayout({
     const newSearchParams = new URLSearchParams(searchParams.toString());
     
     if (role === 'Company Admin') {
-        const companySlug = "techcorp"; 
+        const companySlug = params.company as string || "techcorp"; 
         const finalHref = href.startsWith('/admin') ? href : `/${companySlug}${href}`;
         return `${finalHref}?${newSearchParams.toString()}`;
     }

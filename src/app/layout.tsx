@@ -6,7 +6,7 @@ import { Inter, Space_Grotesk } from 'next/font/google';
 import { Toaster } from "@/components/ui/toaster"
 import './globals.css';
 import { cn } from '@/lib/utils';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { FinancialDataProvider } from '@/context/financial-data-context';
 import { AdminLayout } from '@/components/layouts/admin-layout';
 import { DashboardLayout } from '@/components/layouts/dashboard-layout';
@@ -33,14 +33,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const role = searchParams.get('role');
+
   const isAdminRoute = pathname.startsWith('/admin');
+  const isCompanyAdmin = role === 'Company Admin';
   const isLoginPage = pathname === '/login';
 
   const renderLayout = () => {
     if (isLoginPage) {
         return <>{children}</>
     }
-    if (isAdminRoute) {
+    // A Company Admin should always use the AdminLayout.
+    if (isAdminRoute || isCompanyAdmin) {
         return <AdminLayout>{children}</AdminLayout>;
     }
     return <DashboardLayout>{children}</DashboardLayout>;

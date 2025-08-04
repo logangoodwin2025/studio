@@ -25,10 +25,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
-import { DashboardHeader } from "./dashboard-header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { usePathname } from "next/navigation";
 import { FormSheet } from "./form-sheet";
 
 type User = {

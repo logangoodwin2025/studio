@@ -15,7 +15,6 @@ import {
   History,
   LayoutDashboard,
   Users2,
-  Settings,
   Activity,
   Lightbulb,
   CheckCircle,
