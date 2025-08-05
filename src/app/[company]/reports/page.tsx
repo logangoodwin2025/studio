@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 
 function ReportsPageContent() {
   const { role, isLoaded } = useUserRole();
-  const [period, setPeriod] = useState<Period | undefined>(undefined);
+  const [period, setPeriod] = useState<Period>();
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [filter, setFilter] = useState("");
 

@@ -24,7 +24,6 @@ export default function LoginPage() {
     const user = userList.find(u => u.email === email);
 
     if (user) {
-      // In a real app, you'd verify the password hash
       const companyDomain = user.email.split('@')[1];
       const companySlug = companyDomain.split('.')[0];
       
@@ -33,34 +32,53 @@ export default function LoginPage() {
         name: user.name,
         avatar: user.avatar,
         email: user.email,
+      }).toString();
+      
+      const dashboardParams = new URLSearchParams({
+        role: user.role,
+        name: user.name,
+        avatar: user.avatar,
+        email: user.email,
         period: "M",
       }).toString();
       
       const isAdminRole = ["Platform Super Admin", "Platform Manager"].includes(user.role);
-      const isCompanyAdmin = user.role === "Company Admin";
-      const isBasicUser = user.role === "Basic User";
-      const isCeo = user.role === "CEO/Executive";
-      const isFinance = user.role === "Finance Team";
-      const isSales = user.role === "Sales & Marketing";
-      const isOps = user.role === "Operations Team";
-      
+
       if (isAdminRole) {
          router.push(`/admin/dashboard?${searchParams}`);
-      } else if (isCompanyAdmin) {
-        router.push(`/${companySlug}/users?${searchParams}`)
-      } else if (isBasicUser) {
-        router.push(`/${companySlug}/my-dashboard?${searchParams}`);
-      } else if (isCeo) {
-        router.push(`/${companySlug}/overview?${searchParams}`);
-      } else if (isFinance) {
-        router.push(`/${companySlug}/financial-dashboard?${searchParams}`);
-      } else if (isSales) {
-        router.push(`/${companySlug}/sales-marketing-dashboard?${searchParams}`);
-      } else if (isOps) {
-        router.push(`/${companySlug}/operations-dashboard?${searchParams}`);
-      } else {
-        router.push(`/${companySlug}/dashboard?${searchParams}`);
+         return;
+      } 
+      
+      let path = '';
+      let params = dashboardParams;
+
+      switch(user.role) {
+        case "CEO/Executive":
+            path = `/${companySlug}/overview`;
+            break;
+        case "Finance Team":
+            path = `/${companySlug}/financial-dashboard`;
+            break;
+        case "Sales & Marketing":
+            path = `/${companySlug}/sales-marketing-dashboard`;
+            break;
+        case "Operations Team":
+            path = `/${companySlug}/operations-dashboard`;
+            break;
+        case "Company Admin":
+            path = `/${companySlug}/users`;
+            params = searchParams;
+            break;
+        case "Basic User":
+            path = `/${companySlug}/my-dashboard`;
+            params = searchParams;
+            break;
+        default:
+            path = `/${companySlug}/dashboard`;
+            break;
       }
+      
+      router.push(`${path}?${params}`);
 
     } else {
       toast({

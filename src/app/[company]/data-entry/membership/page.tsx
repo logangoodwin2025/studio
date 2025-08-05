@@ -12,7 +12,7 @@ import { DateRange } from "react-day-picker";
 
 export default function MembershipDataEntryPage() {
   const { toast } = useToast();
-  const [dateRange, setDateRange] = React.useState<DateRange | undefined>(undefined);
+  const [dateRange, setDateRange] = React.useState<DateRange | undefined>();
 
   const handleActionClick = (action: "Download" | "Upload") => {
     toast({
