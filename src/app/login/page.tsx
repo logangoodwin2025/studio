@@ -39,14 +39,6 @@ export default function LoginPage() {
       const isCompanyAdmin = user.role === "Company Admin";
       const isBasicUser = user.role === "Basic User";
       
-      // Special case for a multi-company CEO to demonstrate company selection.
-      // In a real app, this would be based on user permissions.
-      // For this prototype, we can simulate one CEO having access to multiple companies.
-      if (user.role === "CEO/Executive" && email === 'ceo@srisys.com') { 
-         router.push(`/select-company?${searchParams}`);
-         return;
-      }
-
       if (isAdminRole) {
          router.push(`/admin/dashboard?${searchParams}`);
       } else if (isCompanyAdmin) {
@@ -54,6 +46,7 @@ export default function LoginPage() {
       } else if (isBasicUser) {
         router.push(`/${companySlug}/my-dashboard?${searchParams}`);
       } else {
+        // Default route for all other authenticated users (CEO, Finance, Sales, Ops)
         router.push(`/${companySlug}/dashboard?${searchParams}`);
       }
 

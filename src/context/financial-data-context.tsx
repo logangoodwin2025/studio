@@ -113,7 +113,7 @@ export const FinancialDataProvider: React.FC<{ children: ReactNode }> = ({ child
   const [data, setData] = useState<FinancialRecord[]>([]);
 
   useEffect(() => {
-    const initialData = companyDataCache.get(companySlug) || [];
+    const initialData = companyDataCache.get(companySlug) || companyDataCache.get('srisys') || [];
     setData(initialData);
   }, [companySlug]);
 
