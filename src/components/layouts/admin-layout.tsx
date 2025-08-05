@@ -5,7 +5,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams, useParams } from "next/navigation";
-import { LogOut, ChevronDown, Bell, LayoutDashboard, Users, Shield, User, Component, AlertCircle, CheckCircle, MessageSquare, Building } from "lucide-react";
+import { LogOut, ChevronDown, Bell, LayoutDashboard, Users, Shield, User, Component, AlertCircle, CheckCircle, MessageSquare, Building, MessageSquarePlus } from "lucide-react";
 
 import {
   Sidebar,
@@ -139,6 +139,12 @@ function Header() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href={createHref('/settings')}>Profile</Link>
+                </DropdownMenuItem>
+                 <DropdownMenuItem asChild>
+                    <Link href={createHref('/raise-ticket')}>
+                        <MessageSquarePlus className="mr-2 h-4 w-4"/>
+                        Raise a Ticket
+                    </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <Link href="/login">

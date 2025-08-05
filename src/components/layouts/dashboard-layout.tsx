@@ -22,7 +22,8 @@ import {
   AlertCircle,
   Eye,
   User,
-  Package
+  Package,
+  MessageSquarePlus,
 } from "lucide-react";
 
 import {
@@ -170,6 +171,12 @@ function Header() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href={createHref('/settings')}>Profile</Link>
+                </DropdownMenuItem>
+                 <DropdownMenuItem asChild>
+                    <Link href={createHref('/raise-ticket')}>
+                        <MessageSquarePlus className="mr-2 h-4 w-4"/>
+                        Raise a Ticket
+                    </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <Link href="/login">
