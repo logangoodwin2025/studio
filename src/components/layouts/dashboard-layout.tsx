@@ -171,14 +171,6 @@ function Header() {
                 <DropdownMenuItem asChild>
                   <Link href={createHref('/settings')}>Profile</Link>
                 </DropdownMenuItem>
-                 {role === "CEO/Executive" && (
-                    <DropdownMenuItem asChild>
-                       <Link href={`/select-company?${searchParams.toString()}`}>
-                           <Package className="mr-2 h-4 w-4"/>
-                           Select Company
-                       </Link>
-                    </DropdownMenuItem>
-                 )}
                 <DropdownMenuSeparator />
                 <Link href="/login">
                   <DropdownMenuItem className="text-destructive">
