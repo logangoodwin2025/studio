@@ -5,7 +5,6 @@ import type { FinancialStats } from "@/lib/financial-aggregator";
 
 interface OperationalMetricsProps {
     stats: FinancialStats;
-    visibleKpis: string[];
 }
 
 // In a real app, this data would be fetched and not derived from financial stats.
@@ -21,45 +20,44 @@ const getSimulatedOperationsData = (stats: FinancialStats) => {
 }
 
 
-export function OperationalMetrics({ stats, visibleKpis }: OperationalMetricsProps) {
+export function OperationalMetrics({ stats }: OperationalMetricsProps) {
     const data = getSimulatedOperationsData(stats);
-    const isVisible = (id: string) => visibleKpis.includes(id);
 
     return (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {isVisible('ops_utilization') && <StatCard 
+            <StatCard 
                 title="Utilization Rate" 
                 value={data.utilizationRate.value} 
                 change={data.utilizationRate.change} 
                 icon={Activity}
                 tooltipText="The percentage of available resources (e.g., employee hours, equipment) being used."
-            />}
-            {isVisible('ops_completion_rate') && <StatCard 
+            />
+            <StatCard 
                 title="Project Completion Rate" 
                 value={data.projectCompletionRate.value} 
                 icon={CheckCircle}
                 tooltipText="The percentage of projects completed on time and within budget."
-            />}
-            {isVisible('ops_delivery_time') && <StatCard 
+            />
+            <StatCard 
                 title="Service Delivery Time" 
                 value={data.serviceDeliveryTime.value} 
                 change={data.serviceDeliveryTime.change} 
                 icon={Clock}
                 tooltipText="The average time it takes to deliver a service to a customer."
-            />}
-            {isVisible('ops_revenue_per_employee') && <StatCard 
+            />
+            <StatCard 
                 title="Revenue Per Employee" 
                 value={data.revenuePerEmployee.value} 
                 change={data.revenuePerEmployee.change} 
                 icon={BadgeDollarSign}
                 tooltipText="A measure of the total revenue generated divided by the number of employees."
-            />}
-            {isVisible('ops_employee_utilization') && <StatCard 
+            />
+            <StatCard 
                 title="Employee Utilization Rate" 
                 value={data.employeeUtilization.value} 
                 icon={UserCog}
                 tooltipText="The percentage of an employee's paid hours that are billable."
-            />}
+            />
         </div>
     )
 }
