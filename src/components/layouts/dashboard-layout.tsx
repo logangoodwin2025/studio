@@ -92,7 +92,7 @@ const userNotifications = {
 }
 
 const companyNames: Record<string, string> = {
-    "techcorp": "TechCorp Solutions",
+    "srisys": "Srisys Inc.",
     "pigeon-tech": "Pigeon-Tech",
 }
 

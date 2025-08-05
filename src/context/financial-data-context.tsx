@@ -103,7 +103,7 @@ const generateCompanyData = (dataFactor = 1) => {
 }
 
 const companyDataCache = new Map<string, FinancialRecord[]>();
-companyDataCache.set('techcorp', generateCompanyData(1));
+companyDataCache.set('srisys', generateCompanyData(1));
 companyDataCache.set('pigeon-tech', generateCompanyData(0.8));
 
 

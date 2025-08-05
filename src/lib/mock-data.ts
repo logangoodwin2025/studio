@@ -3,48 +3,48 @@
 import { FileText, Users, Lightbulb, Activity } from "lucide-react";
 
 export const userList = [
-  // TechCorp Solutions Users
+  // Srisys Inc. Users
   {
     id: "usr_1",
     name: "Alice Johnson",
-    email: "admin@techcorp.com",
+    email: "admin@srisys.com",
     role: "Company Admin",
     avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
   },
   {
     id: "usr_2",
     name: "Robert Williams",
-    email: "finance@techcorp.com",
+    email: "finance@srisys.com",
     role: "Finance Team",
     avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704e",
   },
   {
     id: "usr_3",
     name: "Charles Brown",
-    email: "sales@techcorp.com",
+    email: "sales@srisys.com",
     role: "Sales & Marketing",
     avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
   },
   {
     id: "usr_4",
     name: "Diane Prince",
-    email: "ops@techcorp.com",
+    email: "ops@srisys.com",
     role: "Operations Team",
     avatar: "https://i.pravatar.cc/150?u=a048581f4e29026701d",
   },
   {
     id: "usr_5",
     name: "Edward Hunt",
-    email: "user@techcorp.com",
+    email: "user@srisys.com",
     role: "Basic User",
     avatar: "https://i.pravatar.cc/150?u=a092581f4e29026703d",
   },
   {
     id: "usr_6",
     name: "Francis Castle",
-    email: "ceo@techcorp.com",
+    email: "ceo@srisys.com",
     role: "CEO/Executive",
-    avatar: "https://i.pravatar.cc/150?u=ceo-techcorp",
+    avatar: "https://i.pravatar.cc/150?u=ceo-srisys",
   },
   // Pigeon-Tech Users
   {
@@ -138,7 +138,7 @@ export type Tenant = {
 };
 
 export const tenants: Tenant[] = [
-    { id: "ten_1", name: "TechCorp Solutions", plan: "Enterprise", users: 25, lastActive: "2 hours ago", status: "Active" },
+    { id: "ten_srisys", name: "Srisys Inc.", plan: "Enterprise", users: 25, lastActive: "2 hours ago", status: "Active" },
     { id: "ten_pigeon", name: "Pigeon-Tech", plan: "Enterprise", users: 6, lastActive: "5 minutes ago", status: "Active" },
     { id: "ten_2", name: "Innovate Inc.", plan: "Paid", users: 10, lastActive: "1 day ago", status: "Active" },
     { id: "ten_3", name: "Synergy Labs", plan: "Trial", users: 5, lastActive: "3 days ago", status: "Provisioning" },
@@ -161,7 +161,7 @@ export const supportTickets: SupportTicket[] = [
     { id: "T-1234", subject: "Integration with Salesforce failing", tenant: "Innovate Inc.", user: "finance@innovate.com", priority: "High", status: "Open", created: new Date("2025-07-25T10:00:00Z"), lastUpdated: new Date("2025-07-25T14:30:00Z") },
     { id: "T-1235", subject: "How to add a new user?", tenant: "QuantumLeap", user: "admin@quantum.com", priority: "Low", status: "Closed", created: new Date("2025-07-24T11:00:00Z"), lastUpdated: new Date("2025-07-24T11:30:00Z") },
     { id: "T-1236", subject: "API rate limit exceeded", tenant: "DataWeavers", user: "dev@dataweavers.com", priority: "Medium", status: "In Progress", created: new Date("2025-07-25T09:00:00Z"), lastUpdated: new Date("2025-07-25T16:00:00Z") },
-    { id: "T-1237", subject: "Cannot access reports", tenant: "TechCorp Solutions", user: "ceo@techcorp.com", priority: "High", status: "Open", created: new Date("2025-07-25T15:00:00Z"), lastUpdated: new Date("2025-07-25T15:05:00Z") },
+    { id: "T-1237", subject: "Cannot access reports", tenant: "Srisys Inc.", user: "ceo@srisys.com", priority: "High", status: "Open", created: new Date("2025-07-25T15:00:00Z"), lastUpdated: new Date("2025-07-25T15:05:00Z") },
     { id: "T-1238", subject: "Feature request: Dark mode", tenant: "Synergy Labs", user: "user@synergy.com", priority: "Low", status: "Resolved", created: new Date("2025-07-22T18:00:00Z"), lastUpdated: new Date("2025-07-23T10:00:00Z") },
     { id: "T-1239", subject: "Billing question", tenant: "Innovate Inc.", user: "finance@innovate.com", priority: "Medium", status: "Open", created: new Date("2025-07-26T08:00:00Z"), lastUpdated: new Date("2025-07-26T08:15:00Z") },
 ];

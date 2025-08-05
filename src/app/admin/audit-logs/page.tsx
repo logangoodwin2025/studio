@@ -1,3 +1,4 @@
+
 import { DashboardHeader } from "@/components/dashboard-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -6,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 const auditLogs = [
   {
     id: "log_1",
-    user: "super@techcorp.com",
+    user: "super@pinnsight.com",
     action: "Enabled Maintenance Mode",
     details: "Platform-wide maintenance",
     timestamp: "2025-07-25T10:00:00Z",
@@ -14,7 +15,7 @@ const auditLogs = [
   },
   {
     id: "log_2",
-    user: "manager@techcorp.com",
+    user: "manager@pinnsight.com",
     action: "Suspended Tenant",
     details: "Tenant ID: ten_5 (DataWeavers)",
     timestamp: "2025-07-25T09:30:00Z",
@@ -22,7 +23,7 @@ const auditLogs = [
   },
     {
     id: "log_3",
-    user: "super@techcorp.com",
+    user: "super@pinnsight.com",
     action: "Updated API Rate Limit",
     details: "Set to 120 requests/min",
     timestamp: "2025-07-24T15:00:00Z",
@@ -30,7 +31,7 @@ const auditLogs = [
   },
     {
     id: "log_4",
-    user: "manager@techcorp.com",
+    user: "manager@pinnsight.com",
     action: "Created New Tenant",
     details: "Tenant ID: ten_2 (Innovate Inc.)",
     timestamp: "2025-07-23T11:00:00Z",
@@ -38,7 +39,7 @@ const auditLogs = [
   },
     {
     id: "log_5",
-    user: "super@techcorp.com",
+    user: "super@pinnsight.com",
     action: "Deleted Tenant",
     details: "Tenant ID: ten_x (Legacy Corp)",
     timestamp: "2025-07-22T18:00:00Z",

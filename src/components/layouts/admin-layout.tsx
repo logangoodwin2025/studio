@@ -61,7 +61,7 @@ const adminNotifications = {
 }
 
 const companyNames: Record<string, string> = {
-    "techcorp": "TechCorp Solutions",
+    "srisys": "Srisys Inc.",
     "pigeon-tech": "Pigeon-Tech",
 }
 
@@ -73,8 +73,8 @@ function Header() {
   const avatarUrl = searchParams.get('avatar');
   const notifications = (role && adminNotifications[role as keyof typeof adminNotifications]) || [];
   const params = useParams();
-  const companySlug = params.company as string || "techcorp";
-  const companyName = companySlug ? companyNames[companySlug] || "TechCorp Solutions" : "TechCorp Solutions";
+  const companySlug = params.company as string || "srisys";
+  const companyName = companySlug ? companyNames[companySlug] || "Srisys Inc." : "Srisys Inc.";
 
   const createHref = (href: string) => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
@@ -196,7 +196,7 @@ export function AdminLayout({
     const newSearchParams = new URLSearchParams(searchParams.toString());
     
     if (role === 'Company Admin') {
-        const companySlug = params.company as string || "techcorp"; 
+        const companySlug = params.company as string || "srisys"; 
         const finalHref = href.startsWith('/admin') ? `/${companySlug}${href}` : `/${companySlug}${href}`;
         return `${finalHref}?${newSearchParams.toString()}`;
     }

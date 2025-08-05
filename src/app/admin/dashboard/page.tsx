@@ -28,7 +28,7 @@ function AdminDashboardPageContent() {
 
     // A Company Admin should not be on this page, they should be on their company-specific page
     if (role === "Company Admin") {
-        const companySlug = params.company || 'techcorp';
+        const companySlug = params.company || 'srisys';
         const newSearchParams = new URLSearchParams(searchParams.toString());
         redirect(`/${companySlug}/users?${newSearchParams.toString()}`);
     }

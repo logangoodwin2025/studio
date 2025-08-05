@@ -23,7 +23,7 @@ const activityLog = [
   {
     user: "Robert Williams",
     avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-    action: "added a new user 'sales@techcorp.com'.",
+    action: "added a new user 'sales@srisys.com'.",
     timestamp: "3 hours ago",
   },
    {
@@ -35,7 +35,7 @@ const activityLog = [
   {
     user: "Alice Johnson",
     avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    action: "reset the password for 'ops@techcorp.com'.",
+    action: "reset the password for 'ops@srisys.com'.",
     timestamp: "2 days ago",
   },
 ];

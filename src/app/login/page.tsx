@@ -41,7 +41,7 @@ export default function LoginPage() {
 
       if (isAdminRole) {
          router.push(`/admin/dashboard?${searchParams}`);
-      } else if (isCEO && email === 'ceo@techcorp.com') { // Special case for a multi-company CEO
+      } else if (isCEO && email === 'ceo@srisys.com') { // Special case for a multi-company CEO
          router.push(`/select-company?${searchParams}`);
       } else if (isCompanyAdmin) {
         router.push(`/${companySlug}/users?${searchParams}`)
