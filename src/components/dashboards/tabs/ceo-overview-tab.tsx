@@ -12,6 +12,17 @@ import { SalesMarketingMetrics } from "../sales-marketing-metrics";
 import { OperationalMetrics } from "../operational-metrics";
 import { InfoTooltip } from "@/components/info-tooltip";
 
+const allKpiIds = [
+    // Financials
+    'fin_revenue', 'fin_gross_margin', 'fin_net_margin', 'fin_ebitda', 'fin_cash_flow', 'fin_ltv', 'fin_cac',
+    // Membership
+    'mem_total', 'mem_new', 'mem_lost', 'mem_retention', 'mem_churn', 'mem_csat', 'mem_nps',
+    // Sales & Marketing
+    'sal_lead_gen', 'sal_conversion_rate', 'sal_pipeline_value', 'sal_avg_revenue', 'sal_marketing_roi', 'sal_cpl',
+    // Operations
+    'ops_utilization', 'ops_completion_rate', 'ops_delivery_time', 'ops_revenue_per_employee', 'ops_employee_utilization'
+];
+
 interface CeoOverviewTabProps {
   stats: FinancialStats;
   chartData: FinancialRecord[];
@@ -26,7 +37,7 @@ export function CeoOverviewTab({ stats, chartData }: CeoOverviewTabProps) {
           An overview of the company's key financial performance indicators for the selected period.
         </InfoTooltip>
       </h2>
-      <FinancialStatsCards stats={stats} />
+      <FinancialStatsCards stats={stats} visibleKpis={allKpiIds} />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         <div className="lg:col-span-3">
           <RevenueProfitTrend data={chartData} />
@@ -76,7 +87,7 @@ export function CeoOverviewTab({ stats, chartData }: CeoOverviewTabProps) {
           Key metrics related to customer growth, churn, and satisfaction.
         </InfoTooltip>
       </h2>
-      <MembershipMetrics stats={stats} />
+      <MembershipMetrics stats={stats} visibleKpis={allKpiIds} />
       
       <h2 className="text-xl font-bold font-headline pt-4 flex items-center">
         Sales & Marketing
@@ -84,7 +95,7 @@ export function CeoOverviewTab({ stats, chartData }: CeoOverviewTabProps) {
             Performance indicators for your sales funnel and marketing campaign effectiveness.
         </InfoTooltip>
       </h2>
-      <SalesMarketingMetrics stats={stats} />
+      <SalesMarketingMetrics stats={stats} visibleKpis={allKpiIds} />
 
       <h2 className="text-xl font-bold font-headline pt-4 flex items-center">
         Operational Efficiency
@@ -92,7 +103,7 @@ export function CeoOverviewTab({ stats, chartData }: CeoOverviewTabProps) {
           Metrics that measure the efficiency of your company's core operations.
         </InfoTooltip>
       </h2>
-      <OperationalMetrics stats={stats} />
+      <OperationalMetrics stats={stats} visibleKpis={allKpiIds} />
     </div>
   );
 }
