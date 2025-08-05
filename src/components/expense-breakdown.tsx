@@ -1,11 +1,11 @@
 
-
 "use client";
 
 import { useMemo } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { FinancialRecord } from '@/context/financial-data-context';
+import { InfoTooltip } from "./info-tooltip";
 
 const aggregateExpenses = (data: FinancialRecord[]) => {
     if (data.length === 0) return [];
@@ -14,14 +14,14 @@ const aggregateExpenses = (data: FinancialRecord[]) => {
     if (totalExpenses === 0) return [];
 
     // Simulate a breakdown - in a real app this would come from detailed data
-    const personnel = totalExpenses * 0.45;
+    const salaries = totalExpenses * 0.45;
     const operations = totalExpenses * 0.25;
     const marketing = totalExpenses * 0.15;
     const technology = totalExpenses * 0.10;
     const other = totalExpenses * 0.05;
 
     return [
-      { name: 'Personnel', value: personnel, color: 'hsl(var(--chart-1))' },
+      { name: 'Salaries', value: salaries, color: 'hsl(var(--chart-1))' },
       { name: 'Operations', value: operations, color: 'hsl(var(--chart-2))' },
       { name: 'Marketing', value: marketing, color: 'hsl(var(--chart-3))' },
       { name: 'Technology', value: technology, color: 'hsl(var(--chart-4))' },
@@ -35,7 +35,12 @@ export function ExpenseBreakdown({ data }: { data: FinancialRecord[]}) {
   return (
     <Card className="h-full">
       <CardHeader>
-        <CardTitle className="font-headline">Expense Breakdown</CardTitle>
+        <CardTitle className="font-headline flex items-center">
+          Expense Breakdown
+          <InfoTooltip>
+            A pie chart showing the distribution of total expenses across different categories.
+          </InfoTooltip>
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[220px]">

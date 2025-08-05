@@ -7,6 +7,7 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
 import type { FinancialRecord } from "@/context/financial-data-context";
+import { InfoTooltip } from "./info-tooltip";
 
 const formatChartData = (data: FinancialRecord[]) => {
   if (data.length === 0) return [];
@@ -32,7 +33,12 @@ export function WeeklyCashFlow({ data }: { data: FinancialRecord[] }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">Cash Flow</CardTitle>
+        <CardTitle className="font-headline flex items-center">
+            Cash Flow
+            <InfoTooltip>
+                A bar chart comparing cash inflow (money coming in) versus cash outflow (money going out) over the selected period.
+            </InfoTooltip>
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[200px]">

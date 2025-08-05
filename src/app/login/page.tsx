@@ -10,18 +10,76 @@ import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/icons";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff } from "lucide-react";
+import { userList } from "@/lib/mock-data";
 
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [email, setEmail] = useState("finance@techcorp.com");
-  const [password, setPassword] = useState("finance@techcorp123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("PinnSight@123");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email === "finance@techcorp.com" && password === "finance@techcorp123") {
-      router.push("/techcorp-solutions/dashboard");
+    const user = userList.find(u => u.email === email);
+
+    if (user) {
+      const companyDomain = user.email.split('@')[1];
+      const companySlug = companyDomain.split('.')[0];
+      
+      const searchParams = new URLSearchParams({
+        role: user.role,
+        name: user.name,
+        avatar: user.avatar,
+        email: user.email,
+      }).toString();
+      
+      const dashboardParams = new URLSearchParams({
+        role: user.role,
+        name: user.name,
+        avatar: user.avatar,
+        email: user.email,
+        period: "M",
+      }).toString();
+      
+      const isAdminRole = ["Platform Super Admin", "Platform Manager"].includes(user.role);
+
+      if (isAdminRole) {
+         router.push(`/admin/dashboard?${searchParams}`);
+         return;
+      } 
+      
+      let path = '';
+      let params = dashboardParams;
+
+      switch(user.role) {
+        case "CEO/Executive":
+            path = `/${companySlug}/overview`;
+            break;
+        case "Finance Team":
+            path = `/${companySlug}/financial-dashboard`;
+            break;
+        case "Sales & Marketing":
+            path = `/${companySlug}/sales-marketing-dashboard`;
+            break;
+        case "Operations Team":
+            path = `/${companySlug}/operations-dashboard`;
+            break;
+        case "Company Admin":
+            path = `/admin/dashboard`;
+            params = searchParams;
+            break;
+        case "Basic User":
+            path = `/${companySlug}/my-dashboard`;
+            params = searchParams;
+            break;
+        default:
+            path = `/${companySlug}/dashboard`;
+            break;
+      }
+      
+      router.push(`${path}?${params}`);
+
     } else {
       toast({
         variant: "destructive",
@@ -38,8 +96,7 @@ export default function LoginPage() {
           <div className="mb-4 flex justify-center">
             <Logo className="h-10 w-10 text-primary" />
           </div>
-          <CardTitle className="font-headline text-2xl">CEO Dashboard</CardTitle>
-          <p className="text-sm text-muted-foreground">for TechCorp Solutions</p>
+          <CardTitle className="font-headline text-2xl">PinnSight</CardTitle>
           <CardDescription className="pt-2">Enter your credentials to access your dashboard</CardDescription>
         </CardHeader>
         <CardContent>
