@@ -32,6 +32,7 @@ export default function LoginPage() {
         role: user.role,
         name: user.name,
         avatar: user.avatar,
+        email: user.email,
       }).toString();
       
       const isAdminRole = ["Platform Super Admin", "Platform Manager"].includes(user.role);
@@ -39,16 +40,20 @@ export default function LoginPage() {
       const isBasicUser = user.role === "Basic User";
       const isCEO = user.role === "CEO/Executive";
 
+      // Special case for the multi-company CEO to demonstrate company selection.
+      // In a real app, this would be based on user permissions.
+      if (isCEO && email === 'ceo@srisys.com') { 
+         router.push(`/select-company?${searchParams}`);
+         return;
+      }
+
       if (isAdminRole) {
          router.push(`/admin/dashboard?${searchParams}`);
-      } else if (isCEO && email === 'ceo@srisys.com') { // Special case for a multi-company CEO
-         router.push(`/select-company?${searchParams}`);
       } else if (isCompanyAdmin) {
         router.push(`/${companySlug}/users?${searchParams}`)
       } else if (isBasicUser) {
         router.push(`/${companySlug}/my-dashboard?${searchParams}`);
-      }
-      else {
+      } else {
         router.push(`/${companySlug}/dashboard?${searchParams}`);
       }
 
