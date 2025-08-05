@@ -54,6 +54,19 @@ const supportTicketsData = [
     { priority: "High", open: 5, resolved: 15 },
 ];
 
+const topTenantsByStorage = [
+    { name: "Srisys Inc.", storage: 450, fill: "hsl(var(--chart-1))" },
+    { name: "Innovate Inc.", storage: 320, fill: "hsl(var(--chart-2))" },
+    { name: "QuantumLeap", storage: 280, fill: "hsl(var(--chart-3))" },
+    { name: "Pigeon-Tech", storage: 150, fill: "hsl(var(--chart-4))" },
+    { name: "Synergy Labs", storage: 80, fill: "hsl(var(--chart-5))" },
+];
+
+const apiCallsData = newSignupsData.map((d, i) => ({ 
+    ...d, 
+    calls: (d.signups * 1000 * (Math.random() + 0.5) * (i+1) * 5)
+}));
+
 
 const recentSignups = tenants.slice(0, 3);
 const activeUsers = userList.slice(0, 5);
@@ -258,9 +271,9 @@ export function PlatformManagerDashboardView() {
                         <div>
                             <CardTitle className="font-headline flex items-center">
                                 Resource Utilization
-                                <InfoTooltip>Monitors resource usage like storage per tenant.</InfoTooltip>
+                                <InfoTooltip>Monitors storage usage (in GB) for the top 5 tenants.</InfoTooltip>
                             </CardTitle>
-                            <CardDescription>Storage usage per tenant.</CardDescription>
+                            <CardDescription>Storage usage per tenant (GB).</CardDescription>
                         </div>
                         <PeriodPicker
                             period={resourcePeriod} onPeriodChange={setResourcePeriod}
@@ -268,9 +281,24 @@ export function PlatformManagerDashboardView() {
                         />
                     </CardHeader>
                     <CardContent>
-                        <div className="h-60 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
-                            <Database className="h-16 w-16" />
-                            (Gauge Chart Placeholder)
+                        <div className="h-60">
+                             <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={topTenantsByStorage} layout="vertical" margin={{ left: 10, right: 10 }}>
+                                    <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                                    <XAxis type="number" fontSize={12} />
+                                    <YAxis type="category" dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
+                                    <Tooltip
+                                        formatter={(val: number) => `${val} GB`}
+                                        cursor={{fill: 'hsl(var(--secondary))'}}
+                                        contentStyle={{
+                                            backgroundColor: "hsl(var(--card))",
+                                            borderColor: "hsl(var(--border))",
+                                            borderRadius: "var(--radius)"
+                                        }}
+                                    />
+                                    <Bar dataKey="storage" name="Storage" radius={[0, 4, 4, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
                         </div>
                     </CardContent>
                 </Card>
@@ -281,7 +309,7 @@ export function PlatformManagerDashboardView() {
                                 API Calls
                                 <InfoTooltip>Shows the volume of API calls to identify peak usage times.</InfoTooltip>
                             </CardTitle>
-                            <CardDescription>Peak usage times.</CardDescription>
+                            <CardDescription>Total API calls by month.</CardDescription>
                         </div>
                         <PeriodPicker
                             period={apiCallsPeriod} onPeriodChange={setApiCallsPeriod}
@@ -291,13 +319,19 @@ export function PlatformManagerDashboardView() {
                     <CardContent>
                         <div className="h-60">
                             <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={newSignupsData.map(d => ({ ...d, calls: d.signups * 1000 * (Math.random() + 0.5) }))}>
+                                <LineChart data={apiCallsData}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                     <XAxis dataKey="date" fontSize={12} />
-                                    <YAxis fontSize={12} tickFormatter={(val) => `${val/1000}k`} />
-                                    <Tooltip />
-                                    <Legend />
-                                    <Line type="monotone" dataKey="calls" name="API Calls" stroke="hsl(var(--chart-5))" strokeWidth={2} />
+                                    <YAxis fontSize={12} tickFormatter={(val: number) => `${val/1000}k`} />
+                                    <Tooltip 
+                                        formatter={(val: number) => val.toLocaleString()}
+                                        contentStyle={{
+                                            backgroundColor: "hsl(var(--card))",
+                                            borderColor: "hsl(var(--border))",
+                                            borderRadius: "var(--radius)"
+                                        }}
+                                    />
+                                    <Line type="monotone" dataKey="calls" name="API Calls" stroke="hsl(var(--chart-5))" strokeWidth={2} dot={false}/>
                                 </LineChart>
                             </ResponsiveContainer>
                         </div>
