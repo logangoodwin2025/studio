@@ -38,11 +38,11 @@ export default function LoginPage() {
       const isAdminRole = ["Platform Super Admin", "Platform Manager"].includes(user.role);
       const isCompanyAdmin = user.role === "Company Admin";
       const isBasicUser = user.role === "Basic User";
-      const isCEO = user.role === "CEO/Executive";
-
-      // Special case for the multi-company CEO to demonstrate company selection.
+      
+      // Special case for a multi-company CEO to demonstrate company selection.
       // In a real app, this would be based on user permissions.
-      if (isCEO && email === 'ceo@srisys.com') { 
+      // For this prototype, we can simulate one CEO having access to multiple companies.
+      if (user.role === "CEO/Executive" && email === 'ceo@srisys.com') { 
          router.push(`/select-company?${searchParams}`);
          return;
       }
