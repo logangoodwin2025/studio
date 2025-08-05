@@ -5,6 +5,7 @@ import type { FinancialStats } from "@/lib/financial-aggregator";
 
 interface MembershipMetricsProps {
     stats: FinancialStats;
+    visibleKpis: string[];
 }
 
 // In a real app, this data would be fetched and not derived from financial stats.
@@ -29,58 +30,61 @@ const getSimulatedMembershipData = (stats: FinancialStats) => {
     }
 }
 
-export function MembershipMetrics({ stats }: MembershipMetricsProps) {
+export function MembershipMetrics({ stats, visibleKpis }: MembershipMetricsProps) {
     const data = getSimulatedMembershipData(stats);
+    const isVisible = (id: string) => visibleKpis.includes(id);
 
     return (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <StatCard 
+            {isVisible('mem_total') && <StatCard 
                 title="Total Members" 
                 value={data.totalMembers.value} 
                 change={data.totalMembers.change} 
                 icon={Users}
                 tooltipText="The total number of active members or subscribers."
-            />
-            <StatCard 
+            />}
+            {isVisible('mem_new') && <StatCard 
                 title="New Members Gained" 
                 value={data.newMembers.value} 
                 change={data.newMembers.change} 
                 icon={UserPlus}
                 tooltipText="The number of new members acquired during the selected period."
-            />
-            <StatCard 
+            />}
+            {isVisible('mem_lost') && <StatCard 
                 title="Members Lost" 
                 value={data.lostMembers.value} 
                 change={data.lostMembers.change} 
                 icon={UserMinus}
                 tooltipText="The number of members who cancelled their subscription (churned)."
-            />
-            <StatCard 
+            />}
+            {isVisible('mem_retention') && <StatCard 
                 title="Retention Rate" 
                 value={data.retentionRate.value} 
                 icon={HeartHandshake}
                 tooltipText="The percentage of members who remained active over the period."
-            />
-            <StatCard 
+            />}
+            {isVisible('mem_churn') && <StatCard 
                 title="Churn Rate" 
                 value={data.churnRate.value} 
                 icon={UserX}
                 tooltipText="The percentage of members who cancelled their subscription over the period."
-            />
-            <StatCard 
+            />}
+            {isVisible('mem_csat') && <StatCard 
                 title="Client Satisfaction (CSAT)" 
                 value={data.csat.value} 
                 change={data.csat.change} 
                 icon={Smile}
                 tooltipText="A measure of customer satisfaction with a product or service."
-            />
-            <StatCard 
+            />}
+            {isVisible('mem_nps') && <StatCard 
                 title="Net Promoter Score (NPS)" 
                 value={data.nps.value} 
                 change={data.nps.change} 
                 icon={Star}
                 tooltipText="A measure of customer loyalty and willingness to recommend your company."
-            />
+            />}
         </div>
     )
 }
+
+    

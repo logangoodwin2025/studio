@@ -14,31 +14,42 @@ import { AccountsTable } from "@/components/accounts-table";
 interface FinanceDashboardViewProps {
   stats: FinancialStatsType;
   chartData: FinancialRecord[];
+  visibleKpis: string[];
 }
 
-export function FinanceDashboardView({ stats, chartData }: FinanceDashboardViewProps) {
+export function FinanceDashboardView({ stats, chartData, visibleKpis }: FinanceDashboardViewProps) {
+  const isWidgetVisible = (id: string) => visibleKpis.includes(id);
+  const showFinancialStats = visibleKpis.some(k => k.startsWith('fin_') && k.endsWith('_stat_card'));
+
   return (
     <div className="space-y-6">
-      <FinancialStats stats={stats} />
+      {showFinancialStats && <FinancialStats stats={stats} visibleKpis={visibleKpis} />}
+      
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-          <div className="lg:col-span-3">
-              <RevenueProfitTrend data={chartData} />
-          </div>
-          <div className="lg:col-span-2">
-              <ExpenseBreakdown data={chartData} />
-          </div>
+          {isWidgetVisible('fin_revenue_profit_trend') && (
+            <div className="lg:col-span-3">
+                <RevenueProfitTrend data={chartData} />
+            </div>
+          )}
+          {isWidgetVisible('fin_expense_breakdown') && (
+            <div className="lg:col-span-2">
+                <ExpenseBreakdown data={chartData} />
+            </div>
+          )}
       </div>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <div className="grid grid-cols-1 gap-6 lg:col-span-2">
-              <ProfitabilityAnalysis data={chartData} />
-              <WeeklyCashFlow data={chartData} />
+              {isWidgetVisible('fin_profitability_analysis') && <ProfitabilityAnalysis data={chartData} />}
+              {isWidgetVisible('fin_weekly_cash_flow') && <WeeklyCashFlow data={chartData} />}
           </div>
           <div className="grid grid-cols-1 gap-6 lg:col-span-1">
-              <KeyRatios />
-              <AccountsTable type="Receivable" />
-              <AccountsTable type="Payable" />
+              {isWidgetVisible('fin_key_ratios') && <KeyRatios />}
+              {isWidgetVisible('fin_ar_table') && <AccountsTable type="Receivable" />}
+              {isWidgetVisible('fin_ap_table') && <AccountsTable type="Payable" />}
           </div>
       </div>
     </div>
   );
 }
+
+    

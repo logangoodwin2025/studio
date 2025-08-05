@@ -18,44 +18,53 @@ const memberGrowthData = [
 
 interface MembershipDashboardViewProps {
   stats: FinancialStats;
+  visibleKpis: string[];
 }
 
-export function MembershipDashboardView({ stats }: MembershipDashboardViewProps) {
+export function MembershipDashboardView({ stats, visibleKpis }: MembershipDashboardViewProps) {
+    const isWidgetVisible = (id: string) => visibleKpis.includes(id);
+    const showMembershipMetrics = visibleKpis.some(k => k.startsWith('mem_') && k.endsWith('_stat_card'));
+
     return (
       <div className="space-y-6">
-        <MembershipMetrics stats={stats} />
+        {showMembershipMetrics && <MembershipMetrics stats={stats} visibleKpis={visibleKpis} />}
+        
         <div className="grid grid-cols-1 gap-6">
-             <Card>
-                <CardHeader>
-                    <CardTitle className="font-headline flex items-center">
-                        Member Growth vs. Churn
-                        <InfoTooltip>Tracks new members gained versus members lost (churn) over time.</InfoTooltip>
-                    </CardTitle>
-                    <CardDescription>New members vs. lost members per month.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="h-80">
-                        <ResponsiveContainer width="100%" height="100%">
-                             <BarChart data={memberGrowthData}>
-                                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                                <Tooltip
-                                    cursor={{fill: 'hsl(var(--secondary))'}}
-                                    contentStyle={{
-                                        backgroundColor: "hsl(var(--card))",
-                                        borderColor: "hsl(var(--border))",
-                                        borderRadius: "var(--radius)"
-                                    }}
-                                />
-                                <Legend iconType="circle" iconSize={8} />
-                                <Bar dataKey="new" name="New Members" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} />
-                                <Bar dataKey="lost" name="Lost Members" fill="hsl(var(--chart-5))" radius={[4, 4, 0, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-                </CardContent>
-            </Card>
+             {isWidgetVisible('mem_growth_churn_chart') && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="font-headline flex items-center">
+                            Member Growth vs. Churn
+                            <InfoTooltip>Tracks new members gained versus members lost (churn) over time.</InfoTooltip>
+                        </CardTitle>
+                        <CardDescription>New members vs. lost members per month.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="h-80">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={memberGrowthData}>
+                                    <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                                    <Tooltip
+                                        cursor={{fill: 'hsl(var(--secondary))'}}
+                                        contentStyle={{
+                                            backgroundColor: "hsl(var(--card))",
+                                            borderColor: "hsl(var(--border))",
+                                            borderRadius: "var(--radius)"
+                                        }}
+                                    />
+                                    <Legend iconType="circle" iconSize={8} />
+                                    <Bar dataKey="new" name="New Members" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="lost" name="Lost Members" fill="hsl(var(--chart-5))" radius={[4, 4, 0, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </CardContent>
+                </Card>
+             )}
         </div>
       </div>
     );
 }
+
+    
