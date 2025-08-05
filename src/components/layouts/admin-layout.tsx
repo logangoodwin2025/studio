@@ -125,7 +125,7 @@ function Header() {
               <button className="flex items-center gap-2 text-sm font-medium">
                 <Avatar className="h-8 w-8">
                   {avatarUrl && <AvatarImage src={decodeURIComponent(avatarUrl)} alt={name} />}
-                  <AvatarFallback>{name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                  <AvatarFallback>{name ? name.split(' ').map(n => n[0]).join('') : 'A'}</AvatarFallback>
                 </Avatar>
                 <div className="hidden md:flex flex-col items-start">
                     <span className="font-semibold">{name}</span>
