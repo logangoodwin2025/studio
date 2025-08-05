@@ -12,98 +12,148 @@ import { SalesMarketingMetrics } from "../sales-marketing-metrics";
 import { OperationalMetrics } from "../operational-metrics";
 import { InfoTooltip } from "@/components/info-tooltip";
 
-const allKpiIds = [
-    // Financials
-    'fin_revenue', 'fin_gross_margin', 'fin_net_margin', 'fin_ebitda', 'fin_cash_flow', 'fin_ltv', 'fin_cac',
-    // Membership
-    'mem_total', 'mem_new', 'mem_lost', 'mem_retention', 'mem_churn', 'mem_csat', 'mem_nps',
-    // Sales & Marketing
-    'sal_lead_gen', 'sal_conversion_rate', 'sal_pipeline_value', 'sal_avg_revenue', 'sal_marketing_roi', 'sal_cpl',
-    // Operations
-    'ops_utilization', 'ops_completion_rate', 'ops_delivery_time', 'ops_revenue_per_employee', 'ops_employee_utilization'
-];
-
 interface CeoOverviewTabProps {
   stats: FinancialStats;
   chartData: FinancialRecord[];
+  visibleKpis: string[];
 }
 
-export function CeoOverviewTab({ stats, chartData }: CeoOverviewTabProps) {
+export function CeoOverviewTab({ stats, chartData, visibleKpis }: CeoOverviewTabProps) {
+  const isWidgetVisible = (id: string) => visibleKpis.includes(id);
+
+  const showSection = (prefix: string) => visibleKpis.some(kpi => kpi.startsWith(prefix));
+
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold font-headline flex items-center">
-        Financial Health
-        <InfoTooltip>
-          An overview of the company's key financial performance indicators for the selected period.
-        </InfoTooltip>
-      </h2>
-      <FinancialStatsCards stats={stats} visibleKpis={allKpiIds} />
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-        <div className="lg:col-span-3">
-          <RevenueProfitTrend data={chartData} />
-        </div>
-        <div className="lg:col-span-2">
-          <ExpenseBreakdown data={chartData} />
-        </div>
-      </div>
-       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <Card>
-            <CardHeader>
-                <CardTitle className="font-headline flex items-center">
-                  Competitive Position
-                  <InfoTooltip>
-                    Compares your company's market share and Net Promoter Score (NPS) against industry benchmarks.
-                  </InfoTooltip>
-                </CardTitle>
-                <CardDescription>Market share and NPS vs. industry benchmarks.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="h-48 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
-                   (Chart placeholder: Market Share vs. Competitors)
-                </div>
-            </CardContent>
-          </Card>
-           <Card>
-            <CardHeader>
-                <CardTitle className="font-headline flex items-center">
-                  Scenario Planner
-                   <InfoTooltip>
-                    AI-powered tool to model potential outcomes based on different business decisions.
-                  </InfoTooltip>
-                </CardTitle>
-                <CardDescription>Model potential business scenarios.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                 <div className="h-48 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
-                   (AI scenario planner placeholder)
-                </div>
-            </CardContent>
-          </Card>
-      </div>
+      {showSection('fin_') && (
+        <>
+          <h2 className="text-xl font-bold font-headline flex items-center">
+            Financial Health
+            <InfoTooltip>
+              An overview of the company's key financial performance indicators for the selected period.
+            </InfoTooltip>
+          </h2>
+          <FinancialStatsCards stats={stats} visibleKpis={visibleKpis} />
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+            {isWidgetVisible('fin_revenue_profit_trend') && (
+              <div className="lg:col-span-3">
+                <RevenueProfitTrend data={chartData} />
+              </div>
+            )}
+            {isWidgetVisible('fin_expense_breakdown') && (
+              <div className="lg:col-span-2">
+                <ExpenseBreakdown data={chartData} />
+              </div>
+            )}
+          </div>
+        </>
+      )}
 
-      <h2 className="text-xl font-bold font-headline pt-4 flex items-center">
-        Membership Trends
-        <InfoTooltip>
-          Key metrics related to customer growth, churn, and satisfaction.
-        </InfoTooltip>
-      </h2>
-      <MembershipMetrics stats={stats} visibleKpis={allKpiIds} />
+      {showSection('comp_') && (
+        <>
+          <h2 className="text-xl font-bold font-headline pt-4 flex items-center">
+            Industry & Competitive Insights
+            <InfoTooltip>
+              Compares your company's market share and Net Promoter Score (NPS) against industry benchmarks.
+            </InfoTooltip>
+          </h2>
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-4">
+              {isWidgetVisible('comp_market_share') && (
+                  <Card>
+                      <CardHeader>
+                          <CardTitle className="font-headline text-base">Market Share Growth</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                          <div className="h-24 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
+                              (Chart placeholder)
+                          </div>
+                      </CardContent>
+                  </Card>
+              )}
+              {isWidgetVisible('comp_pricing_trends') && (
+                   <Card>
+                      <CardHeader>
+                          <CardTitle className="font-headline text-base">Industry Pricing Trends</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                           <div className="h-24 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
+                              (Chart placeholder)
+                          </div>
+                      </CardContent>
+                  </Card>
+              )}
+               {isWidgetVisible('comp_benchmarking') && (
+                   <Card>
+                      <CardHeader>
+                          <CardTitle className="font-headline text-base">Competitive Benchmarking</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                           <div className="h-24 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
+                              (Chart placeholder)
+                          </div>
+                      </CardContent>
+                  </Card>
+              )}
+               {isWidgetVisible('comp_scenario_planner') && (
+                   <Card>
+                      <CardHeader>
+                          <CardTitle className="font-headline text-base">Scenario Planner</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                           <div className="h-24 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
+                             (AI planner placeholder)
+                          </div>
+                      </CardContent>
+                  </Card>
+              )}
+          </div>
+        </>
+      )}
       
-      <h2 className="text-xl font-bold font-headline pt-4 flex items-center">
-        Sales & Marketing
-        <InfoTooltip>
-            Performance indicators for your sales funnel and marketing campaign effectiveness.
-        </InfoTooltip>
-      </h2>
-      <SalesMarketingMetrics stats={stats} visibleKpis={allKpiIds} />
+      {showSection('mem_') && (
+        <>
+          <h2 className="text-xl font-bold font-headline pt-4 flex items-center">
+            Membership Trends
+            <InfoTooltip>
+              Key metrics related to customer growth, churn, and satisfaction.
+            </InfoTooltip>
+          </h2>
+          <MembershipMetrics stats={stats} visibleKpis={visibleKpis} />
+        </>
+      )}
 
-      <h2 className="text-xl font-bold font-headline pt-4 flex items-center">
-        Operational Efficiency
-        <InfoTooltip>
-          Metrics that measure the efficiency of your company's core operations.
-        </InfoTooltip>
-      </h2>
-      <OperationalMetrics stats={stats} visibleKpis={allKpiIds} />
+      {showSection('sal_') && (
+        <>
+          <h2 className="text-xl font-bold font-headline pt-4 flex items-center">
+            Sales & Marketing
+            <InfoTooltip>
+                Performance indicators for your sales funnel and marketing campaign effectiveness.
+            </InfoTooltip>
+          </h2>
+          <SalesMarketingMetrics stats={stats} visibleKpis={visibleKpis} />
+        </>
+      )}
+
+      {showSection('ops_') && (
+        <>
+          <h2 className="text-xl font-bold font-headline pt-4 flex items-center">
+            Operational Efficiency
+            <InfoTooltip>
+              Metrics that measure the efficiency of your company's core operations.
+            </InfoTooltip>
+          </h2>
+          <OperationalMetrics stats={stats} visibleKpis={visibleKpis} />
+        </>
+      )}
+
+      {visibleKpis.length === 0 && (
+          <div className="flex flex-col items-center justify-center text-center p-12 border-2 border-dashed rounded-lg">
+            <h3 className="text-xl font-semibold">No Widgets Selected</h3>
+            <p className="text-muted-foreground mt-2">
+                Click the '+' button in the header to configure your overview.
+            </p>
+        </div>
+      )}
     </div>
   );
 }
