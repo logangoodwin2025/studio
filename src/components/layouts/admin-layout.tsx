@@ -74,7 +74,13 @@ function Header() {
   const notifications = (role && adminNotifications[role as keyof typeof adminNotifications]) || [];
   const params = useParams();
   const companySlug = params.company as string || "srisys";
-  const companyName = companySlug ? companyNames[companySlug] || "Srisys Inc." : "Srisys Inc.";
+  
+  const getHeaderText = () => {
+    if (role === "Platform Super Admin" || role === "Platform Manager") {
+        return "";
+    }
+    return companySlug ? companyNames[companySlug] || "Srisys Inc." : "Srisys Inc.";
+  }
 
   const createHref = (href: string) => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
@@ -86,8 +92,8 @@ function Header() {
     <header className="fixed top-0 left-0 right-0 z-40 flex h-16 items-center justify-between border-b bg-background px-4 md:left-64">
         <div className="flex items-center gap-2">
             <h1 className="font-bold text-lg font-headline flex items-center gap-2">
-              <Building className="h-5 w-5 text-muted-foreground"/>
-              <span>{companyName}</span>
+              {role !== "Platform Super Admin" && role !== "Platform Manager" && <Building className="h-5 w-5 text-muted-foreground"/>}
+              <span>{getHeaderText()}</span>
             </h1>
         </div>
 

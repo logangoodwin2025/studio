@@ -1,8 +1,9 @@
 
+
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import type { Period } from "@/lib/types";
 import type { DateRange } from "react-day-picker";
 import { DashboardHeader } from "@/components/dashboard-header";
@@ -73,21 +74,41 @@ const activeUsers = userList.slice(0, 5);
 const openTickets = supportTickets.filter(t => t.status === 'Open').slice(0, 5);
 
 export function PlatformManagerDashboardView() {
-  const [tenantActivityPeriod, setTenantActivityPeriod] = useState<Period>('M');
-  const [tenantActivityDateRange, setTenantActivityDateRange] = useState<DateRange | undefined>(undefined);
-  const [supportTicketsPeriod, setSupportTicketsPeriod] = useState<Period>('M');
-  const [supportTicketsDateRange, setSupportTicketsDateRange] = useState<DateRange | undefined>(undefined);
-  const [resourcePeriod, setResourcePeriod] = useState<Period>('M');
-  const [resourceDateRange, setResourceDateRange] = useState<DateRange | undefined>(undefined);
-  const [apiCallsPeriod, setApiCallsPeriod] = useState<Period>('M');
-  const [apiCallsDateRange, setApiCallsDateRange] = useState<DateRange | undefined>(undefined);
+  const [period, setPeriod] = useState<Period>('M');
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+
+  const handlePeriodChange = useCallback((newPeriod: Period) => {
+    setPeriod(newPeriod);
+    if (newPeriod !== 'CUSTOM') {
+      setDateRange(undefined);
+    }
+  }, []);
+
+  const handleDateRangeChange = useCallback((newDateRange: DateRange | undefined) => {
+    setPeriod('CUSTOM');
+    setDateRange(newDateRange);
+  }, []);
+
+  // In a real app, you'd fetch filtered data. Here we simulate it.
+  const filteredSignups = useMemo(() => newSignupsData.slice(0, 4 + Math.floor(Math.random() * 3)), [period, dateRange]);
+  const filteredTickets = useMemo(() => supportTicketsData.map(d => ({...d, open: Math.round(d.open * (0.8 + Math.random() * 0.4))})), [period, dateRange]);
+  const filteredStorage = useMemo(() => topTenantsByStorage.map(d => ({...d, storage: Math.round(d.storage * (0.8 + Math.random() * 0.4))})), [period, dateRange]);
+  const filteredApiCalls = useMemo(() => apiCallsData.slice(0, 4 + Math.floor(Math.random() * 3)), [period, dateRange]);
+
 
   return (
     <>
       <DashboardHeader 
         title="Platform Manager Dashboard" 
         description="Manage tenant accounts and monitor platform activity."
-      />
+      >
+        <PeriodPicker 
+            period={period} 
+            onPeriodChange={handlePeriodChange}
+            dateRange={dateRange}
+            onDateRangeChange={handleDateRangeChange}
+        />
+      </DashboardHeader>
       <main className="flex-1 p-4 sm:px-6 lg:px-8 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Dialog>
@@ -205,7 +226,7 @@ export function PlatformManagerDashboardView() {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             <Card className="xl:col-span-2">
-                <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                <CardHeader>
                     <div>
                         <CardTitle className="font-headline flex items-center">
                             Tenant Activity
@@ -213,15 +234,11 @@ export function PlatformManagerDashboardView() {
                         </CardTitle>
                         <CardDescription>New signups trend over the selected period.</CardDescription>
                     </div>
-                    <PeriodPicker 
-                        period={tenantActivityPeriod} onPeriodChange={setTenantActivityPeriod} 
-                        dateRange={tenantActivityDateRange} onDateRangeChange={setTenantActivityDateRange} 
-                    />
                 </CardHeader>
                 <CardContent>
                     <div className="h-60">
                         <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={newSignupsData}>
+                            <LineChart data={filteredSignups}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                 <XAxis dataKey="date" fontSize={12} />
                                 <YAxis fontSize={12} />
@@ -234,7 +251,7 @@ export function PlatformManagerDashboardView() {
                 </CardContent>
             </Card>
              <Card>
-                <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                <CardHeader>
                      <div>
                         <CardTitle className="font-headline flex items-center">
                             Support Tickets
@@ -242,15 +259,11 @@ export function PlatformManagerDashboardView() {
                         </CardTitle>
                         <CardDescription>Open vs. Resolved by priority.</CardDescription>
                     </div>
-                     <PeriodPicker 
-                        period={supportTicketsPeriod} onPeriodChange={setSupportTicketsPeriod} 
-                        dateRange={supportTicketsDateRange} onDateRangeChange={setSupportTicketsDateRange} 
-                    />
                 </CardHeader>
                 <CardContent>
                      <div className="h-60">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={supportTicketsData}>
+                            <BarChart data={filteredTickets}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                 <XAxis dataKey="priority" fontSize={12} />
                                 <YAxis fontSize={12} />
@@ -264,10 +277,10 @@ export function PlatformManagerDashboardView() {
                 </CardContent>
             </Card>
         </div>
-         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            <div className="xl:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
                 <Card>
-                    <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                    <CardHeader>
                         <div>
                             <CardTitle className="font-headline flex items-center">
                                 Resource Utilization
@@ -275,18 +288,14 @@ export function PlatformManagerDashboardView() {
                             </CardTitle>
                             <CardDescription>Storage usage per tenant (GB).</CardDescription>
                         </div>
-                        <PeriodPicker
-                            period={resourcePeriod} onPeriodChange={setResourcePeriod}
-                            dateRange={resourceDateRange} onDateRangeChange={setResourceDateRange}
-                        />
                     </CardHeader>
                     <CardContent>
                         <div className="h-60">
                              <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={topTenantsByStorage} layout="vertical" margin={{ left: 10, right: 10 }}>
+                                <BarChart data={filteredStorage} layout="vertical" margin={{ left: 10, right: 10 }}>
                                     <CartesianGrid strokeDasharray="3 3" horizontal={false} />
                                     <XAxis type="number" fontSize={12} />
-                                    <YAxis type="category" dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
+                                    <YAxis type="category" width={80} dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
                                     <Tooltip
                                         formatter={(val: number) => `${val} GB`}
                                         cursor={{fill: 'hsl(var(--secondary))'}}
@@ -303,7 +312,7 @@ export function PlatformManagerDashboardView() {
                     </CardContent>
                 </Card>
                 <Card>
-                    <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                    <CardHeader>
                         <div>
                             <CardTitle className="font-headline flex items-center">
                                 API Calls
@@ -311,15 +320,11 @@ export function PlatformManagerDashboardView() {
                             </CardTitle>
                             <CardDescription>Total API calls by month.</CardDescription>
                         </div>
-                        <PeriodPicker
-                            period={apiCallsPeriod} onPeriodChange={setApiCallsPeriod}
-                            dateRange={apiCallsDateRange} onDateRangeChange={setApiCallsDateRange}
-                        />
                     </CardHeader>
                     <CardContent>
                         <div className="h-60">
                             <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={apiCallsData}>
+                                <LineChart data={filteredApiCalls}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                     <XAxis dataKey="date" fontSize={12} />
                                     <YAxis fontSize={12} tickFormatter={(val: number) => `${val/1000}k`} />
