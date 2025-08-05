@@ -66,7 +66,7 @@ export default function LoginPage() {
             path = `/${companySlug}/operations-dashboard`;
             break;
         case "Company Admin":
-            path = `/${companySlug}/users`;
+            path = `/admin/dashboard`;
             params = searchParams;
             break;
         case "Basic User":

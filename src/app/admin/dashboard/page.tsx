@@ -15,8 +15,6 @@ const REQUIRED_ROLES = ["Platform Super Admin", "Platform Manager", "Company Adm
 
 function AdminDashboardPageContent() {
     const { role, isLoaded } = useUserRole();
-    const params = useParams();
-    const searchParams = useSearchParams();
 
     if (!isLoaded) {
         return <Loading />;
@@ -26,19 +24,14 @@ function AdminDashboardPageContent() {
         return <AccessDenied />;
     }
 
-    // A Company Admin should not be on this page, they should be on their company-specific page
-    if (role === "Company Admin") {
-        const companySlug = params.company || 'srisys';
-        const newSearchParams = new URLSearchParams(searchParams.toString());
-        redirect(`/${companySlug}/users?${newSearchParams.toString()}`);
-    }
-
     const renderDashboardByRole = () => {
         switch (role) {
             case "Platform Super Admin":
                 return <SuperAdminDashboardView />;
             case "Platform Manager":
                 return <PlatformManagerDashboardView />;
+            case "Company Admin":
+                return <CompanyAdminDashboardView />;
             default:
                 return <AccessDenied />;
         }
