@@ -277,8 +277,8 @@ export function PlatformManagerDashboardView() {
                 </CardContent>
             </Card>
         </div>
-         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            <div className="xl:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
                 <Card>
                     <CardHeader>
                         <div>
@@ -295,7 +295,7 @@ export function PlatformManagerDashboardView() {
                                 <BarChart data={filteredStorage} layout="vertical" margin={{ left: 10, right: 10 }}>
                                     <CartesianGrid strokeDasharray="3 3" horizontal={false} />
                                     <XAxis type="number" fontSize={12} />
-                                    <YAxis type="category" dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
+                                    <YAxis type="category" width={80} dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
                                     <Tooltip
                                         formatter={(val: number) => `${val} GB`}
                                         cursor={{fill: 'hsl(var(--secondary))'}}
