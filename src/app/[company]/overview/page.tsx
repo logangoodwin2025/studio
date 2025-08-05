@@ -30,7 +30,6 @@ const departmentOptions = [
     { id: 'membership', label: 'Membership' },
     { id: 'sales', label: 'Sales & Marketing' },
     { id: 'operations', label: 'Operations' },
-    { id: 'competitive', label: 'Competitive Insights' },
 ];
 
 const kpiOptions = [
@@ -42,9 +41,7 @@ const kpiOptions = [
     { id: 'fin_cash_flow', label: 'Cash Flow Stat Card', department: 'financials' },
     { id: 'fin_ltv', label: 'Customer LTV Stat Card', department: 'financials' },
     { id: 'fin_cac', label: 'Customer CAC Stat Card', department: 'financials' },
-    { id: 'fin_revenue_profit_trend', label: 'Revenue & Profit Trend Chart', department: 'financials' },
-    { id: 'fin_expense_breakdown', label: 'Expense Breakdown Chart', department: 'financials' },
-
+    
     // Membership
     { id: 'mem_total', label: 'Total Members Stat Card', department: 'membership' },
     { id: 'mem_new', label: 'New Members Stat Card', department: 'membership' },
@@ -68,12 +65,6 @@ const kpiOptions = [
     { id: 'ops_delivery_time', label: 'Service Delivery Time Stat Card', department: 'operations' },
     { id: 'ops_revenue_per_employee', label: 'Revenue Per Employee Stat Card', department: 'operations' },
     { id: 'ops_employee_utilization', label: 'Employee Utilization Stat Card', department: 'operations' },
-
-    // Competitive
-    { id: 'comp_market_share', label: 'Market Share Growth Card', department: 'competitive' },
-    { id: 'comp_pricing_trends', label: 'Industry Pricing Trends Card', department: 'competitive' },
-    { id: 'comp_benchmarking', label: 'Competitive Benchmarking Card', department: 'competitive' },
-    { id: 'comp_scenario_planner', label: 'Scenario Planner Card', department: 'competitive' },
 ];
 
 function OverviewPageContent() {
