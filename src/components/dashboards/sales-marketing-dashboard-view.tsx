@@ -20,13 +20,19 @@ const campaignRoiData = [
     { name: 'Email Campaign', roi: 5.1, fill: 'hsl(var(--chart-4))' },
 ];
 
+const allKpis = [
+    'sal_lead_pipeline_chart', 'sal_campaign_roi_chart',
+    'sal_lead_gen', 'sal_conversion_rate', 'sal_pipeline_value',
+    'sal_avg_revenue', 'sal_marketing_roi', 'sal_cpl'
+]
+
 interface SalesMarketingDashboardViewProps {
   stats: FinancialStats;
-  visibleKpis: string[];
+  visibleKpis?: string[];
   showStats?: boolean;
 }
 
-export function SalesMarketingDashboardView({ stats, visibleKpis, showStats = true }: SalesMarketingDashboardViewProps) {
+export function SalesMarketingDashboardView({ stats, visibleKpis = allKpis, showStats = true }: SalesMarketingDashboardViewProps) {
     const isWidgetVisible = (id: string) => visibleKpis.includes(id);
     
     return (
