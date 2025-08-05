@@ -16,7 +16,7 @@ export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("PinnSight@123");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
@@ -112,7 +112,7 @@ export default function LoginPage() {
                 required 
               />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 hidden">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
                 <Input 
