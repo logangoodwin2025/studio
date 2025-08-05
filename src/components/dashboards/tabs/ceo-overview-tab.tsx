@@ -5,22 +5,26 @@ import type { FinancialRecord } from "@/context/financial-data-context";
 import type { FinancialStats } from "@/lib/financial-aggregator";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FinancialStats as FinancialStatsCards } from "@/components/financial-stats";
-import { RevenueProfitTrend } from "@/components/revenue-profit-trend";
-import { ExpenseBreakdown } from "@/components/expense-breakdown";
 import { MembershipMetrics } from "../membership-metrics";
 import { SalesMarketingMetrics } from "../sales-marketing-metrics";
 import { OperationalMetrics } from "../operational-metrics";
 import { InfoTooltip } from "@/components/info-tooltip";
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+
+const competitiveData = [
+    { name: 'Srisys', share: 25, nps: 45, color: 'hsl(var(--chart-1))' },
+    { name: 'Competitor A', share: 20, nps: 40, color: 'hsl(var(--chart-2))' },
+    { name: 'Competitor B', share: 18, nps: 35, color: 'hsl(var(--chart-3))' },
+    { name: 'Other', share: 37, nps: 30, color: 'hsl(var(--chart-4))' },
+]
 
 interface CeoOverviewTabProps {
   stats: FinancialStats;
-  chartData: FinancialRecord[];
   visibleKpis: string[];
 }
 
-export function CeoOverviewTab({ stats, chartData, visibleKpis }: CeoOverviewTabProps) {
+export function CeoOverviewTab({ stats, visibleKpis }: CeoOverviewTabProps) {
   const isWidgetVisible = (id: string) => visibleKpis.includes(id);
-
   const showSection = (prefix: string) => visibleKpis.some(kpi => kpi.startsWith(prefix));
 
   return (
@@ -34,82 +38,9 @@ export function CeoOverviewTab({ stats, chartData, visibleKpis }: CeoOverviewTab
             </InfoTooltip>
           </h2>
           <FinancialStatsCards stats={stats} visibleKpis={visibleKpis} />
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-            {isWidgetVisible('fin_revenue_profit_trend') && (
-              <div className="lg:col-span-3">
-                <RevenueProfitTrend data={chartData} />
-              </div>
-            )}
-            {isWidgetVisible('fin_expense_breakdown') && (
-              <div className="lg:col-span-2">
-                <ExpenseBreakdown data={chartData} />
-              </div>
-            )}
-          </div>
         </>
       )}
 
-      {showSection('comp_') && (
-        <>
-          <h2 className="text-xl font-bold font-headline pt-4 flex items-center">
-            Industry & Competitive Insights
-            <InfoTooltip>
-              Compares your company's market share and Net Promoter Score (NPS) against industry benchmarks.
-            </InfoTooltip>
-          </h2>
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-4">
-              {isWidgetVisible('comp_market_share') && (
-                  <Card>
-                      <CardHeader>
-                          <CardTitle className="font-headline text-base">Market Share Growth</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                          <div className="h-24 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
-                              (Chart placeholder)
-                          </div>
-                      </CardContent>
-                  </Card>
-              )}
-              {isWidgetVisible('comp_pricing_trends') && (
-                   <Card>
-                      <CardHeader>
-                          <CardTitle className="font-headline text-base">Industry Pricing Trends</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                           <div className="h-24 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
-                              (Chart placeholder)
-                          </div>
-                      </CardContent>
-                  </Card>
-              )}
-               {isWidgetVisible('comp_benchmarking') && (
-                   <Card>
-                      <CardHeader>
-                          <CardTitle className="font-headline text-base">Competitive Benchmarking</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                           <div className="h-24 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
-                              (Chart placeholder)
-                          </div>
-                      </CardContent>
-                  </Card>
-              )}
-               {isWidgetVisible('comp_scenario_planner') && (
-                   <Card>
-                      <CardHeader>
-                          <CardTitle className="font-headline text-base">Scenario Planner</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                           <div className="h-24 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
-                             (AI planner placeholder)
-                          </div>
-                      </CardContent>
-                  </Card>
-              )}
-          </div>
-        </>
-      )}
-      
       {showSection('mem_') && (
         <>
           <h2 className="text-xl font-bold font-headline pt-4 flex items-center">
@@ -143,6 +74,98 @@ export function CeoOverviewTab({ stats, chartData, visibleKpis }: CeoOverviewTab
             </InfoTooltip>
           </h2>
           <OperationalMetrics stats={stats} visibleKpis={visibleKpis} />
+        </>
+      )}
+
+      {showSection('comp_') && (
+        <>
+          <h2 className="text-xl font-bold font-headline pt-4 flex items-center">
+            Industry & Competitive Insights
+            <InfoTooltip>
+              Compares your company's market share and Net Promoter Score (NPS) against industry benchmarks.
+            </InfoTooltip>
+          </h2>
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-4">
+              {isWidgetVisible('comp_market_share') && (
+                  <Card>
+                      <CardHeader>
+                          <CardTitle className="font-headline text-base">Market Share Growth</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                          <div className="h-40">
+                              <ResponsiveContainer width="100%" height="100%">
+                                  <BarChart data={competitiveData} layout="vertical" margin={{ left: 10}}>
+                                      <XAxis type="number" hide />
+                                      <YAxis dataKey="name" type="category" hide />
+                                      <Tooltip 
+                                          formatter={(value) => `${value}%`}
+                                           contentStyle={{
+                                            backgroundColor: "hsl(var(--card))",
+                                            borderColor: "hsl(var(--border))",
+                                            borderRadius: "var(--radius)"
+                                          }}
+                                      />
+                                      <Bar dataKey="share" background={{ fill: 'hsl(var(--secondary))' }} barSize={16}>
+                                        {competitiveData.map((entry) => <Bar key={entry.name} dataKey="share" fill={entry.color} />)}
+                                      </Bar>
+                                  </BarChart>
+                              </ResponsiveContainer>
+                          </div>
+                      </CardContent>
+                  </Card>
+              )}
+              {isWidgetVisible('comp_pricing_trends') && (
+                   <Card>
+                      <CardHeader>
+                          <CardTitle className="font-headline text-base">Industry Pricing Trends</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                           <div className="h-40 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
+                              (Pricing Line Chart)
+                          </div>
+                      </CardContent>
+                  </Card>
+              )}
+               {isWidgetVisible('comp_benchmarking') && (
+                   <Card>
+                      <CardHeader>
+                          <CardTitle className="font-headline text-base">NPS Benchmarking</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                           <div className="h-40">
+                               <ResponsiveContainer width="100%" height="100%">
+                                  <BarChart data={competitiveData} margin={{ left: -20}}>
+                                      <XAxis dataKey="name" fontSize={12} />
+                                      <YAxis />
+                                      <Tooltip
+                                           contentStyle={{
+                                            backgroundColor: "hsl(var(--card))",
+                                            borderColor: "hsl(var(--border))",
+                                            borderRadius: "var(--radius)"
+                                          }}
+                                      />
+                                      <Bar dataKey="nps" barSize={32}>
+                                         {competitiveData.map((entry) => <Bar key={entry.name} dataKey="nps" fill={entry.color} />)}
+                                      </Bar>
+                                  </BarChart>
+                              </ResponsiveContainer>
+                          </div>
+                      </CardContent>
+                  </Card>
+              )}
+               {isWidgetVisible('comp_scenario_planner') && (
+                   <Card>
+                      <CardHeader>
+                          <CardTitle className="font-headline text-base">Scenario Planner</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                           <div className="h-40 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
+                             (AI Planner Tool)
+                          </div>
+                      </CardContent>
+                  </Card>
+              )}
+          </div>
         </>
       )}
 

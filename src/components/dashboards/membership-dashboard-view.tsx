@@ -19,15 +19,15 @@ const memberGrowthData = [
 interface MembershipDashboardViewProps {
   stats: FinancialStats;
   visibleKpis: string[];
+  showStats?: boolean;
 }
 
-export function MembershipDashboardView({ stats, visibleKpis }: MembershipDashboardViewProps) {
+export function MembershipDashboardView({ stats, visibleKpis, showStats = true }: MembershipDashboardViewProps) {
     const isWidgetVisible = (id: string) => visibleKpis.includes(id);
-    const showMembershipMetrics = visibleKpis.some(k => k.startsWith('mem_') && k.endsWith('Card'));
 
     return (
       <div className="space-y-6">
-        {showMembershipMetrics && <MembershipMetrics stats={stats} visibleKpis={visibleKpis} />}
+        {showStats && <MembershipMetrics stats={stats} visibleKpis={visibleKpis} />}
         
         <div className="grid grid-cols-1 gap-6">
              {isWidgetVisible('mem_growth_churn_chart') && (
@@ -66,5 +66,3 @@ export function MembershipDashboardView({ stats, visibleKpis }: MembershipDashbo
       </div>
     );
 }
-
-    

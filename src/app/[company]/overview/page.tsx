@@ -12,9 +12,8 @@ import { DateRange } from "react-day-picker";
 import { formatISO, parseISO } from "date-fns";
 import { Loading } from "@/components/loading";
 import { useFinancialData } from "@/context/financial-data-context";
-import { getChartDataForPeriod, getStatsForPeriod } from "@/lib/financial-aggregator";
-import type { FinancialRecord } from "@/context/financial-data-context";
-import type { FinancialStats } from "@/lib/financial-aggregator";
+import { getStatsForPeriod } from "@/lib/financial-aggregator";
+import type { FinancialStats as FinancialStatsType } from "@/lib/financial-aggregator";
 import { CeoOverviewTab } from "@/components/dashboards/tabs/ceo-overview-tab";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
@@ -84,8 +83,7 @@ function OverviewPageContent() {
     const searchParams = useSearchParams();
     const { data: allData } = useFinancialData();
 
-    const [stats, setStats] = useState<FinancialStats | null>(null);
-    const [chartData, setChartData] = useState<FinancialRecord[]>([]);
+    const [stats, setStats] = useState<FinancialStatsType | null>(null);
     const [visibleKpis, setVisibleKpis] = useState<string[]>(kpiOptions.map(k => k.id));
     const [tempVisibleKpis, setTempVisibleKpis] = useState<string[]>(visibleKpis);
 
@@ -106,9 +104,7 @@ function OverviewPageContent() {
     useEffect(() => {
         if (allData.length > 0) {
             const newStats = getStatsForPeriod(allData, period, dateRange);
-            const newChartData = getChartDataForPeriod(allData, period, dateRange);
             setStats(newStats);
-            setChartData(newChartData);
         }
     }, [allData, period, dateRange]);
 
@@ -160,7 +156,7 @@ function OverviewPageContent() {
         <>
             <DashboardHeader
                 title="Business Overview"
-                description="A comprehensive, cross-functional summary of your entire organization."
+                description="A high-level, cross-functional summary of key performance indicators."
             >
                  <div className="flex items-center gap-2">
                     <Dialog onOpenChange={(open) => !open && setTempVisibleKpis(visibleKpis)}>
@@ -216,7 +212,7 @@ function OverviewPageContent() {
                 </div>
             </DashboardHeader>
             <main className="flex-1 space-y-6 p-4 sm:px-6 lg:px-8">
-                <CeoOverviewTab stats={stats} chartData={chartData} visibleKpis={visibleKpis} />
+                <CeoOverviewTab stats={stats} visibleKpis={visibleKpis} />
             </main>
         </>
     );

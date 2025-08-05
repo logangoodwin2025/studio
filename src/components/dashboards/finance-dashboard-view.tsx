@@ -15,15 +15,15 @@ interface FinanceDashboardViewProps {
   stats: FinancialStatsType;
   chartData: FinancialRecord[];
   visibleKpis: string[];
+  showStats?: boolean;
 }
 
-export function FinanceDashboardView({ stats, chartData, visibleKpis }: FinanceDashboardViewProps) {
+export function FinanceDashboardView({ stats, chartData, visibleKpis, showStats = true }: FinanceDashboardViewProps) {
   const isWidgetVisible = (id: string) => visibleKpis.includes(id);
-  const showFinancialStats = visibleKpis.some(k => k.startsWith('fin_') && k.endsWith('Card'));
 
   return (
     <div className="space-y-6">
-      {showFinancialStats && <FinancialStats stats={stats} visibleKpis={visibleKpis} />}
+      {showStats && <FinancialStats stats={stats} visibleKpis={visibleKpis} />}
       
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
           {isWidgetVisible('fin_revenue_profit_trend') && (
@@ -51,5 +51,3 @@ export function FinanceDashboardView({ stats, chartData, visibleKpis }: FinanceD
     </div>
   );
 }
-
-    

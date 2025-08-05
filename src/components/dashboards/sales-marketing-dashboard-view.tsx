@@ -23,15 +23,15 @@ const campaignRoiData = [
 interface SalesMarketingDashboardViewProps {
   stats: FinancialStats;
   visibleKpis: string[];
+  showStats?: boolean;
 }
 
-export function SalesMarketingDashboardView({ stats, visibleKpis }: SalesMarketingDashboardViewProps) {
+export function SalesMarketingDashboardView({ stats, visibleKpis, showStats = true }: SalesMarketingDashboardViewProps) {
     const isWidgetVisible = (id: string) => visibleKpis.includes(id);
-    const showSalesMetrics = visibleKpis.some(k => k.startsWith('sal_') && k.endsWith('Card'));
     
     return (
       <div className="space-y-6">
-        {showSalesMetrics && <SalesMarketingMetrics stats={stats} visibleKpis={visibleKpis} />}
+        {showStats && <SalesMarketingMetrics stats={stats} visibleKpis={visibleKpis} />}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {isWidgetVisible('sal_lead_pipeline_chart') && (
                 <Card>
@@ -97,5 +97,3 @@ export function SalesMarketingDashboardView({ stats, visibleKpis }: SalesMarketi
       </div>
     );
 }
-
-    

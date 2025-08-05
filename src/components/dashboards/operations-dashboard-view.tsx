@@ -18,15 +18,15 @@ const slaComplianceData = [
 interface OperationsDashboardViewProps {
   stats: FinancialStats;
   visibleKpis: string[];
+  showStats?: boolean;
 }
 
-export function OperationsDashboardView({ stats, visibleKpis }: OperationsDashboardViewProps) {
+export function OperationsDashboardView({ stats, visibleKpis, showStats = true }: OperationsDashboardViewProps) {
     const isWidgetVisible = (id: string) => visibleKpis.includes(id);
-    const showOperationalMetrics = visibleKpis.some(k => k.startsWith('ops_') && k.endsWith('Card'));
 
     return (
       <div className="space-y-6">
-        {showOperationalMetrics && <OperationalMetrics stats={stats} visibleKpis={visibleKpis} />}
+        {showStats && <OperationalMetrics stats={stats} visibleKpis={visibleKpis} />}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {isWidgetVisible('ops_project_health_chart') && (
                 <Card>
@@ -98,5 +98,3 @@ export function OperationsDashboardView({ stats, visibleKpis }: OperationsDashbo
       </div>
     );
 }
-
-    
