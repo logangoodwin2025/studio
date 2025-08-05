@@ -57,11 +57,23 @@ export function PeriodPicker({
     <div className={cn("flex items-center gap-2 bg-card p-1 rounded-lg border w-full sm:w-auto", className)}>
         <Tabs value={period} onValueChange={handlePeriodChange} className="w-full sm:w-auto">
             <TabsList className="h-9 w-full bg-transparent p-0">
-                <TabsTrigger value="D" className="text-xs px-2.5">Daily</TabsTrigger>
-                <TabsTrigger value="W" className="text-xs px-2.5">Weekly</TabsTrigger>
-                <TabsTrigger value="M" className="text-xs px-2.5">Monthly</TabsTrigger>
+                <TabsTrigger value="D" className="text-xs px-2.5">
+                    <span className="hidden sm:inline">Daily</span>
+                    <span className="sm:hidden">D</span>
+                </TabsTrigger>
+                <TabsTrigger value="W" className="text-xs px-2.5">
+                    <span className="hidden sm:inline">Weekly</span>
+                    <span className="sm:hidden">W</span>
+                </TabsTrigger>
+                <TabsTrigger value="M" className="text-xs px-2.5">
+                    <span className="hidden sm:inline">Monthly</span>
+                    <span className="sm:hidden">M</span>
+                </TabsTrigger>
                 <TabsTrigger value="YTD" className="text-xs px-2.5">YTD</TabsTrigger>
-                <TabsTrigger value="MAX" className="text-xs px-2.5">Max</TabsTrigger>
+                <TabsTrigger value="ALL" className="text-xs px-2.5">
+                    <span className="hidden sm:inline">All Time</span>
+                    <span className="sm:hidden">All</span>
+                </TabsTrigger>
             </TabsList>
         </Tabs>
         <Separator orientation="vertical" className="h-6" />

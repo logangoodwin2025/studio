@@ -102,9 +102,9 @@ const getIntervalsForStats = (period: Period, dateRange?: DateRange) => {
             const prevYearEnd = subMonths(endOfDay(today), 12);
             previousInterval = { start: prevYearStart, end: prevYearEnd };
             break;
-        case 'MAX':
-            currentInterval = null; // No filtering for MAX
-            previousInterval = null; // No previous period for MAX
+        case 'ALL':
+            currentInterval = null; // No filtering for ALL
+            previousInterval = null; // No previous period for ALL
             break;
         case 'CUSTOM':
             if (!dateRange || !dateRange.from) break;
@@ -166,7 +166,7 @@ const getIntervalForChart = (period: Period, dateRange?: DateRange): Interval | 
             return { start: subDays(today, 90), end: endOfDay(today) };
         case 'YTD':
             return { start: startOfYear(today), end: endOfDay(today) };
-        case 'MAX':
+        case 'ALL':
             return null; // All data
         case 'CUSTOM':
              if (!dateRange || !dateRange.from) return null;
@@ -205,8 +205,8 @@ export const getChartDataForPeriod = (allData: FinancialRecord[], period: Period
         return aggregatedRecords.sort((a,b) => a.period.getTime() - b.period.getTime());
     }
 
-    // For M, YTD, MAX - group by month
-    if (['M', 'YTD', 'MAX'].includes(period) && records.length > 30) { // Aggregate by month if many data points
+    // For M, YTD, ALL - group by month
+    if (['M', 'YTD', 'ALL'].includes(period) && records.length > 30) { // Aggregate by month if many data points
         const monthlyMap = new Map<string, FinancialRecord[]>();
         records.forEach(record => {
             const key = format(startOfMonth(record.period), 'yyyy-MM-dd');
