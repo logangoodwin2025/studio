@@ -22,7 +22,7 @@ import {
   AlertCircle,
   Eye,
   User,
-  PackageSelect
+  Package
 } from "lucide-react";
 
 import {
@@ -174,7 +174,7 @@ function Header() {
                  {role === "CEO/Executive" && (
                     <DropdownMenuItem asChild>
                        <Link href={`/select-company?${searchParams.toString()}`}>
-                           <PackageSelect className="mr-2 h-4 w-4"/>
+                           <Package className="mr-2 h-4 w-4"/>
                            Select Company
                        </Link>
                     </DropdownMenuItem>
