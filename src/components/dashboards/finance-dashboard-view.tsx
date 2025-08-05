@@ -14,11 +14,19 @@ import { AccountsTable } from "@/components/accounts-table";
 interface FinanceDashboardViewProps {
   stats: FinancialStatsType;
   chartData: FinancialRecord[];
-  visibleKpis: string[];
+  visibleKpis?: string[];
   showStats?: boolean;
 }
 
-export function FinanceDashboardView({ stats, chartData, visibleKpis, showStats = true }: FinanceDashboardViewProps) {
+const allKpis = [
+    'fin_revenue_profit_trend', 'fin_expense_breakdown', 
+    'fin_profitability_analysis', 'fin_weekly_cash_flow', 
+    'fin_key_ratios', 'fin_ar_table', 'fin_ap_table',
+    'fin_revenue', 'fin_gross_margin', 'fin_net_margin',
+    'fin_ebitda', 'fin_cash_flow', 'fin_ltv', 'fin_cac'
+];
+
+export function FinanceDashboardView({ stats, chartData, visibleKpis = allKpis, showStats = true }: FinanceDashboardViewProps) {
   const isWidgetVisible = (id: string) => visibleKpis.includes(id);
 
   return (
