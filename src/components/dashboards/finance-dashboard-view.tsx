@@ -19,7 +19,7 @@ interface FinanceDashboardViewProps {
 
 export function FinanceDashboardView({ stats, chartData, visibleKpis }: FinanceDashboardViewProps) {
   const isWidgetVisible = (id: string) => visibleKpis.includes(id);
-  const showFinancialStats = visibleKpis.some(k => k.startsWith('fin_') && k.endsWith('_stat_card'));
+  const showFinancialStats = visibleKpis.some(k => k.startsWith('fin_') && k.endsWith('Card'));
 
   return (
     <div className="space-y-6">

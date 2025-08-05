@@ -27,7 +27,7 @@ interface SalesMarketingDashboardViewProps {
 
 export function SalesMarketingDashboardView({ stats, visibleKpis }: SalesMarketingDashboardViewProps) {
     const isWidgetVisible = (id: string) => visibleKpis.includes(id);
-    const showSalesMetrics = visibleKpis.some(k => k.startsWith('sal_') && k.endsWith('_stat_card'));
+    const showSalesMetrics = visibleKpis.some(k => k.startsWith('sal_') && k.endsWith('Card'));
     
     return (
       <div className="space-y-6">

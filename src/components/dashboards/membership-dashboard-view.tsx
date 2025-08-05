@@ -23,7 +23,7 @@ interface MembershipDashboardViewProps {
 
 export function MembershipDashboardView({ stats, visibleKpis }: MembershipDashboardViewProps) {
     const isWidgetVisible = (id: string) => visibleKpis.includes(id);
-    const showMembershipMetrics = visibleKpis.some(k => k.startsWith('mem_') && k.endsWith('_stat_card'));
+    const showMembershipMetrics = visibleKpis.some(k => k.startsWith('mem_') && k.endsWith('Card'));
 
     return (
       <div className="space-y-6">

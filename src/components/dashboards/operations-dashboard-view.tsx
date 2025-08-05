@@ -22,7 +22,7 @@ interface OperationsDashboardViewProps {
 
 export function OperationsDashboardView({ stats, visibleKpis }: OperationsDashboardViewProps) {
     const isWidgetVisible = (id: string) => visibleKpis.includes(id);
-    const showOperationalMetrics = visibleKpis.some(k => k.startsWith('ops_') && k.endsWith('_stat_card'));
+    const showOperationalMetrics = visibleKpis.some(k => k.startsWith('ops_') && k.endsWith('Card'));
 
     return (
       <div className="space-y-6">
