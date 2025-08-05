@@ -138,12 +138,15 @@ function Header() {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href={createHref('/settings')}>Profile</Link>
+                  <Link href={createHref('/settings')}>
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
+                  </Link>
                 </DropdownMenuItem>
                  <DropdownMenuItem asChild>
                     <Link href={createHref('/raise-ticket')}>
-                        <MessageSquarePlus className="mr-2 h-4 w-4"/>
-                        Raise a Ticket
+                        <MessageSquare className="mr-2 h-4 w-4"/>
+                        Support
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
