@@ -33,11 +33,16 @@ export default function LoginPage() {
         name: user.name,
         avatar: user.avatar,
         email: user.email,
+        period: "M",
       }).toString();
       
       const isAdminRole = ["Platform Super Admin", "Platform Manager"].includes(user.role);
       const isCompanyAdmin = user.role === "Company Admin";
       const isBasicUser = user.role === "Basic User";
+      const isCeo = user.role === "CEO/Executive";
+      const isFinance = user.role === "Finance Team";
+      const isSales = user.role === "Sales & Marketing";
+      const isOps = user.role === "Operations Team";
       
       if (isAdminRole) {
          router.push(`/admin/dashboard?${searchParams}`);
@@ -45,8 +50,15 @@ export default function LoginPage() {
         router.push(`/${companySlug}/users?${searchParams}`)
       } else if (isBasicUser) {
         router.push(`/${companySlug}/my-dashboard?${searchParams}`);
+      } else if (isCeo) {
+        router.push(`/${companySlug}/overview?${searchParams}`);
+      } else if (isFinance) {
+        router.push(`/${companySlug}/financial-dashboard?${searchParams}`);
+      } else if (isSales) {
+        router.push(`/${companySlug}/sales-marketing-dashboard?${searchParams}`);
+      } else if (isOps) {
+        router.push(`/${companySlug}/operations-dashboard?${searchParams}`);
       } else {
-        // Default route for all other authenticated users (CEO, Finance, Sales, Ops)
         router.push(`/${companySlug}/dashboard?${searchParams}`);
       }
 

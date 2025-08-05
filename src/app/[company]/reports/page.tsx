@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 
 function ReportsPageContent() {
   const { role, isLoaded } = useUserRole();
-  const [period, setPeriod] = useState<Period>("M");
+  const [period, setPeriod] = useState<Period | undefined>(undefined);
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [filter, setFilter] = useState("");
 
@@ -59,7 +59,7 @@ function ReportsPageContent() {
                   className="w-full sm:w-auto md:w-[250px]"
                 />
                 <PeriodPicker 
-                    period={period} 
+                    period={period!} 
                     onPeriodChange={handlePeriodChange}
                     dateRange={dateRange}
                     onDateRangeChange={handleDateRangeChange}
