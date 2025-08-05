@@ -13,7 +13,7 @@ const companies = [
 export default function SelectCompanyPage({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined }}) {
   
   const createHref = (slug: string) => {
-      const sp = new URLSearchParams(searchParams as Record<string, string>);
+      const sp = new URLSearchParams(searchParams.toString());
       return `/${slug}/dashboard?${sp.toString()}`;
   }
   
