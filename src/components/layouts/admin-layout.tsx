@@ -5,7 +5,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams, useParams } from "next/navigation";
-import { LogOut, ChevronDown, Bell, LayoutDashboard, Shield, User, Component, AlertCircle, CheckCircle, MessageSquare, Building, Zap, Settings, DollarSign, History } from "lucide-react";
+import { LogOut, ChevronDown, Bell, LayoutDashboard, Shield, User, Component, AlertCircle, CheckCircle, MessageSquare, Building, Zap, Settings, DollarSign, History, Package } from "lucide-react";
 
 import {
   Sidebar,
@@ -35,6 +35,7 @@ const allNavItems = {
         { href: "/admin/dashboard", icon: LayoutDashboard, label: "Platform Dashboard", roles: ["Platform Super Admin", "Platform Manager"] },
         { href: "/admin/tenants", icon: Component, label: "Tenants", roles: ["Platform Super Admin", "Platform Manager"] },
         { href: "/admin/billing", icon: DollarSign, label: "Billing", roles: ["Platform Super Admin"] },
+        { href: "/admin/templates", icon: Package, label: "Industry Templates", roles: ["Platform Super Admin"] },
         { href: "/admin/support-tickets", icon: MessageSquare, label: "Support", roles: ["Platform Manager"] },
         { href: "/admin/integrations", icon: Zap, label: "Integrations", roles: ["Platform Super Admin"] },
         { href: "/admin/audit-logs", icon: History, label: "Audit Logs", roles: ["Platform Super Admin"] },

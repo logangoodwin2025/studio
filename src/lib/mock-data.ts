@@ -199,6 +199,93 @@ export const availableReports = {
     ]
 }
 
+export const departmentOptions = [
+    { id: 'financials', label: 'Financials' },
+    { id: 'membership', label: 'Membership' },
+    { id: 'sales', label: 'Sales & Marketing' },
+    { id: 'operations', label: 'Operations' },
+];
+
+export const overviewKpiOptions = [
+    { id: 'fin_revenue', label: 'Revenue Stat Card', department: 'financials' },
+    { id: 'fin_gross_margin', label: 'Gross Margin Stat Card', department: 'financials' },
+    { id: 'fin_net_margin', label: 'Net Margin Stat Card', department: 'financials' },
+    { id: 'fin_ebitda', label: 'EBITDA Stat Card', department: 'financials' },
+    { id: 'fin_cash_flow', label: 'Cash Flow Stat Card', department: 'financials' },
+    { id: 'fin_ltv', label: 'Customer LTV Stat Card', department: 'financials' },
+    { id: 'fin_cac', label: 'Customer CAC Stat Card', department: 'financials' },
+    { id: 'mem_total', label: 'Total Members Stat Card', department: 'membership' },
+    { id: 'mem_new', label: 'New Members Stat Card', department: 'membership' },
+    { id: 'mem_lost', label: 'Lost Members Stat Card', department: 'membership' },
+    { id: 'mem_retention', label: 'Retention Rate Stat Card', department: 'membership' },
+    { id: 'mem_churn', label: 'Churn Rate Stat Card', department: 'membership' },
+    { id: 'mem_csat', label: 'CSAT Stat Card', department: 'membership' },
+    { id: 'mem_nps', label: 'NPS Stat Card', department: 'membership' },
+    { id: 'sal_lead_gen', label: 'Lead Generation Stat Card', department: 'sales' },
+    { id: 'sal_conversion_rate', label: 'Conversion Rate Stat Card', department: 'sales' },
+    { id: 'sal_pipeline_value', label: 'Pipeline Value Stat Card', department: 'sales' },
+    { id: 'sal_avg_revenue', label: 'Avg. Revenue per Client Stat Card', department: 'sales' },
+    { id: 'sal_marketing_roi', label: 'Marketing ROI Stat Card', department: 'sales' },
+    { id: 'sal_cpl', label: 'Cost Per Lead (CPL) Stat Card', department: 'sales' },
+    { id: 'ops_utilization', label: 'Utilization Rate Stat Card', department: 'operations' },
+    { id: 'ops_completion_rate', label: 'Project Completion Stat Card', department: 'operations' },
+    { id: 'ops_delivery_time', label: 'Service Delivery Time Stat Card', department: 'operations' },
+    { id: 'ops_revenue_per_employee', label: 'Revenue Per Employee Stat Card', department: 'operations' },
+    { id: 'ops_employee_utilization', label: 'Employee Utilization Stat Card', department: 'operations' },
+];
+
+export const dashboardKpiOptions = [
+    { id: 'fin_revenue_profit_trend', label: 'Revenue & Profit Trend Chart', department: 'financials' },
+    { id: 'fin_expense_breakdown', label: 'Expense Breakdown Chart', department: 'financials' },
+    { id: 'fin_profitability_analysis', label: 'Profitability Analysis Chart', department: 'financials' },
+    { id: 'fin_weekly_cash_flow', label: 'Weekly Cash Flow Chart', department: 'financials' },
+    { id: 'fin_key_ratios', label: 'Key Ratios Table', department: 'financials' },
+    { id: 'fin_ar_table', label: 'Accounts Receivable Table', department: 'financials' },
+    { id: 'fin_ap_table', label: 'Accounts Payable Table', department: 'financials' },
+    { id: 'mem_growth_churn_chart', label: 'Member Growth vs. Churn Chart', department: 'membership' },
+    { id: 'sal_lead_pipeline_chart', label: 'Lead Pipeline Chart', department: 'sales' },
+    { id: 'sal_campaign_roi_chart', label: 'Campaign Performance Chart', department: 'sales' },
+    { id: 'ops_project_health_chart', label: 'Project Health Chart', department: 'operations' },
+    { id: 'ops_service_delivery_chart', label: 'Service Delivery Chart', department: 'operations' },
+];
+
+export const allKpiOptions = [...overviewKpiOptions, ...dashboardKpiOptions];
+
+export const industryTemplates = [
+    {
+        id: 'saas',
+        name: 'Standard SaaS',
+        defaultKpis: [
+            'fin_revenue', 'fin_net_margin', 'fin_ltv', 'fin_cac', 'mem_total', 'mem_churn',
+            'sal_conversion_rate', 'sal_pipeline_value', 'ops_revenue_per_employee', 'fin_revenue_profit_trend',
+            'mem_growth_churn_chart'
+        ]
+    },
+    {
+        id: 'ecommerce',
+        name: 'E-commerce',
+        defaultKpis: [
+            'fin_revenue', 'fin_gross_margin', 'sal_avg_revenue', 'fin_cac', 'mem_total',
+            'sal_conversion_rate', 'sal_marketing_roi', 'ops_delivery_time', 'fin_revenue_profit_trend',
+            'sal_campaign_roi_chart'
+        ]
+    },
+    {
+        id: 'services',
+        name: 'Professional Services',
+        defaultKpis: [
+            'fin_revenue', 'fin_gross_margin', 'ops_utilization', 'ops_revenue_per_employee',
+            'fin_ar_table', 'sal_pipeline_value', 'ops_project_health_chart', 'fin_weekly_cash_flow'
+        ]
+    },
+     {
+        id: 'generic',
+        name: 'Generic',
+        defaultKpis: allKpiOptions.map(k => k.id)
+    }
+];
+
+
 
 export const monthlyRevenueData = [
   { month: "Jan", revenue: 4000 }, { month: "Feb", revenue: 3000 },
