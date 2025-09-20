@@ -40,7 +40,6 @@ const allNavItems = {
     ],
     COMPANY_ADMIN: [
         { href: "/admin/dashboard", icon: LayoutDashboard, label: "Admin Dashboard", roles: ["Company Admin"] },
-        { href: "/users", icon: Users, label: "Users", roles: ["Company Admin"] },
         { href: "/roles", icon: Shield, label: "Roles", roles: ["Company Admin"] },
         { href: "/integrations", icon: Zap, label: "Integrations", roles: ["Company Admin"] },
     ]

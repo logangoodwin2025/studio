@@ -58,6 +58,7 @@ const allNavItems = {
       { href: "/financial-dashboard", icon: DollarSign, label: "Financial Dashboard", roles: ["Finance Team"] },
       { href: "/sales-marketing-dashboard", icon: Lightbulb, label: "Sales & Marketing", roles: ["Sales & Marketing"] },
       { href: "/operations-dashboard", icon: Activity, label: "Operations Dashboard", roles: ["Operations Team"] },
+      { href: "/membership-dashboard", icon: Users2, label: "Membership Dashboard", roles: ["Sales & Marketing"] },
       { href: "/recent-activity", icon: History, label: "Recent Activity", roles: ["CEO/Executive", "Finance Team", "Sales & Marketing", "Operations Team", "Basic User"] },
     ],
     MANAGEMENT: [
@@ -66,7 +67,11 @@ const allNavItems = {
       { href: "/data-entry/operations", icon: ClipboardPlus, label: "Operations Data Entry", roles: ["Operations Team"] },
       { href: "/data-entry/membership", icon: ClipboardPlus, label: "Membership Data Entry", roles: ["Sales & Marketing"] },
       
-      { href: "/reports", icon: FileBarChart2, label: "Reports", roles: ["Finance Team", "Sales & Marketing", "Operations Team", "CEO/Executive"] },
+      { href: "/reports/finance", icon: FileBarChart2, label: "Financial Reports", roles: ["Finance Team"] },
+      { href: "/reports/sales", icon: FileBarChart2, label: "Sales Reports", roles: ["Sales & Marketing"] },
+      { href: "/reports/operations", icon: FileBarChart2, label: "Operations Reports", roles: ["Operations Team"] },
+      { href: "/reports/membership", icon: FileBarChart2, label: "Membership Reports", roles: ["Sales & Marketing"] },
+      { href: "/reports", icon: FileBarChart2, label: "All Reports", roles: ["CEO/Executive"] },
     ],
 };
 
@@ -206,10 +211,11 @@ function SidebarHeaderContent({ href }: { href: string }) {
 
 function getVisibleNavItems(role: string | null) {
     if (!role) {
-        return [];
+        return { general: [], management: []};
     }
-    const allItems = [...allNavItems.GENERAL, ...allNavItems.MANAGEMENT];
-    return allItems.filter(item => item.roles.includes(role));
+    const general = allNavItems.GENERAL.filter(item => item.roles.includes(role));
+    const management = allNavItems.MANAGEMENT.filter(item => item.roles.includes(role));
+    return { general, management };
 }
 
 
@@ -223,7 +229,7 @@ export function DashboardLayout({
   const { role } = useUserRole();
   const companySlug = params.company as string;
   const searchParams = useSearchParams();
-  const navItems = getVisibleNavItems(role);
+  const { general: generalNavItems, management: managementNavItems } = getVisibleNavItems(role);
 
   const getDashboardHomeLink = () => {
     if (!role) return '/login';
@@ -245,11 +251,11 @@ export function DashboardLayout({
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
-            {navItems.map((item) => (
+            {generalNavItems.map((item) => (
               <SidebarMenuItem key={item.href}>
                 <Link href={createHref(item.href)}>
                   <SidebarMenuButton
-                    isActive={pathname.endsWith(item.href)}
+                    isActive={pathname === `/${companySlug}${item.href}`}
                     className="w-full"
                   >
                     <item.icon className="h-4 w-4" />
@@ -259,6 +265,24 @@ export function DashboardLayout({
               </SidebarMenuItem>
             ))}
           </SidebarMenu>
+           {managementNavItems.length > 0 && (
+            <SidebarMenu>
+                <SidebarLabel>Management</SidebarLabel>
+                {managementNavItems.map((item) => (
+                <SidebarMenuItem key={item.href}>
+                    <Link href={createHref(item.href)}>
+                    <SidebarMenuButton
+                        isActive={pathname.startsWith(`/${companySlug}${item.href}`)}
+                        className="w-full"
+                    >
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.label}</span>
+                    </SidebarMenuButton>
+                    </Link>
+                </SidebarMenuItem>
+                ))}
+            </SidebarMenu>
+          )}
         </SidebarContent>
       </Sidebar>
       <div className="flex flex-1 flex-col md:ml-64">
