@@ -21,12 +21,18 @@ interface OperationsDashboardViewProps {
   showStats?: boolean;
 }
 
-export function OperationsDashboardView({ stats, showStats = true }: OperationsDashboardViewProps) {
+const allKpis = [
+    'ops_project_health_chart', 'ops_service_delivery_chart'
+]
+
+export function OperationsDashboardView({ stats, visibleKpis = allKpis, showStats = true }: OperationsDashboardViewProps) {
+    const isWidgetVisible = (id: string) => visibleKpis.includes(id);
     
     return (
       <div className="space-y-6">
-        {showStats && <OperationalMetrics stats={stats} />}
+        {showStats && <OperationalMetrics stats={stats} visibleKpis={visibleKpis} />}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {isWidgetVisible('ops_project_health_chart') && (
                 <Card>
                     <CardHeader>
                         <CardTitle className="font-headline flex items-center">
@@ -58,6 +64,8 @@ export function OperationsDashboardView({ stats, showStats = true }: OperationsD
                         </div>
                     </CardContent>
                 </Card>
+            )}
+            {isWidgetVisible('ops_service_delivery_chart') && (
                 <Card>
                     <CardHeader>
                         <CardTitle className="font-headline flex items-center">
@@ -89,6 +97,7 @@ export function OperationsDashboardView({ stats, showStats = true }: OperationsD
                         </div>
                     </CardContent>
                 </Card>
+            )}
         </div>
       </div>
     );
