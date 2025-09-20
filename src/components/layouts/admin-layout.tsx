@@ -36,6 +36,7 @@ const allNavItems = {
         { href: "/admin/dashboard", icon: LayoutDashboard, label: "Platform Dashboard", roles: ["Platform Super Admin", "Platform Manager"] },
         { href: "/admin/tenants", icon: Component, label: "Tenants", roles: ["Platform Super Admin", "Platform Manager"] },
         { href: "/admin/support-tickets", icon: MessageSquare, label: "Support", roles: ["Platform Manager"] },
+        { href: "/admin/integrations", icon: Zap, label: "Integrations", roles: ["Platform Super Admin", "Platform Manager"] },
     ],
     COMPANY_ADMIN: [
         { href: "/admin/dashboard", icon: LayoutDashboard, label: "Admin Dashboard", roles: ["Company Admin"] },
@@ -213,7 +214,7 @@ export function AdminLayout({
     
     if (role === 'Company Admin') {
         const companySlug = params.company as string || "srisys"; 
-        const finalHref = href.startsWith('/admin') ? `/admin${href}` : `/${companySlug}${href}`;
+        const finalHref = href.startsWith('/admin') ? href : `/${companySlug}${href}`;
         return `${finalHref}?${newSearchParams.toString()}`;
     }
     
