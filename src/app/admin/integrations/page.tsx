@@ -21,7 +21,7 @@ const integrations = [
 
 function CompanyAdminIntegrationsView() {
     return (
-        <>
+        <div className="space-y-6">
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {integrations.map((integration) => (
                     <Card key={integration.name}>
@@ -53,7 +53,7 @@ function CompanyAdminIntegrationsView() {
                     </Card>
                 ))}
             </div>
-                <Card className="bg-secondary/50 border-dashed">
+            <Card className="bg-secondary/50 border-dashed">
                 <CardHeader>
                     <CardTitle className="font-headline flex items-center gap-2">
                         <img src="/logos/zapier.svg" alt="Zapier" className="h-6 w-6"/>
@@ -64,7 +64,7 @@ function CompanyAdminIntegrationsView() {
                     </CardDescription>
                 </CardHeader>
             </Card>
-        </>
+        </div>
     )
 }
 
@@ -83,7 +83,7 @@ export default function IntegrationsPage() {
                 title="Integrations Hub"
                 description={isPlatformAdmin ? "Manage platform-level integration settings." : "Connect your tools to automate data synchronization."}
             />
-            <main className="flex-1 p-4 sm:px-6 lg:px-8 space-y-6">
+            <main className="flex-1 p-4 sm:px-6 lg:px-8">
                {isPlatformAdmin ? <PlatformIntegrationsSettings /> : <CompanyAdminIntegrationsView />}
             </main>
         </>
