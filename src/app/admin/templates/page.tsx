@@ -8,7 +8,8 @@ import * as z from "zod";
 import {
   industryTemplates,
   departmentOptions,
-  allKpiOptions,
+  type IndustryTemplate,
+  type Kpi,
 } from "@/lib/mock-data";
 import { useToast } from "@/hooks/use-toast";
 import { DashboardHeader } from "@/components/dashboard-header";
@@ -20,104 +21,137 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import { Edit, Package, PlusCircle } from "lucide-react";
+import { Edit, Package, PlusCircle, Settings, Trash2 } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+
+const kpiSchema = z.object({
+  id: z.string(),
+  label: z.string().min(3, "KPI name must be at least 3 characters."),
+  department: z.string().min(1, "Department is required."),
+  description: z.string().min(3, "Description is required."),
+  formula: z.string().optional(),
+});
+
+type KpiFormValues = z.infer<typeof kpiSchema>;
 
 
 const templateSchema = z.object({
   id: z.string(),
   name: z.string().min(3, "Template name must be at least 3 characters."),
-  defaultKpis: z.array(z.string()).min(1, "At least one KPI must be selected."),
+  kpis: z.array(z.string()).min(1, "At least one KPI must be selected."),
 });
 
 type TemplateFormValues = z.infer<typeof templateSchema>;
 
 export default function TemplatesPage() {
   const { toast } = useToast();
-  const [templates, setTemplates] = React.useState(industryTemplates);
-  const [isDialogOpen, setDialogOpen] = React.useState(false);
-  const [editingTemplate, setEditingTemplate] = React.useState<TemplateFormValues | null>(null);
+  const [templates, setTemplates] = React.useState<IndustryTemplate[]>(industryTemplates);
+  const [isTemplateDialogOpen, setTemplateDialogOpen] = React.useState(false);
+  const [isKpiManagerOpen, setKpiManagerOpen] = React.useState(false);
+  const [isKpiFormOpen, setKpiFormOpen] = React.useState(false);
+  const [editingTemplate, setEditingTemplate] = React.useState<IndustryTemplate | null>(null);
+  const [editingKpi, setEditingKpi] = React.useState<Kpi | null>(null);
 
-  const form = useForm<TemplateFormValues>({
+
+  const templateForm = useForm<TemplateFormValues>({
     resolver: zodResolver(templateSchema),
   });
 
-  const handleAddNew = () => {
+  const kpiForm = useForm<KpiFormValues>({
+    resolver: zodResolver(kpiSchema)
+  });
+
+  const handleAddNewTemplate = () => {
     setEditingTemplate(null);
-    form.reset({ id: `template_${Date.now()}`, name: "", defaultKpis: [] });
-    setDialogOpen(true);
+    templateForm.reset({ id: `template_${Date.now()}`, name: "", kpis: [] });
+    setTemplateDialogOpen(true);
   };
 
-  const handleEdit = (template: TemplateFormValues) => {
+  const handleEditTemplate = (template: IndustryTemplate) => {
     setEditingTemplate(template);
-    form.reset(template);
-    setDialogOpen(true);
+    templateForm.reset({
+      id: template.id,
+      name: template.name,
+      kpis: template.kpis.map(k => k.id)
+    });
+    setTemplateDialogOpen(true);
   };
 
-  const onSubmit = (values: TemplateFormValues) => {
+  const handleManageKpis = (template: IndustryTemplate) => {
+    setEditingTemplate(template);
+    setKpiManagerOpen(true);
+  }
+
+  const handleAddNewKpi = () => {
+    setEditingKpi(null);
+    kpiForm.reset({ id: `kpi_${Date.now()}`, label: "", department: "", description: "", formula: "" });
+    setKpiFormOpen(true);
+  }
+  
+  const handleEditKpi = (kpi: Kpi) => {
+    setEditingKpi(kpi);
+    kpiForm.reset(kpi);
+    setKpiFormOpen(true);
+  }
+
+  const handleDeleteKpi = (kpiId: string) => {
+    if (!editingTemplate) return;
+    const updatedKpis = editingTemplate.kpis.filter(k => k.id !== kpiId);
+    const updatedTemplate = { ...editingTemplate, kpis: updatedKpis };
+
+    setEditingTemplate(updatedTemplate);
+    setTemplates(templates.map(t => t.id === updatedTemplate.id ? updatedTemplate : t));
+    toast({ title: "KPI Deleted", description: "The KPI has been removed from this template." });
+  }
+
+  const onTemplateSubmit = (values: TemplateFormValues) => {
+    // This function is now mostly for renaming the template.
+    // KPI association happens inside the checkbox form.
     if (editingTemplate) {
       setTemplates((prev) =>
-        prev.map((t) => (t.id === values.id ? values : t))
+        prev.map((t) => (t.id === values.id ? { ...t, name: values.name } : t))
       );
       toast({ title: "Template Updated", description: "The template has been successfully updated." });
     } else {
-      setTemplates((prev) => [...prev, values]);
+      const newTemplate: IndustryTemplate = {
+        id: values.id,
+        name: values.name,
+        kpis: [], // KPIs are now managed separately
+      }
+      setTemplates((prev) => [...prev, newTemplate]);
       toast({ title: "Template Created", description: "The new template has been successfully created." });
     }
-    setDialogOpen(false);
+    setTemplateDialogOpen(false);
   };
   
-  const KpiSelectionForm = ({ control }: { control: any }) => (
-     <ScrollArea className="h-96">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 p-4">
-          {departmentOptions.map((dept) => (
-            <div key={dept.id} className="space-y-3">
-              <h3 className="font-semibold font-headline">{dept.label}</h3>
-              <Separator />
-              <FormField
-                control={control}
-                name="defaultKpis"
-                render={({ field }) => (
-                  <FormItem>
-                    {allKpiOptions
-                      .filter((kpi) => kpi.department === dept.id)
-                      .map((kpi) => (
-                        <FormField
-                          key={kpi.id}
-                          control={control}
-                          name="defaultKpis"
-                          render={({ field }) => (
-                            <FormItem key={kpi.id} className="flex items-center space-x-2">
-                                <FormControl>
-                                    <Checkbox
-                                        checked={field.value?.includes(kpi.id)}
-                                        onCheckedChange={(checked) => {
-                                        return checked
-                                            ? field.onChange([...field.value, kpi.id])
-                                            : field.onChange(
-                                                field.value?.filter(
-                                                (value) => value !== kpi.id
-                                                )
-                                            )
-                                        }}
-                                    />
-                                </FormControl>
-                                <Label htmlFor={kpi.id} className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                    {kpi.label}
-                                </Label>
-                            </FormItem>
-                          )}
-                        />
-                      ))}
-                      <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          ))}
-        </div>
-      </ScrollArea>
-  )
+  const onKpiSubmit = (values: KpiFormValues) => {
+    if (!editingTemplate) return;
+
+    let updatedKpis: Kpi[];
+    if (editingKpi) { // We are editing an existing KPI
+      updatedKpis = editingTemplate.kpis.map(k => k.id === editingKpi.id ? values : k);
+      toast({ title: "KPI Updated", description: "The KPI has been successfully updated." });
+    } else { // We are adding a new KPI
+      updatedKpis = [...editingTemplate.kpis, values];
+      toast({ title: "KPI Added", description: "The new KPI has been added to the template." });
+    }
+    
+    const updatedTemplate = { ...editingTemplate, kpis: updatedKpis };
+    setEditingTemplate(updatedTemplate);
+    setTemplates(templates.map(t => t.id === updatedTemplate.id ? updatedTemplate : t));
+    setKpiFormOpen(false);
+  }
+
 
   return (
     <>
@@ -125,7 +159,7 @@ export default function TemplatesPage() {
         title="Industry Template Management"
         description="Create and configure templates for different tenant industries."
       >
-        <Button onClick={handleAddNew}>
+        <Button onClick={handleAddNewTemplate}>
           <PlusCircle className="mr-2 h-4 w-4" />
           Create New Template
         </Button>
@@ -137,18 +171,22 @@ export default function TemplatesPage() {
               <CardHeader className="flex flex-row items-start justify-between">
                 <div>
                    <CardTitle className="font-headline flex items-center gap-2"><Package className="h-5 w-5 text-primary" /> {template.name}</CardTitle>
-                   <CardDescription>{template.defaultKpis.length} KPIs configured</CardDescription>
+                   <CardDescription>{template.kpis.length} KPIs configured</CardDescription>
                 </div>
-                <Button variant="outline" size="icon" onClick={() => handleEdit(template)}>
-                    <Edit className="h-4 w-4"/>
-                </Button>
+                 <div className="flex gap-2">
+                    <Button variant="outline" size="icon" onClick={() => handleEditTemplate(template)}>
+                        <Edit className="h-4 w-4"/>
+                    </Button>
+                     <Button variant="outline" size="icon" onClick={() => handleManageKpis(template)}>
+                        <Settings className="h-4 w-4"/>
+                    </Button>
+                 </div>
               </CardHeader>
               <CardContent>
                 <p className="text-sm font-semibold">Enabled KPIs:</p>
                 <ul className="text-xs text-muted-foreground list-disc list-inside mt-2 space-y-1 max-h-40 overflow-y-auto">
-                    {template.defaultKpis.map(kpiId => {
-                        const kpi = allKpiOptions.find(k => k.id === kpiId);
-                        return <li key={kpiId}>{kpi ? kpi.label : kpiId}</li>
+                    {template.kpis.map(kpi => {
+                        return <li key={kpi.id}>{kpi.label}</li>
                     })}
                 </ul>
               </CardContent>
@@ -157,21 +195,17 @@ export default function TemplatesPage() {
         </div>
       </main>
 
-      <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-4xl">
-           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+      {/* Dialog for Renaming a Template */}
+      <Dialog open={isTemplateDialogOpen} onOpenChange={setTemplateDialogOpen}>
+        <DialogContent>
+           <Form {...templateForm}>
+            <form onSubmit={templateForm.handleSubmit(onTemplateSubmit)}>
               <DialogHeader>
-                <DialogTitle>{editingTemplate ? "Edit Template" : "Create New Template"}</DialogTitle>
-                <DialogDescription>
-                  {editingTemplate
-                    ? `Update the configuration for the "${editingTemplate.name}" template.`
-                    : "Define a new industry template by selecting the default KPIs."}
-                </DialogDescription>
+                <DialogTitle>{editingTemplate ? "Edit Template Name" : "Create New Template"}</DialogTitle>
               </DialogHeader>
                 <div className="py-4 space-y-4">
                     <FormField
-                        control={form.control}
+                        control={templateForm.control}
                         name="name"
                         render={({ field }) => (
                         <FormItem>
@@ -183,7 +217,6 @@ export default function TemplatesPage() {
                         </FormItem>
                         )}
                     />
-                    <KpiSelectionForm control={form.control} />
                 </div>
               <DialogFooter>
                 <DialogClose asChild>
@@ -191,12 +224,95 @@ export default function TemplatesPage() {
                     Cancel
                   </Button>
                 </DialogClose>
-                <Button type="submit">Save Template</Button>
+                <Button type="submit">Save</Button>
               </DialogFooter>
             </form>
           </Form>
         </DialogContent>
       </Dialog>
+      
+      {/* Dialog for Managing KPIs */}
+      <Dialog open={isKpiManagerOpen} onOpenChange={setKpiManagerOpen}>
+        <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
+            <DialogHeader>
+              <DialogTitle>Manage KPIs for "{editingTemplate?.name}"</DialogTitle>
+              <DialogDescription>
+                Add, edit, or delete the Key Performance Indicators available in this template.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end">
+                <Button onClick={handleAddNewKpi}>
+                    <PlusCircle className="mr-2 h-4 w-4"/>
+                    Add New KPI
+                </Button>
+            </div>
+            <div className="flex-grow overflow-y-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>KPI Name</TableHead>
+                      <TableHead>Category</TableHead>
+                      <TableHead>Description</TableHead>
+                      <TableHead>Formula</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {editingTemplate?.kpis.map(kpi => (
+                      <TableRow key={kpi.id}>
+                        <TableCell className="font-medium">{kpi.label}</TableCell>
+                        <TableCell>{kpi.department}</TableCell>
+                        <TableCell>{kpi.description}</TableCell>
+                        <TableCell className="font-mono text-xs">{kpi.formula}</TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="ghost" size="sm" onClick={() => handleEditKpi(kpi)}>Edit</Button>
+                          <Button variant="ghost" size="sm" className="text-destructive" onClick={() => handleDeleteKpi(kpi.id)}>Delete</Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+            </div>
+             <DialogFooter>
+                <DialogClose asChild>
+                  <Button type="button">Done</Button>
+                </DialogClose>
+            </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog for Adding/Editing a single KPI */}
+      <Dialog open={isKpiFormOpen} onOpenChange={setKpiFormOpen}>
+        <DialogContent>
+            <Form {...kpiForm}>
+              <form onSubmit={kpiForm.handleSubmit(onKpiSubmit)}>
+                <DialogHeader>
+                  <DialogTitle>{editingKpi ? "Edit KPI" : "Add New KPI"}</DialogTitle>
+                </DialogHeader>
+                 <div className="py-4 space-y-4">
+                    <FormField control={kpiForm.control} name="label" render={({ field }) => ( <FormItem><FormLabel>KPI Name</FormLabel><FormControl><Input placeholder="e.g., Monthly Recurring Revenue" {...field} /></FormControl><FormMessage /></FormItem> )} />
+                    <FormField control={kpiForm.control} name="department" render={({ field }) => ( <FormItem><FormLabel>Category</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl><SelectTrigger><SelectValue placeholder="Select a department" /></SelectTrigger></FormControl>
+                            <SelectContent>
+                                {departmentOptions.map(opt => <SelectItem key={opt.id} value={opt.label}>{opt.label}</SelectItem>)}
+                            </SelectContent>
+                        </Select>
+                    <FormMessage /></FormItem> )} />
+                    <FormField control={kpiForm.control} name="description" render={({ field }) => ( <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea placeholder="Describe the KPI" {...field} /></FormControl><FormMessage /></FormItem> )} />
+                    <FormField control={kpiForm.control} name="formula" render={({ field }) => ( <FormItem><FormLabel>Formula</FormLabel><FormControl><Input placeholder="e.g., SUM(Subscriptions)" {...field} /></FormControl><FormMessage /></FormItem> )} />
+                 </div>
+                <DialogFooter>
+                  <DialogClose asChild><Button type="button" variant="outline">Cancel</Button></DialogClose>
+                  <Button type="submit">Save KPI</Button>
+                </DialogFooter>
+              </form>
+            </Form>
+        </DialogContent>
+      </Dialog>
+
     </>
   );
 }
+
+    
