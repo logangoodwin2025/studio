@@ -53,14 +53,14 @@ function CompanyAdminIntegrationsView() {
                     </Card>
                 ))}
             </div>
-                <Card className="bg-secondary">
+                <Card className="bg-secondary/50 border-dashed">
                 <CardHeader>
                     <CardTitle className="font-headline flex items-center gap-2">
                         <img src="/logos/zapier.svg" alt="Zapier" className="h-6 w-6"/>
                         Powered by Zapier
                     </CardTitle>
                     <CardDescription>
-                        We use Zapier to seamlessly connect with thousands of apps. Clicking 'Connect' will guide you through setting up a Zap to link your app with PinnSight.
+                        We use Zapier to seamlessly connect with thousands of apps. Clicking 'Connect' will guide you through a secure process to authorize PinnSight to sync data from your app. You do not need your own Zapier account.
                     </CardDescription>
                 </CardHeader>
             </Card>

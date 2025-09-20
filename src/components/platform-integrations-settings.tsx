@@ -31,9 +31,12 @@ export function PlatformIntegrationsSettings() {
         <div className="max-w-4xl mx-auto space-y-6">
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline">Zapier App Configuration</CardTitle>
+                    <CardTitle className="font-headline flex items-center gap-2">
+                        <img src="/logos/zapier.svg" alt="Zapier" className="h-8 w-8"/>
+                        Zapier App Configuration
+                    </CardTitle>
                     <CardDescription>
-                        Manage the client ID and secret for the PinnSight Zapier application. These values are obtained from the Zapier developer platform.
+                        Manage the client ID and secret for the PinnSight Zapier application. These values are obtained from the Zapier developer platform and are used to power all tenant integrations.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -58,7 +61,7 @@ export function PlatformIntegrationsSettings() {
                 <CardHeader>
                     <CardTitle className="font-headline">Webhook Endpoints</CardTitle>
                     <CardDescription>
-                        Use these URLs in the Zapier developer platform to subscribe to REST Hooks.
+                        Use these URLs in the Zapier developer platform to subscribe to REST Hooks for performing actions and receiving data.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -71,7 +74,7 @@ export function PlatformIntegrationsSettings() {
                             </Button>
                         </div>
                          <p className="text-xs text-muted-foreground">
-                            This endpoint receives all incoming data from Zaps.
+                            This endpoint receives all incoming data from active Zaps.
                         </p>
                     </div>
                 </CardContent>
