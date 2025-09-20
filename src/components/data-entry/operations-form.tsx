@@ -46,6 +46,7 @@ import { Checkbox } from "../ui/checkbox";
 const operationsFormSchema = z.object({
   // Project Tracking
   projectId: z.string().optional(),
+  projectName: z.string().optional(),
   projectStartDate: z.date().optional(),
   plannedEndDate: z.date().optional(),
   actualEndDate: z.date().optional(),
@@ -55,9 +56,10 @@ const operationsFormSchema = z.object({
   // Time Tracking
   employeeId: z.string().optional(),
   timeTrackingDate: z.date().optional(),
+  timeTrackingProjectId: z.string().optional(),
+  taskDescription: z.string().optional(),
   billableHours: z.coerce.number().optional(),
   nonBillableHours: z.coerce.number().optional(),
-  timeTrackingProjectId: z.string().optional(),
 
   // Service Delivery
   serviceId: z.string().optional(),
@@ -103,8 +105,9 @@ export function OperationsForm() {
                             <AccordionItem value="project">
                                 <AccordionTrigger className="text-lg font-semibold font-headline">Project Tracking</AccordionTrigger>
                                 <AccordionContent className="pt-4">
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                         <FormField control={form.control} name="projectId" render={({ field }) => ( <FormItem><FormLabel>Project ID</FormLabel><FormControl><Input placeholder="e.g., PROJ-001" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                        <FormField control={form.control} name="projectName" render={({ field }) => ( <FormItem><FormLabel>Project Name</FormLabel><FormControl><Input placeholder="e.g., Q3 Platform Upgrade" {...field} /></FormControl><FormMessage /></FormItem>)} />
                                         <FormField control={form.control} name="projectStartDate" render={({ field }) => ( <FormItem className="flex flex-col"><FormLabel>Start Date</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : (<span>Pick a date</span>)}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)} />
                                         <FormField control={form.control} name="plannedEndDate" render={({ field }) => ( <FormItem className="flex flex-col"><FormLabel>Planned End Date</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : (<span>Pick a date</span>)}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)} />
                                         <FormField control={form.control} name="actualEndDate" render={({ field }) => ( <FormItem className="flex flex-col"><FormLabel>Actual End Date</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : (<span>Pick a date</span>)}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)} />
@@ -116,12 +119,13 @@ export function OperationsForm() {
                             <AccordionItem value="time">
                                 <AccordionTrigger className="text-lg font-semibold font-headline">Time Tracking</AccordionTrigger>
                                 <AccordionContent className="pt-4">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
                                         <FormField control={form.control} name="employeeId" render={({ field }) => ( <FormItem><FormLabel>Employee ID</FormLabel><FormControl><Input placeholder="e.g., EMP-042" {...field} /></FormControl><FormMessage /></FormItem>)} />
                                         <FormField control={form.control} name="timeTrackingDate" render={({ field }) => ( <FormItem className="flex flex-col"><FormLabel>Date</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : (<span>Pick a date</span>)}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)} />
+                                        <FormField control={form.control} name="timeTrackingProjectId" render={({ field }) => ( <FormItem><FormLabel>Project ID</FormLabel><FormControl><Input placeholder="e.g., PROJ-001" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                        <FormField control={form.control} name="taskDescription" render={({ field }) => ( <FormItem><FormLabel>Task Description</FormLabel><FormControl><Input placeholder="e.g., Frontend development" {...field} /></FormControl><FormMessage /></FormItem>)} />
                                         <FormField control={form.control} name="billableHours" render={({ field }) => ( <FormItem><FormLabel>Billable Hours</FormLabel><FormControl><Input type="number" placeholder="e.g., 7.5" {...field} /></FormControl><FormMessage /></FormItem>)} />
                                         <FormField control={form.control} name="nonBillableHours" render={({ field }) => ( <FormItem><FormLabel>Non-Billable Hours</FormLabel><FormControl><Input type="number" placeholder="e.g., 0.5" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                                        <FormField control={form.control} name="timeTrackingProjectId" render={({ field }) => ( <FormItem><FormLabel>Project ID</FormLabel><FormControl><Input placeholder="e.g., PROJ-001" {...field} /></FormControl><FormMessage /></FormItem>)} />
                                     </div>
                                 </AccordionContent>
                             </AccordionItem>
@@ -160,3 +164,5 @@ export function OperationsForm() {
         </Card>
     );
 }
+
+    

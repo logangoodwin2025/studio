@@ -43,17 +43,19 @@ import { useToast } from "@/hooks/use-toast";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import { Checkbox } from "../ui/checkbox";
 import { Separator } from "../ui/separator";
+import { Textarea } from "../ui/textarea";
 
 
 const salesFormSchema = z.object({
   // Lead Generation
   leadDate: z.date(),
+  leadId: z.string(),
   leadSource: z.string(),
   leadCount: z.coerce.number().int(),
   campaignName: z.string().optional(),
 
   // Lead Conversion
-  leadId: z.string().optional(),
+  conversionLeadId: z.string(),
   conversionDate: z.date().optional(),
   convertedToCustomer: z.boolean().optional(),
   customerId: z.string().optional(),
@@ -64,6 +66,7 @@ const salesFormSchema = z.object({
   dealValue: z.coerce.number().optional(),
   probability: z.coerce.number().min(0).max(100).optional(),
   expectedCloseDate: z.date().optional(),
+  pipelineNotes: z.string().optional(),
 
   // Campaign Costs
   campaignCostName: z.string().optional(),
@@ -112,8 +115,9 @@ export function SalesForm() {
                             <AccordionItem value="lead-gen">
                                 <AccordionTrigger className="text-lg font-semibold font-headline">Lead Generation</AccordionTrigger>
                                 <AccordionContent className="pt-4">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                                         <FormField control={form.control} name="leadDate" render={({ field }) => ( <FormItem className="flex flex-col"><FormLabel>Date</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : (<span>Pick a date</span>)}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)} />
+                                        <FormField control={form.control} name="leadId" render={({ field }) => ( <FormItem><FormLabel>Lead ID</FormLabel><FormControl><Input placeholder="e.g., LEAD-5821" {...field} /></FormControl><FormMessage /></FormItem>)} />
                                         <FormField control={form.control} name="leadSource" render={({ field }) => ( <FormItem><FormLabel>Lead Source</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select a source" /></SelectTrigger></FormControl><SelectContent><SelectItem value="website">Website</SelectItem><SelectItem value="social-media">Social Media</SelectItem><SelectItem value="referral">Referral</SelectItem><SelectItem value="event">Event</SelectItem><SelectItem value="paid-ads">Paid Ads</SelectItem></SelectContent></Select><FormMessage /></FormItem>)} />
                                         <FormField control={form.control} name="leadCount" render={({ field }) => ( <FormItem><FormLabel>Lead Count</FormLabel><FormControl><Input type="number" placeholder="e.g., 50" {...field} /></FormControl><FormMessage /></FormItem>)} />
                                         <FormField control={form.control} name="campaignName" render={({ field }) => ( <FormItem><FormLabel>Campaign Name</FormLabel><FormControl><Input placeholder="e.g., Summer Sale 2025" {...field} /></FormControl><FormMessage /></FormItem>)} />
@@ -124,7 +128,7 @@ export function SalesForm() {
                                 <AccordionTrigger className="text-lg font-semibold font-headline">Lead Conversion</AccordionTrigger>
                                 <AccordionContent className="pt-4">
                                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-center">
-                                        <FormField control={form.control} name="leadId" render={({ field }) => ( <FormItem><FormLabel>Lead ID</FormLabel><FormControl><Input placeholder="e.g., LEAD-5821" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                        <FormField control={form.control} name="conversionLeadId" render={({ field }) => ( <FormItem><FormLabel>Lead ID</FormLabel><FormControl><Input placeholder="e.g., LEAD-5821" {...field} /></FormControl><FormMessage /></FormItem>)} />
                                         <FormField control={form.control} name="conversionDate" render={({ field }) => ( <FormItem className="flex flex-col"><FormLabel>Conversion Date</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : (<span>Pick a date</span>)}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)} />
                                         <FormField control={form.control} name="customerId" render={({ field }) => ( <FormItem><FormLabel>Customer ID (if converted)</FormLabel><FormControl><Input placeholder="e.g., CUST-00123" {...field} /></FormControl><FormMessage /></FormItem>)} />
                                         <FormField control={form.control} name="convertedToCustomer" render={({ field }) => ( <FormItem className="flex flex-row items-end space-x-2 pb-1"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><div className="space-y-1 leading-none"><FormLabel>Converted to Customer?</FormLabel></div></FormItem>)} />
@@ -133,7 +137,7 @@ export function SalesForm() {
                             </AccordionItem>
                             <AccordionItem value="pipeline">
                                 <AccordionTrigger className="text-lg font-semibold font-headline">Sales Pipeline</AccordionTrigger>
-                                <AccordionContent className="pt-4">
+                                <AccordionContent className="pt-4 space-y-4">
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                                         <FormField control={form.control} name="opportunityId" render={({ field }) => ( <FormItem><FormLabel>Opportunity ID</FormLabel><FormControl><Input placeholder="e.g., OPP-045" {...field} /></FormControl><FormMessage /></FormItem>)} />
                                         <FormField control={form.control} name="dealStage" render={({ field }) => ( <FormItem><FormLabel>Deal Stage</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select stage" /></SelectTrigger></FormControl><SelectContent><SelectItem value="lead">Lead</SelectItem><SelectItem value="qualified">Qualified</SelectItem><SelectItem value="proposal">Proposal</SelectItem><SelectItem value="negotiation">Negotiation</SelectItem><SelectItem value="closed-won">Closed Won</SelectItem><SelectItem value="closed-lost">Closed Lost</SelectItem></SelectContent></Select><FormMessage /></FormItem>)} />
@@ -141,6 +145,7 @@ export function SalesForm() {
                                         <FormField control={form.control} name="probability" render={({ field }) => ( <FormItem><FormLabel>Probability (%)</FormLabel><FormControl><Input type="number" min="0" max="100" placeholder="e.g., 75" {...field} /></FormControl><FormMessage /></FormItem>)} />
                                         <FormField control={form.control} name="expectedCloseDate" render={({ field }) => ( <FormItem className="flex flex-col"><FormLabel>Expected Close Date</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : (<span>Pick a date</span>)}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)} />
                                     </div>
+                                    <FormField control={form.control} name="pipelineNotes" render={({ field }) => ( <FormItem><FormLabel>Notes</FormLabel><FormControl><Textarea placeholder="e.g., Customer is reviewing the proposal, follow up next week." {...field} /></FormControl><FormMessage /></FormItem>)} />
                                 </AccordionContent>
                             </AccordionItem>
                              <AccordionItem value="costs-attribution">
@@ -179,3 +184,5 @@ export function SalesForm() {
         </Card>
     );
 }
+
+    

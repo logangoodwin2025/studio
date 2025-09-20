@@ -48,6 +48,7 @@ const membershipFormSchema = z.object({
     // Membership Changes
     membershipDate: z.date(),
     newMembers: z.coerce.number().int(),
+    newMemberSource: z.string().optional(),
     lostMembers: z.coerce.number().int(),
     reasonForLoss: z.string().optional(),
 
@@ -93,9 +94,10 @@ export function MembershipForm() {
                             <AccordionItem value="changes">
                                 <AccordionTrigger className="text-lg font-semibold font-headline">Membership Changes</AccordionTrigger>
                                 <AccordionContent className="pt-4">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                                         <FormField control={form.control} name="membershipDate" render={({ field }) => ( <FormItem className="flex flex-col"><FormLabel>Date</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : (<span>Pick a date</span>)}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)} />
                                         <FormField control={form.control} name="newMembers" render={({ field }) => ( <FormItem><FormLabel>New Members</FormLabel><FormControl><Input type="number" placeholder="e.g., 150" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                                        <FormField control={form.control} name="newMemberSource" render={({ field }) => ( <FormItem><FormLabel>Source</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select a source" /></SelectTrigger></FormControl><SelectContent><SelectItem value="website">Website</SelectItem><SelectItem value="referral">Referral</SelectItem><SelectItem value="event">Event</SelectItem></SelectContent></Select><FormMessage /></FormItem>)} />
                                         <FormField control={form.control} name="lostMembers" render={({ field }) => ( <FormItem><FormLabel>Lost Members</FormLabel><FormControl><Input type="number" placeholder="e.g., 25" {...field} /></FormControl><FormMessage /></FormItem>)} />
                                         <FormField control={form.control} name="reasonForLoss" render={({ field }) => ( <FormItem><FormLabel>Reason for Loss</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select a reason" /></SelectTrigger></FormControl><SelectContent><SelectItem value="price">Price</SelectItem><SelectItem value="service">Service</SelectItem><SelectItem value="competition">Competition</SelectItem><SelectItem value="other">Other</SelectItem></SelectContent></Select><FormMessage /></FormItem>)} />
                                     </div>
@@ -126,3 +128,5 @@ export function MembershipForm() {
         </Card>
     );
 }
+
+    
