@@ -38,6 +38,7 @@ import { FormSheet } from "./form-sheet";
 const tenantSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   plan: z.enum(["Free", "Trial", "Paid", "Enterprise"]),
+  industry: z.enum(["Generic", "SaaS", "E-commerce", "Services"]),
 });
 
 
@@ -50,18 +51,22 @@ export function TenantsDataTable() {
 
   const form = useForm<z.infer<typeof tenantSchema>>({
     resolver: zodResolver(tenantSchema),
-    defaultValues: { name: "", plan: "Trial" },
+    defaultValues: { name: "", plan: "Trial", industry: "Generic" },
   });
 
   const handleAddNew = () => {
     setEditingTenant(null);
-    form.reset({ name: "", plan: "Trial" });
+    form.reset({ name: "", plan: "Trial", industry: "Generic" });
     setSheetOpen(true);
   };
 
   const handleEdit = (tenant: Tenant) => {
     setEditingTenant(tenant);
-    form.reset({ name: tenant.name, plan: tenant.plan as "Free" | "Trial" | "Paid" | "Enterprise" });
+    form.reset({ 
+      name: tenant.name, 
+      plan: tenant.plan as "Free" | "Trial" | "Paid" | "Enterprise",
+      industry: tenant.industry as "Generic" | "SaaS" | "E-commerce" | "Services" | undefined || "Generic"
+    });
     setSheetOpen(true);
   };
   
@@ -74,19 +79,24 @@ export function TenantsDataTable() {
   const onSubmit = (values: z.infer<typeof tenantSchema>) => {
     setTimeout(() => {
       if (editingTenant) {
-        setTenants(tenants.map((t) => (t.id === editingTenant.id ? { ...t, ...values, plan: values.plan, status: t.status } : t)));
+        setTenants(tenants.map((t) => (t.id === editingTenant.id ? { ...t, ...values, plan: values.plan, status: t.status, industry: values.industry } : t)));
         toast({ title: "Tenant Updated", description: "The tenant details have been successfully updated." });
       } else {
+        const usersPerTemplate = {
+          "SaaS": 5,
+          "E-commerce": 4,
+          "Services": 3,
+          "Generic": 1,
+        };
         const newTenant: Tenant = { 
             ...values,
-            plan: values.plan,
             id: `ten_${Date.now()}`, 
-            users: 1, 
+            users: usersPerTemplate[values.industry], 
             lastActive: 'Just now',
             status: "Provisioning"
         };
         setTenants([newTenant, ...tenants]);
-        toast({ title: "Tenant Added", description: "A new tenant has been successfully added." });
+        toast({ title: "Tenant Added", description: `A new ${values.industry} tenant has been successfully added.` });
       }
       setSheetOpen(false);
     }, 500);
@@ -99,6 +109,7 @@ export function TenantsDataTable() {
           <TableHeader>
             <TableRow>
               <TableHead>Company Name</TableHead>
+              <TableHead>Industry</TableHead>
               <TableHead>Plan</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Users</TableHead>
@@ -110,6 +121,7 @@ export function TenantsDataTable() {
             {tenants.map((tenant) => (
               <TableRow key={tenant.id}>
                 <TableCell className="font-medium">{tenant.name}</TableCell>
+                <TableCell>{tenant.industry || 'Generic'}</TableCell>
                 <TableCell>
                     <Badge variant={tenant.plan === 'Enterprise' ? 'default' : 'secondary'}>{tenant.plan}</Badge>
                 </TableCell>

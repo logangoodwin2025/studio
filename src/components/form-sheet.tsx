@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { UseFormReturn } from "react-hook-form";
@@ -102,13 +103,13 @@ export function FormSheet<T extends z.ZodObject<any>>({
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
-      <SheetContent>
+      <SheetContent className="overflow-y-auto">
         <SheetHeader>
           <SheetTitle>{title}</SheetTitle>
           <SheetDescription>{description}</SheetDescription>
         </SheetHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 py-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-8">
             {Object.keys(schema.shape).map((key) => (
               <FormField
                 key={key}
@@ -116,7 +117,7 @@ export function FormSheet<T extends z.ZodObject<any>>({
                 name={key}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="capitalize">{key}</FormLabel>
+                    <FormLabel className="capitalize">{key.replace(/([A-Z])/g, ' $1')}</FormLabel>
                     <FormControl>
                         {renderField(key, field)}
                     </FormControl>
@@ -125,7 +126,7 @@ export function FormSheet<T extends z.ZodObject<any>>({
                 )}
               />
             ))}
-            <SheetFooter>
+            <SheetFooter className="mt-8">
               <SheetClose asChild>
                 <Button type="button" variant="outline">Cancel</Button>
               </SheetClose>
@@ -137,4 +138,3 @@ export function FormSheet<T extends z.ZodObject<any>>({
     </Sheet>
   );
 }
-

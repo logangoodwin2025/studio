@@ -132,18 +132,19 @@ export type Tenant = {
   id: string;
   name: string;
   plan: string;
+  industry?: string;
   users: number;
   lastActive: string;
   status: string;
 };
 
 export const tenants: Tenant[] = [
-    { id: "ten_srisys", name: "Srisys Inc.", plan: "Enterprise", users: 25, lastActive: "2 hours ago", status: "Active" },
-    { id: "ten_pigeon", name: "Pigeon-Tech", plan: "Enterprise", users: 6, lastActive: "5 minutes ago", status: "Active" },
-    { id: "ten_2", name: "Innovate Inc.", plan: "Paid", users: 10, lastActive: "1 day ago", status: "Active" },
-    { id: "ten_3", name: "Synergy Labs", plan: "Trial", users: 5, lastActive: "3 days ago", status: "Provisioning" },
-    { id: "ten_4", name: "QuantumLeap", plan: "Paid", users: 15, lastActive: "5 hours ago", status: "Active" },
-    { id: "ten_5", name: "DataWeavers", plan: "Free", users: 2, lastActive: "1 week ago", status: "Suspended" },
+    { id: "ten_srisys", name: "Srisys Inc.", plan: "Enterprise", industry: "SaaS", users: 25, lastActive: "2 hours ago", status: "Active" },
+    { id: "ten_pigeon", name: "Pigeon-Tech", plan: "Enterprise", industry: "SaaS", users: 6, lastActive: "5 minutes ago", status: "Active" },
+    { id: "ten_2", name: "Innovate Inc.", plan: "Paid", industry: "Services", users: 10, lastActive: "1 day ago", status: "Active" },
+    { id: "ten_3", name: "Synergy Labs", plan: "Trial", industry: "Generic", users: 5, lastActive: "3 days ago", status: "Provisioning" },
+    { id: "ten_4", name: "QuantumLeap", plan: "Paid", industry: "E-commerce", users: 15, lastActive: "5 hours ago", status: "Active" },
+    { id: "ten_5", name: "DataWeavers", plan: "Free", industry: "Generic", users: 2, lastActive: "1 week ago", status: "Suspended" },
 ];
 
 export type SupportTicket = {
