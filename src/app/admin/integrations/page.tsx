@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -100,12 +101,20 @@ function CompanyAdminIntegrationsView() {
                                     <CardDescription>{integration.category}</CardDescription>
                                 </div>
                             </div>
-                            {integration.connected && (
-                                <div className="flex items-center gap-1 text-xs text-green-600">
-                                    <CheckCircle className="h-3 w-3" />
-                                    <span>Connected</span>
-                                </div>
-                            )}
+                           <div className="flex items-center gap-2">
+                                {integration.connected && (
+                                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleSyncNow(integration.id)}>
+                                        <RefreshCw className="h-4 w-4" />
+                                        <span className="sr-only">Sync Now</span>
+                                    </Button>
+                                )}
+                                {integration.connected && (
+                                    <div className="flex items-center gap-1 text-xs text-green-600">
+                                        <CheckCircle className="h-3 w-3" />
+                                        <span>Connected</span>
+                                    </div>
+                                )}
+                           </div>
                         </CardHeader>
                         <CardContent className="flex-grow">
                              {integration.connected && integration.lastSynced && (
