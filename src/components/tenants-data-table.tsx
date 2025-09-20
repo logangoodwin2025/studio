@@ -38,7 +38,7 @@ import { FormSheet } from "./form-sheet";
 const tenantSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   plan: z.enum(["Free", "Trial", "Paid", "Enterprise"]),
-  industry: z.enum(["Generic", "SaaS", "E-commerce", "Services"]),
+  industry: z.enum(["SaaS", "E-commerce", "Services", "Generic"]),
 });
 
 
@@ -65,7 +65,7 @@ export function TenantsDataTable() {
     form.reset({ 
       name: tenant.name, 
       plan: tenant.plan as "Free" | "Trial" | "Paid" | "Enterprise",
-      industry: tenant.industry as "Generic" | "SaaS" | "E-commerce" | "Services" | undefined || "Generic"
+      industry: tenant.industry
     });
     setSheetOpen(true);
   };
@@ -79,7 +79,7 @@ export function TenantsDataTable() {
   const onSubmit = (values: z.infer<typeof tenantSchema>) => {
     setTimeout(() => {
       if (editingTenant) {
-        setTenants(tenants.map((t) => (t.id === editingTenant.id ? { ...t, ...values, plan: values.plan, status: t.status, industry: values.industry } : t)));
+        setTenants(tenants.map((t) => (t.id === editingTenant.id ? { ...t, ...values } : t)));
         toast({ title: "Tenant Updated", description: "The tenant details have been successfully updated." });
       } else {
         const usersPerTemplate = {
@@ -121,7 +121,7 @@ export function TenantsDataTable() {
             {tenants.map((tenant) => (
               <TableRow key={tenant.id}>
                 <TableCell className="font-medium">{tenant.name}</TableCell>
-                <TableCell>{tenant.industry || 'Generic'}</TableCell>
+                <TableCell>{tenant.industry}</TableCell>
                 <TableCell>
                     <Badge variant={tenant.plan === 'Enterprise' ? 'default' : 'secondary'}>{tenant.plan}</Badge>
                 </TableCell>

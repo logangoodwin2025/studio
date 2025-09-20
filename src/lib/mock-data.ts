@@ -132,7 +132,7 @@ export type Tenant = {
   id: string;
   name: string;
   plan: string;
-  industry?: string;
+  industry: "SaaS" | "E-commerce" | "Services" | "Generic";
   users: number;
   lastActive: string;
   status: string;
