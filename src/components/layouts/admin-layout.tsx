@@ -5,7 +5,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams, useParams } from "next/navigation";
-import { LogOut, ChevronDown, Bell, LayoutDashboard, Users, Shield, User, Component, AlertCircle, CheckCircle, MessageSquare, Building, MessageSquarePlus } from "lucide-react";
+import { LogOut, ChevronDown, Bell, LayoutDashboard, Users, Shield, User, Component, AlertCircle, CheckCircle, MessageSquare, Building, MessageSquarePlus, Zap } from "lucide-react";
 
 import {
   Sidebar,
@@ -41,6 +41,7 @@ const allNavItems = {
         { href: "/admin/dashboard", icon: LayoutDashboard, label: "Admin Dashboard", roles: ["Company Admin"] },
         { href: "/users", icon: Users, label: "Users", roles: ["Company Admin"] },
         { href: "/roles", icon: Shield, label: "Roles", roles: ["Company Admin"] },
+        { href: "/integrations", icon: Zap, label: "Integrations", roles: ["Company Admin"] },
     ]
 };
 
@@ -73,7 +74,7 @@ function Header() {
   const avatarUrl = searchParams.get('avatar');
   const notifications = (role && adminNotifications[role as keyof typeof adminNotifications]) || [];
   const params = useParams();
-  const companySlug = params.company as string || "srisys";
+  const companySlug = params.company as string;
   
   const getHeaderText = () => {
     if (role === "Platform Super Admin" || role === "Platform Manager") {
@@ -212,7 +213,7 @@ export function AdminLayout({
     
     if (role === 'Company Admin') {
         const companySlug = params.company as string || "srisys"; 
-        const finalHref = href.startsWith('/admin') ? href : `/${companySlug}${href}`;
+        const finalHref = href.startsWith('/admin') ? `/admin${href}` : `/${companySlug}${href}`;
         return `${finalHref}?${newSearchParams.toString()}`;
     }
     
