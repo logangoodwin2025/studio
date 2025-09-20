@@ -67,9 +67,28 @@ function CompanyAdminIntegrationsView() {
             description: `Manual data sync for ${integrations.find(i => i.id === integrationId)?.name} has started.`
         })
     }
+    
+    const handleSyncAll = () => {
+        const connectedIntegrations = integrations.filter(int => int.connected);
+        connectedIntegrations.forEach(int => {
+             toast({
+                title: `Sync Initiated for ${int.name}`,
+                description: `Data synchronization has started.`
+            })
+        })
+    }
 
     return (
         <div className="space-y-6">
+            <DashboardHeader
+                title="Integrations Hub"
+                description="Connect your tools to automate data synchronization."
+            >
+                <Button onClick={handleSyncAll}>
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Sync All Connections
+                </Button>
+            </DashboardHeader>
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {integrations.map((integration) => (
                     <Card key={integration.name} className="flex flex-col">
@@ -112,7 +131,7 @@ function CompanyAdminIntegrationsView() {
                                         <div className="py-4 space-y-6">
                                             <div className="flex flex-col sm:flex-row gap-2">
                                                 <Button variant="outline" className="w-full justify-center gap-2" onClick={() => handleSyncNow(selectedIntegration!.id)}>
-                                                    <PlayCircle className="h-4 w-4"/>
+                                                    <RefreshCw className="h-4 w-4"/>
                                                     Sync Now
                                                 </Button>
                                                 <AlertDialog>
@@ -230,12 +249,18 @@ export default function IntegrationsPage() {
 
     return (
         <>
-            <DashboardHeader
-                title="Integrations Hub"
-                description={isPlatformAdmin ? "Manage platform-level integration settings." : "Connect your tools to automate data synchronization."}
-            />
             <main className="flex-1 p-4 sm:px-6 lg:px-8">
-               {isPlatformAdmin ? <PlatformIntegrationsSettings /> : <CompanyAdminIntegrationsView />}
+               {isPlatformAdmin ? (
+                    <>
+                         <DashboardHeader
+                            title="Integrations Hub"
+                            description="Manage platform-level integration settings."
+                        />
+                        <div className="mt-6">
+                            <PlatformIntegrationsSettings />
+                        </div>
+                    </>
+               ) : <CompanyAdminIntegrationsView />}
             </main>
         </>
     );
