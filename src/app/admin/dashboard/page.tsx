@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { Suspense } from "react";
@@ -9,7 +8,6 @@ import { Loading } from "@/components/loading";
 import { SuperAdminDashboardView } from "@/components/dashboards/super-admin-dashboard-view";
 import { PlatformManagerDashboardView } from "@/components/dashboards/platform-manager-dashboard-view";
 import { CompanyAdminDashboardView } from "@/components/dashboards/company-admin-dashboard-view";
-import { redirect, useParams, useSearchParams } from "next/navigation";
 
 const REQUIRED_ROLES = ["Platform Super Admin", "Platform Manager", "Company Admin"];
 
