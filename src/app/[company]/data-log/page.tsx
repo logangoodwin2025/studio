@@ -41,6 +41,8 @@ import { DashboardHeader } from "@/components/dashboard-header";
 import { type DataLogEntry, dataLogEntries as initialData } from "@/lib/mock-data";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { useUserRole } from "@/hooks/use-user-role";
+import { Loading } from "@/components/loading";
 
 
 const sourceVariantMap: Record<DataLogEntry['source'], "secondary" | "default" | "outline"> = {
@@ -59,10 +61,34 @@ const sourceIconMap: Record<DataLogEntry['source'], React.ElementType> = {
 
 function DataLogPageContent() {
   const { toast } = useToast();
-  const [data, setData] = React.useState(initialData);
+  const { role, isLoaded } = useUserRole();
+  
+  const filteredData = React.useMemo(() => {
+    if (!isLoaded) return [];
+    if (role === 'CEO/Executive' || role === 'Company Admin') {
+      return initialData;
+    }
+    if (role === 'Finance Team') {
+      return initialData.filter(d => d.department === 'Financials');
+    }
+    if (role === 'Sales & Marketing') {
+      return initialData.filter(d => d.department === 'Sales & Marketing' || d.department === 'Membership');
+    }
+    if (role === 'Operations Team') {
+        return initialData.filter(d => d.department === 'Operations');
+    }
+    return [];
+  }, [role, isLoaded]);
+
+  const [data, setData] = React.useState(filteredData);
   const [sorting, setSorting] = React.useState<SortingState>([ { id: 'date', desc: true }]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = React.useState({});
+  
+  React.useEffect(() => {
+    setData(filteredData);
+  }, [filteredData]);
+
 
   const columns: ColumnDef<DataLogEntry>[] = [
     {
@@ -81,6 +107,10 @@ function DataLogPageContent() {
         </Button>
       ),
       cell: ({ row }) => format(row.original.date, "PPpp"),
+    },
+    {
+        accessorKey: "department",
+        header: "Department"
     },
     {
       accessorKey: "source",
@@ -136,6 +166,10 @@ function DataLogPageContent() {
     const metrics = new Set(data.map(item => item.metric));
     return ['all', ...Array.from(metrics)];
   }, [data]);
+  
+  if (!isLoaded) {
+    return <Loading />
+  }
 
   return (
     <>

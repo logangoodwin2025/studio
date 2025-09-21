@@ -67,7 +67,7 @@ const allNavItems = {
       { href: "/data-entry/sales", icon: ClipboardPlus, label: "Sales Data Entry", roles: ["Sales & Marketing", "Company Admin"] },
       { href: "/data-entry/operations", icon: ClipboardPlus, label: "Operations Data Entry", roles: ["Operations Team", "Company Admin"] },
       { href: "/data-entry/membership", icon: ClipboardPlus, label: "Membership Data Entry", roles: ["Sales & Marketing", "Company Admin"] },
-      { href: "/data-log", icon: Database, label: "Data Log", roles: ["Company Admin", "Finance Team"] },
+      { href: "/data-log", icon: Database, label: "Data Log", roles: ["Company Admin", "Finance Team", "Sales & Marketing", "Operations Team", "CEO/Executive"] },
       
       { href: "/reports/finance", icon: FileBarChart2, label: "Financial Reports", roles: ["Finance Team"] },
       { href: "/reports/sales", icon: FileBarChart2, label: "Sales Reports", roles: ["Sales & Marketing"] },
