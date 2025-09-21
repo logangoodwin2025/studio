@@ -6,8 +6,8 @@ import * as React from "react";
 import { useUserRole } from "@/hooks/use-user-role";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Zap, CheckCircle, RefreshCw, ArrowRight, ChevronsUpDown, MoreHorizontal, Download } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Zap, CheckCircle, RefreshCw, ArrowRight, ChevronsUpDown, MoreHorizontal, Download, Filter } from "lucide-react";
 import { Loading } from "@/components/loading";
 import { PlatformIntegrationsSettings } from "@/components/platform-integrations-settings";
 import { useToast } from "@/hooks/use-toast";
@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatDistanceToNow } from "date-fns";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuPortal } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { Stepper, StepperItem } from "@/components/ui/stepper";
 import {
@@ -120,7 +120,12 @@ function CompanyAdminIntegrationsView() {
     const columns: ColumnDef<Integration>[] = [
         {
             accessorKey: "name",
-            header: "App",
+            header: ({ column }) => (
+                 <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    App
+                    <ChevronsUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            ),
             cell: ({ row }) => (
                 <div className="flex items-center gap-3">
                     <img src={row.original.logo} alt={row.original.name} className="h-8 w-8" />
@@ -201,7 +206,7 @@ function CompanyAdminIntegrationsView() {
     });
 
     const categories = Array.from(new Set(initialIntegrations.map(i => i.category)));
-    const statuses = Array.from(new Set(initialIntegrations.map(i => i.status)));
+    const statuses = Array.from(new Set(Object.keys(statusVariantMap)));
 
 
     return (
@@ -218,54 +223,55 @@ function CompanyAdminIntegrationsView() {
 
             <Card>
                 <CardContent className="p-4">
-                    <div className="flex flex-wrap items-center gap-4">
-                        <Input
+                    <div className="flex items-center justify-between">
+                         <Input
                             placeholder="Filter integrations..."
                             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
                             onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
                             className="max-w-sm"
                         />
-                        <Select onValueChange={(value) => table.getColumn("category")?.setFilterValue(value === 'all' ? undefined : value)}>
-                            <SelectTrigger className="w-full sm:w-[180px]">
-                                <SelectValue placeholder="Filter by category" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All Categories</SelectItem>
-                                {categories.map(cat => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
-                            </SelectContent>
-                        </Select>
-                        <Select onValueChange={(value) => table.getColumn("status")?.setFilterValue(value === 'all' ? undefined : value)}>
-                            <SelectTrigger className="w-full sm:w-[180px]">
-                                <SelectValue placeholder="Filter by status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All Statuses</SelectItem>
-                                {Object.keys(statusVariantMap).map(status => <SelectItem key={status} value={status}>{status}</SelectItem>)}
-                            </SelectContent>
-                        </Select>
                          <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                            <Button variant="outline" className="ml-auto">
-                                Columns <ChevronsUpDown className="ml-2 h-4 w-4" />
-                            </Button>
+                                <Button variant="outline" size="sm">
+                                    <Filter className="h-4 w-4 mr-2" />
+                                    Filter
+                                </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                            {table
-                                .getAllColumns()
-                                .filter((column) => column.getCanHide())
-                                .map((column) => {
-                                return (
-                                    <DropdownMenuCheckboxItem
-                                    key={column.id}
-                                    className="capitalize"
-                                    checked={column.getIsVisible()}
-                                    onCheckedChange={(value) =>
-                                        column.toggleVisibility(!!value)
-                                    }
-                                    >
-                                    {column.id}
-                                    </DropdownMenuCheckboxItem>
-                                )
+                            <DropdownMenuContent align="end" className="w-56">
+                                <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuSub>
+                                    <DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
+                                    <DropdownMenuPortal>
+                                        <DropdownMenuSubContent>
+                                            <DropdownMenuItem onClick={() => table.getColumn("status")?.setFilterValue(undefined)}>All</DropdownMenuItem>
+                                            {statuses.map(status => <DropdownMenuItem key={status} onClick={() => table.getColumn("status")?.setFilterValue(status)}>{status}</DropdownMenuItem>)}
+                                        </DropdownMenuSubContent>
+                                    </DropdownMenuPortal>
+                                </DropdownMenuSub>
+                                 <DropdownMenuSub>
+                                    <DropdownMenuSubTrigger>Category</DropdownMenuSubTrigger>
+                                     <DropdownMenuPortal>
+                                        <DropdownMenuSubContent>
+                                            <DropdownMenuItem onClick={() => table.getColumn("category")?.setFilterValue(undefined)}>All</DropdownMenuItem>
+                                            {categories.map(cat => <DropdownMenuItem key={cat} onClick={() => table.getColumn("category")?.setFilterValue(cat)}>{cat}</DropdownMenuItem>)}
+                                        </DropdownMenuSubContent>
+                                    </DropdownMenuPortal>
+                                </DropdownMenuSub>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuLabel>Toggle Columns</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                {table.getAllColumns().filter((column) => column.getCanHide()).map((column) => {
+                                    return (
+                                        <DropdownMenuCheckboxItem
+                                            key={column.id}
+                                            className="capitalize"
+                                            checked={column.getIsVisible()}
+                                            onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                                        >
+                                            {column.id}
+                                        </DropdownMenuCheckboxItem>
+                                    )
                                 })}
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -319,6 +325,24 @@ function CompanyAdminIntegrationsView() {
                             )}
                             </TableBody>
                         </Table>
+                    </div>
+                     <div className="flex items-center justify-end space-x-2 py-4">
+                        <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                        >
+                        Previous
+                        </Button>
+                        <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                        >
+                        Next
+                        </Button>
                     </div>
                 </CardContent>
             </Card>
