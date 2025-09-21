@@ -1,12 +1,13 @@
 
+
 "use client";
 
 import * as React from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Zap, CheckCircle, RefreshCw, ArrowRight, XCircle, Clock, ChevronsUpDown, MoreHorizontal, Filter } from "lucide-react";
-import { Stepper, StepperItem } from "@/components/ui/stepper";
+import { Stepper } from "@/components/ui/stepper";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -155,7 +156,64 @@ export function CompanyAdminIntegrationsView() {
         },
         {
             id: "actions",
-            header: () => <div className="text-right">Actions</div>,
+            header: () => {
+                return (
+                    <div className="flex justify-end">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                    <Filter className="h-4 w-4"/>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuSub>
+                                    <DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
+                                    <DropdownMenuPortal>
+                                        <DropdownMenuSubContent>
+                                            <DropdownMenuItem onClick={() => table.getColumn("status")?.setFilterValue(undefined)}>All</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => table.getColumn("status")?.setFilterValue("Connected")}>Connected</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => table.getColumn("status")?.setFilterValue("Not Connected")}>Not Connected</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => table.getColumn("status")?.setFilterValue("Error")}>Error</DropdownMenuItem>
+                                        </DropdownMenuSubContent>
+                                    </DropdownMenuPortal>
+                                </DropdownMenuSub>
+                                <DropdownMenuSub>
+                                    <DropdownMenuSubTrigger>Category</DropdownMenuSubTrigger>
+                                     <DropdownMenuPortal>
+                                        <DropdownMenuSubContent>
+                                            <DropdownMenuItem onClick={() => table.getColumn("category")?.setFilterValue(undefined)}>All</DropdownMenuItem>
+                                            {[...new Set(integrations.map(i => i.category))].map(category => (
+                                                <DropdownMenuItem key={category} onClick={() => table.getColumn("category")?.setFilterValue(category)}>{category}</DropdownMenuItem>
+                                            ))}
+                                        </DropdownMenuSubContent>
+                                    </DropdownMenuPortal>
+                                </DropdownMenuSub>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuLabel>Visible Columns</DropdownMenuLabel>
+                                {table
+                                    .getAllColumns()
+                                    .filter((column) => column.getCanHide())
+                                    .map((column) => {
+                                    return (
+                                        <DropdownMenuCheckboxItem
+                                        key={column.id}
+                                        className="capitalize"
+                                        checked={column.getIsVisible()}
+                                        onCheckedChange={(value) =>
+                                            column.toggleVisibility(!!value)
+                                        }
+                                        >
+                                        {column.id === 'name' ? 'App' : column.id}
+                                        </DropdownMenuCheckboxItem>
+                                    )
+                                    })}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+                )
+            },
             cell: ({ row }) => {
                 const integration = row.original;
                 return (
@@ -224,6 +282,14 @@ export function CompanyAdminIntegrationsView() {
                 description="Connect your tools to automate data synchronization."
             >
                 <div className="flex items-center gap-2">
+                     <Input
+                        placeholder="Filter integrations..."
+                        value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                        onChange={(event) =>
+                            table.getColumn("name")?.setFilterValue(event.target.value)
+                        }
+                        className="max-w-xs"
+                    />
                     <Button onClick={handleSyncAll}>
                         <RefreshCw className="h-4 w-4 mr-2" />
                         Sync All
@@ -239,67 +305,7 @@ export function CompanyAdminIntegrationsView() {
                     </TabsList>
                     <TabsContent value="connections" className="mt-6">
                         <Card>
-                            <CardHeader>
-                                <div className="flex items-center justify-between gap-4">
-                                     <Input
-                                        placeholder="Filter integrations..."
-                                        value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-                                        onChange={(event) =>
-                                            table.getColumn("name")?.setFilterValue(event.target.value)
-                                        }
-                                        className="max-w-xs"
-                                    />
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="outline" size="sm">
-                                                <Filter className="h-4 w-4 mr-2" /> Filter
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                                            <DropdownMenuSeparator />
-                                            <DropdownMenuSub>
-                                                <DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
-                                                <DropdownMenuSubContent>
-                                                    <DropdownMenuItem onClick={() => table.getColumn("status")?.setFilterValue(undefined)}>All</DropdownMenuItem>
-                                                    <DropdownMenuItem onClick={() => table.getColumn("status")?.setFilterValue("Connected")}>Connected</DropdownMenuItem>
-                                                    <DropdownMenuItem onClick={() => table.getColumn("status")?.setFilterValue("Not Connected")}>Not Connected</DropdownMenuItem>
-                                                    <DropdownMenuItem onClick={() => table.getColumn("status")?.setFilterValue("Error")}>Error</DropdownMenuItem>
-                                                </DropdownMenuSubContent>
-                                            </DropdownMenuSub>
-                                            <DropdownMenuSub>
-                                                <DropdownMenuSubTrigger>Category</DropdownMenuSubTrigger>
-                                                <DropdownMenuSubContent>
-                                                     <DropdownMenuItem onClick={() => table.getColumn("category")?.setFilterValue(undefined)}>All</DropdownMenuItem>
-                                                    {[...new Set(integrations.map(i => i.category))].map(category => (
-                                                        <DropdownMenuItem key={category} onClick={() => table.getColumn("category")?.setFilterValue(category)}>{category}</DropdownMenuItem>
-                                                    ))}
-                                                </DropdownMenuSubContent>
-                                            </DropdownMenuSub>
-                                            <DropdownMenuSeparator />
-                                            <DropdownMenuLabel>Visible Columns</DropdownMenuLabel>
-                                             {table
-                                                .getAllColumns()
-                                                .filter((column) => column.getCanHide())
-                                                .map((column) => {
-                                                return (
-                                                    <DropdownMenuCheckboxItem
-                                                    key={column.id}
-                                                    className="capitalize"
-                                                    checked={column.getIsVisible()}
-                                                    onCheckedChange={(value) =>
-                                                        column.toggleVisibility(!!value)
-                                                    }
-                                                    >
-                                                    {column.id}
-                                                    </DropdownMenuCheckboxItem>
-                                                )
-                                                })}
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </div>
-                            </CardHeader>
-                            <CardContent>
+                            <CardContent className="p-0">
                                 <Table>
                                     <TableHeader>
                                         {table.getHeaderGroups().map((headerGroup) => (
@@ -412,11 +418,29 @@ export function CompanyAdminIntegrationsView() {
                                     <h3 className="font-semibold text-lg">Field Mapping</h3>
                                     <p className="text-muted-foreground mt-2 mb-4">Default mappings are pre-filled. You can customize them later.</p>
                                     <div className="border rounded-lg p-4 space-y-3">
-                                        <div className="flex items-center justify-between"><p>Invoice ID</p><ArrowRight className="h-4 w-4 text-muted-foreground" /><p>CanonicalInvoice.ID</p></div>
+                                        <div className="grid grid-cols-3 items-center gap-4 text-sm">
+                                            <p className="font-medium text-muted-foreground col-span-1">Source Field (from {selectedIntegration?.name})</p>
+                                            <div/>
+                                            <p className="font-medium text-muted-foreground col-span-1">Destination Field (in PinnSight)</p>
+                                        </div>
                                         <Separator/>
-                                        <div className="flex items-center justify-between"><p>Customer.Name</p><ArrowRight className="h-4 w-4 text-muted-foreground" /><p>CanonicalParty.Name</p></div>
+                                        <div className="grid grid-cols-3 items-center gap-4 text-sm">
+                                            <p className="col-span-1">Invoice ID</p>
+                                            <ArrowRight className="h-4 w-4 text-muted-foreground justify-self-center" />
+                                            <p className="col-span-1">Invoice ID</p>
+                                        </div>
                                         <Separator/>
-                                        <div className="flex items-center justify-between"><p>Payment.Amount</p><ArrowRight className="h-4 w-4 text-muted-foreground" /><p>CanonicalTransaction.Amount</p></div>
+                                        <div className="grid grid-cols-3 items-center gap-4 text-sm">
+                                            <p className="col-span-1">Customer Name</p>
+                                            <ArrowRight className="h-4 w-4 text-muted-foreground justify-self-center" />
+                                            <p className="col-span-1">Customer Name</p>
+                                        </div>
+                                        <Separator/>
+                                        <div className="grid grid-cols-3 items-center gap-4 text-sm">
+                                            <p className="col-span-1">Payment Amount</p>
+                                            <ArrowRight className="h-4 w-4 text-muted-foreground justify-self-center" />
+                                            <p className="col-span-1">Transaction Amount</p>
+                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -424,7 +448,7 @@ export function CompanyAdminIntegrationsView() {
                                 <div className="text-center">
                                     <h3 className="font-semibold text-lg">Test & Enable</h3>
                                     <p className="text-muted-foreground mt-2">Let's test the connection to ensure everything is working correctly.</p>
-                                    <Button className="mt-6" onClick={() => toast({ title: "Test Successful!", description: "Fetched 1 sample invoice from QuickBooks."})}>
+                                    <Button className="mt-6" onClick={() => toast({ title: "Test Successful!", description: `Fetched 1 sample invoice from ${selectedIntegration?.name}.`})}>
                                         Test Connection
                                     </Button>
                                 </div>
@@ -449,5 +473,3 @@ export function CompanyAdminIntegrationsView() {
         </div>
     )
 }
-
-    
