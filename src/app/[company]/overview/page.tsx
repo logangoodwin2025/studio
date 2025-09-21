@@ -7,7 +7,7 @@ import { AccessDenied } from "@/components/access-denied";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { PeriodPicker } from "@/components/period-picker";
 import type { Period } from "@/lib/types";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams, useParams } from "next/navigation";
 import { DateRange } from "react-day-picker";
 import { formatISO, parseISO } from "date-fns";
 import { Loading } from "@/components/loading";
@@ -22,6 +22,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { tenants, industryTemplates, type Kpi } from "@/lib/mock-data";
+
 
 const REQUIRED_ROLES = ["CEO/Executive"];
 
@@ -67,15 +69,30 @@ const kpiOptions = [
     { id: 'ops_employee_utilization', label: 'Employee Utilization Stat Card', department: 'operations' },
 ];
 
+function getDefaultKpisForIndustry(industry: string): string[] {
+    const template = industryTemplates.find(t => t.name.toLowerCase().includes(industry.toLowerCase()));
+    if (template) {
+        return template.kpis.map(kpi => kpi.id);
+    }
+    // Fallback to all KPIs if no template found
+    return kpiOptions.map(k => k.id);
+}
+
+
 function OverviewPageContent() {
     const { role, isLoaded } = useUserRole();
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
+    const params = useParams();
     const { data: allData } = useFinancialData();
+    const companySlug = params.company as string;
+    
+    const tenant = tenants.find(t => t.id.includes(companySlug));
+    const industry = tenant ? tenant.industry : 'Generic';
 
     const [stats, setStats] = useState<FinancialStatsType | null>(null);
-    const [visibleKpis, setVisibleKpis] = useState<string[]>(kpiOptions.map(k => k.id));
+    const [visibleKpis, setVisibleKpis] = useState<string[]>(() => getDefaultKpisForIndustry(industry));
     const [tempVisibleKpis, setTempVisibleKpis] = useState<string[]>(visibleKpis);
 
     const period = (searchParams.get('period') as Period) || 'M';
