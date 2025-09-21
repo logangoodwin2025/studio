@@ -6,8 +6,8 @@ import * as React from "react";
 import { useUserRole } from "@/hooks/use-user-role";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Zap, CheckCircle, RefreshCw, AlertTriangle, ExternalLink, History, PlayCircle, ChevronsUpDown } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Zap, CheckCircle, RefreshCw, AlertTriangle, ExternalLink, History, PlayCircle, ChevronsUpDown, ArrowRight } from "lucide-react";
 import { Loading } from "@/components/loading";
 import { PlatformIntegrationsSettings } from "@/components/platform-integrations-settings";
 import { useToast } from "@/hooks/use-toast";
@@ -19,15 +19,17 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatDistanceToNow } from "date-fns";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
+import { Stepper, StepperItem, StepperIndicator, StepperSeparator, StepperNumber, StepperContent } from "@/components/ui/stepper";
 
 
 const initialIntegrations = [
-    { id: "qbo", name: "QuickBooks Online", category: "Accounting", status: "Connected", logo: "/logos/quickbooks.svg", lastSynced: new Date(Date.now() - 1000 * 60 * 5) },
-    { id: "sage", name: "Sage", category: "Accounting", status: "Not Connected", logo: "/logos/sage.svg" },
-    { id: "stripe", name: "Stripe", category: "Payments", status: "Connected", logo: "/logos/stripe.svg", lastSynced: new Date(Date.now() - 1000 * 60 * 30) },
-    { id: "hubspot", name: "HubSpot", category: "CRM", status: "Error", logo: "/logos/hubspot.svg", lastSynced: new Date(Date.now() - 1000 * 60 * 60 * 24) },
-    { id: "ga4", name: "Google Analytics 4", category: "Analytics", status: "Connected", logo: "/logos/ga4.svg", lastSynced: new Date(Date.now() - 1000 * 60 * 60 * 2) },
-    { id: "fb", name: "Facebook Lead Ads", category: "Leads", status: "Not Connected", logo: "/logos/facebook.svg" },
+    { id: "qbo", name: "QuickBooks Online", category: "Accounting", status: "Not Connected", logo: "/logos/quickbooks.svg", description: "Sync invoices, payments, and customers." },
+    { id: "sage", name: "Sage", category: "Accounting", status: "Not Connected", logo: "/logos/sage.svg", description: "Automate your accounting processes." },
+    { id: "stripe", name: "Stripe", category: "Payments", status: "Not Connected", logo: "/logos/stripe.svg", description: "Track payments and subscriptions." },
+    { id: "hubspot", name: "HubSpot", category: "CRM", status: "Not Connected", logo: "/logos/hubspot.svg", description: "Sync contacts, deals, and companies." },
+    { id: "ga4", name: "Google Analytics 4", category: "Analytics", status: "Not Connected", logo: "/logos/ga4.svg", description: "Import web traffic and conversion data." },
+    { id: "fb", name: "Facebook Lead Ads", category: "Leads", status: "Not Connected", logo: "/logos/facebook.svg", description: "Capture leads directly from Facebook." },
 ];
 
 const syncHistory = [
@@ -44,41 +46,43 @@ const statusVariantMap: Record<string, "secondary" | "destructive" | "outline"> 
     "Connected": "secondary",
     "Error": "destructive",
     "Not Connected": "outline",
+    "Paused": "outline",
 }
+
+const steps = [
+    { id: "permissions", title: "Permissions" },
+    { id: "authorize", title: "Authorize" },
+    { id: "mapping", title: "Field Mapping" },
+    { id: "enable", title: "Test & Enable" },
+]
 
 function CompanyAdminIntegrationsView() {
     const { toast } = useToast();
     const [integrations, setIntegrations] = React.useState<Integration[]>(initialIntegrations);
     const [selectedIntegration, setSelectedIntegration] = React.useState<Integration | null>(null);
-    const [nameFilter, setNameFilter] = React.useState("");
-    const [categoryFilter, setCategoryFilter] = React.useState("all");
-    const [statusFilter, setStatusFilter] = React.useState("all");
+    const [isManageOpen, setManageOpen] = React.useState(false);
+    const [isConnectOpen, setConnectOpen] = React.useState(false);
+    const [activeStep, setActiveStep] = React.useState(0);
 
-    const handleConnect = (integrationId: string) => {
-        // Simulate a successful connection after a delay
-        setTimeout(() => {
-            setIntegrations(prev => prev.map(int => int.id === integrationId ? { ...int, status: "Connected", lastSynced: new Date() } : int));
-            toast({
-                title: "Connection Successful!",
-                description: `Successfully connected to ${integrations.find(i => i.id === integrationId)?.name}.`,
-            });
-        }, 1000);
+    const handleConnectClick = (integration: Integration) => {
+        setSelectedIntegration(integration);
+        setActiveStep(0);
+        setConnectOpen(true);
     };
 
-    const handleDisconnect = (integrationId: string) => {
-         setIntegrations(prev => prev.map(int => int.id === integrationId ? { ...int, status: "Not Connected", lastSynced: undefined } : int));
-         toast({
-            variant: "destructive",
-            title: "Disconnected",
-            description: `Successfully disconnected from ${integrations.find(i => i.id === integrationId)?.name}.`,
-        });
+    const handleNextStep = () => {
+        setActiveStep(prev => prev + 1);
     }
 
-    const handleSyncNow = (integrationId: string) => {
+    const handleFinishConnection = () => {
+        if (!selectedIntegration) return;
+
+        setIntegrations(prev => prev.map(int => int.id === selectedIntegration.id ? { ...int, status: "Connected", lastSynced: new Date() } : int));
         toast({
-            title: "Sync Initiated",
-            description: `Manual data sync for ${integrations.find(i => i.id === integrationId)?.name} has started.`
-        })
+            title: "Connection Successful!",
+            description: `Successfully connected to ${selectedIntegration.name}.`,
+        });
+        setConnectOpen(false);
     }
     
     const handleSyncAll = () => {
@@ -91,17 +95,6 @@ function CompanyAdminIntegrationsView() {
         })
     }
 
-    const uniqueCategories = [...new Set(initialIntegrations.map(int => int.category))];
-
-    const filteredIntegrations = React.useMemo(() => {
-        return integrations.filter(int => {
-            const nameMatch = nameFilter ? int.name.toLowerCase().includes(nameFilter.toLowerCase()) : true;
-            const categoryMatch = categoryFilter !== 'all' ? int.category === categoryFilter : true;
-            const statusMatch = statusFilter !== 'all' ? int.status === statusFilter : true;
-            return nameMatch && categoryMatch && statusMatch;
-        });
-    }, [integrations, nameFilter, categoryFilter, statusFilter]);
-
     return (
         <div className="space-y-6">
             <DashboardHeader
@@ -113,147 +106,133 @@ function CompanyAdminIntegrationsView() {
                     Sync All Connections
                 </Button>
             </DashboardHeader>
-            <Card>
-                <CardHeader>
-                    <CardTitle className="font-headline">Manage Connections</CardTitle>
-                    <CardDescription>View, connect, and manage your third-party integrations.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                        <Input 
-                            placeholder="Filter by name..." 
-                            value={nameFilter} 
-                            onChange={(e) => setNameFilter(e.target.value)}
-                            className="w-full sm:max-w-xs"
-                        />
-                        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                            <SelectTrigger className="w-full sm:w-[180px]">
-                                <SelectValue placeholder="Filter by category" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All Categories</SelectItem>
-                                {uniqueCategories.map(cat => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
-                            </SelectContent>
-                        </Select>
-                        <Select value={statusFilter} onValueChange={setStatusFilter}>
-                            <SelectTrigger className="w-full sm:w-[180px]">
-                                <SelectValue placeholder="Filter by status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All Statuses</SelectItem>
-                                <SelectItem value="Connected">Connected</SelectItem>
-                                <SelectItem value="Not Connected">Not Connected</SelectItem>
-                                <SelectItem value="Error">Error</SelectItem>
-                            </SelectContent>
-                        </Select>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {integrations.map(integration => (
+                    <Card key={integration.id}>
+                        <CardHeader className="flex flex-row items-start justify-between">
+                            <img src={integration.logo} alt={integration.name} className="h-10 w-10" />
+                            <Badge variant={statusVariantMap[integration.status]}>{integration.status}</Badge>
+                        </CardHeader>
+                        <CardContent>
+                            <h3 className="font-semibold font-headline text-lg">{integration.name}</h3>
+                            <p className="text-sm text-muted-foreground mt-1">{integration.description}</p>
+                        </CardContent>
+                        <CardFooter>
+                            {integration.status === "Not Connected" ? (
+                                <Button className="w-full" onClick={() => handleConnectClick(integration)}>Connect</Button>
+                            ) : (
+                                <Button variant="outline" className="w-full" onClick={() => { setSelectedIntegration(integration); setManageOpen(true)}}>Manage</Button>
+                            )}
+                        </CardFooter>
+                    </Card>
+                ))}
+            </div>
+
+            {/* Manage Dialog */}
+            <Dialog open={isManageOpen} onOpenChange={setManageOpen}>
+                 <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle>Manage {selectedIntegration?.name}</DialogTitle>
+                        <DialogDescription>Review sync history and manage your connection.</DialogDescription>
+                    </DialogHeader>
+                    <div className="py-4 space-y-6">
+                        <div className="border rounded-lg">
+                            <Table>
+                                <TableHeader><TableRow><TableHead>Timestamp</TableHead><TableHead>Status</TableHead><TableHead>Details</TableHead></TableRow></TableHeader>
+                                <TableBody>
+                                    {syncHistory.map(sync => (
+                                        <TableRow key={sync.id}>
+                                            <TableCell className="text-xs">{formatDistanceToNow(sync.timestamp, { addSuffix: true })}</TableCell>
+                                            <TableCell><Badge variant={sync.status === 'Success' ? 'secondary' : 'destructive'}>{sync.status}</Badge></TableCell>
+                                            <TableCell className="text-xs">{sync.description}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
                     </div>
-                    <div className="border rounded-lg">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>App</TableHead>
-                                    <TableHead>Category</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Last Synced</TableHead>
-                                    <TableHead className="text-right">Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {filteredIntegrations.map((integration) => (
-                                    <TableRow key={integration.id}>
-                                        <TableCell>
-                                            <div className="flex items-center gap-3">
-                                                <img src={integration.logo} alt={integration.name} className="h-8 w-8" />
-                                                <span className="font-medium">{integration.name}</span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>{integration.category}</TableCell>
-                                        <TableCell>
-                                            <Badge variant={statusVariantMap[integration.status]}>
-                                                {integration.status}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="text-muted-foreground text-xs">
-                                            {integration.lastSynced ? formatDistanceToNow(integration.lastSynced, { addSuffix: true }) : '—'}
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            {integration.status === 'Connected' || integration.status === 'Error' ? (
-                                                <Dialog>
-                                                    <DropdownMenu>
-                                                        <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><ChevronsUpDown className="h-4 w-4"/></Button></DropdownMenuTrigger>
-                                                        <DropdownMenuContent>
-                                                             <DialogTrigger asChild>
-                                                                <DropdownMenuItem onClick={() => setSelectedIntegration(integration)}>Manage</DropdownMenuItem>
-                                                             </DialogTrigger>
-                                                            <DropdownMenuItem onClick={() => handleSyncNow(integration.id)}>Sync Now</DropdownMenuItem>
-                                                            <AlertDialog>
-                                                                <AlertDialogTrigger asChild><DropdownMenuItem onSelect={(e) => e.preventDefault()}>Disconnect</DropdownMenuItem></AlertDialogTrigger>
-                                                                <AlertDialogContent>
-                                                                    <AlertDialogHeader>
-                                                                        <AlertDialogTitle>Are you sure you want to disconnect?</AlertDialogTitle>
-                                                                        <AlertDialogDescription>Disconnecting from {integration.name} will stop data synchronization.</AlertDialogDescription>
-                                                                    </AlertDialogHeader>
-                                                                    <AlertDialogFooter>
-                                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                        <AlertDialogAction onClick={() => handleDisconnect(integration.id)}>Disconnect</AlertDialogAction>
-                                                                    </AlertDialogFooter>
-                                                                </AlertDialogContent>
-                                                            </AlertDialog>
-                                                        </DropdownMenuContent>
-                                                    </DropdownMenu>
-                                                    <DialogContent className="max-w-2xl">
-                                                        <DialogHeader>
-                                                            <DialogTitle>Manage {selectedIntegration?.name}</DialogTitle>
-                                                            <DialogDescription>Review sync history and manage your connection.</DialogDescription>
-                                                        </DialogHeader>
-                                                        <div className="py-4 space-y-6">
-                                                            <div className="border rounded-lg">
-                                                                <Table>
-                                                                    <TableHeader><TableRow><TableHead>Timestamp</TableHead><TableHead>Status</TableHead><TableHead>Details</TableHead></TableRow></TableHeader>
-                                                                    <TableBody>
-                                                                        {syncHistory.map(sync => (
-                                                                            <TableRow key={sync.id}>
-                                                                                <TableCell className="text-xs">{formatDistanceToNow(sync.timestamp, { addSuffix: true })}</TableCell>
-                                                                                <TableCell><Badge variant={sync.status === 'Success' ? 'secondary' : 'destructive'}>{sync.status}</Badge></TableCell>
-                                                                                <TableCell className="text-xs">{sync.description}</TableCell>
-                                                                            </TableRow>
-                                                                        ))}
-                                                                    </TableBody>
-                                                                </Table>
-                                                            </div>
-                                                        </div>
-                                                    </DialogContent>
-                                                </Dialog>
-                                            ) : (
-                                                <Dialog>
-                                                    <DialogTrigger asChild>
-                                                         <Button variant="outline" size="sm" onClick={() => setSelectedIntegration(integration)}>Connect</Button>
-                                                    </DialogTrigger>
-                                                    <DialogContent>
-                                                        <DialogHeader>
-                                                            <DialogTitle>Connect to {selectedIntegration?.name}</DialogTitle>
-                                                            <DialogDescription>
-                                                                You will be redirected to {selectedIntegration?.name} to securely authorize the connection.
-                                                            </DialogDescription>
-                                                        </DialogHeader>
-                                                        <div className="py-4 space-y-4">
-                                                            <p className="text-sm text-muted-foreground">By clicking continue, you agree to allow PinnSight to access data from your {selectedIntegration?.name} account. This process is secure and no login credentials are shared with PinnSight.</p>
-                                                        </div>
-                                                        <DialogFooter>
-                                                            <DialogClose asChild><Button type="button" variant="outline">Cancel</Button></DialogClose>
-                                                            <DialogClose asChild><Button type="button" onClick={() => handleConnect(selectedIntegration!.id)}>Continue to {selectedIntegration?.name}<ExternalLink className="h-4 w-4 ml-2"/></Button></DialogClose>
-                                                        </DialogFooter>
-                                                    </DialogContent>
-                                                </Dialog>
-                                            )}
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                </DialogContent>
+            </Dialog>
+
+            {/* Connect Dialog */}
+            <Dialog open={isConnectOpen} onOpenChange={setConnectOpen}>
+                <DialogContent className="max-w-3xl">
+                    <DialogHeader>
+                        <DialogTitle>Connect to {selectedIntegration?.name}</DialogTitle>
+                        <DialogDescription>Follow the steps to securely connect your account.</DialogDescription>
+                    </DialogHeader>
+                    <div className="py-6">
+                        <Stepper activeStep={activeStep}>
+                            {steps.map((step, index) => (
+                                <StepperItem key={step.id} step={index}>
+                                    <div className="flex items-center gap-2">
+                                         <StepperIndicator>
+                                            <StepperNumber />
+                                        </StepperIndicator>
+                                        <div>
+                                            <p className="font-semibold">{step.title}</p>
+                                        </div>
+                                    </div>
+                                    <StepperSeparator />
+                                </StepperItem>
+                            ))}
+                        </Stepper>
+                         <div className="mt-8">
+                            {activeStep === 0 && (
+                                <div>
+                                    <h3 className="font-semibold text-lg">What PinnSight will access:</h3>
+                                    <ul className="mt-4 space-y-3 text-muted-foreground list-disc list-inside">
+                                        <li><span className="font-semibold text-foreground">Read-only access</span> to Invoices, Customers, and Payments.</li>
+                                        <li>We <span className="font-semibold text-foreground">never</span> store your login credentials.</li>
+                                        <li>You can disconnect your account at any time.</li>
+                                    </ul>
+                                </div>
+                            )}
+                            {activeStep === 1 && (
+                                <div className="text-center">
+                                    <h3 className="font-semibold text-lg">You will be redirected to {selectedIntegration?.name}</h3>
+                                    <p className="text-muted-foreground mt-2">Sign in to your {selectedIntegration?.name} account to authorize the connection securely.</p>
+                                </div>
+                            )}
+                            {activeStep === 2 && (
+                                <div>
+                                    <h3 className="font-semibold text-lg">Field Mapping</h3>
+                                    <p className="text-muted-foreground mt-2 mb-4">Default mappings are pre-filled. You can customize them later.</p>
+                                    <div className="border rounded-lg p-4 space-y-3">
+                                        <div className="flex items-center justify-between"><p>Invoice ID</p><ArrowRight className="h-4 w-4 text-muted-foreground" /><p>CanonicalInvoice.ID</p></div>
+                                        <Separator/>
+                                        <div className="flex items-center justify-between"><p>Customer.Name</p><ArrowRight className="h-4 w-4 text-muted-foreground" /><p>CanonicalParty.Name</p></div>
+                                        <Separator/>
+                                        <div className="flex items-center justify-between"><p>Payment.Amount</p><ArrowRight className="h-4 w-4 text-muted-foreground" /><p>CanonicalTransaction.Amount</p></div>
+                                    </div>
+                                </div>
+                            )}
+                             {activeStep === 3 && (
+                                <div className="text-center">
+                                    <h3 className="font-semibold text-lg">Test & Enable</h3>
+                                    <p className="text-muted-foreground mt-2">Let's test the connection to ensure everything is working correctly.</p>
+                                    <Button className="mt-6" onClick={() => toast({ title: "Test Successful!", description: "Fetched 1 sample invoice from QuickBooks."})}>
+                                        Test Connection
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                </CardContent>
-            </Card>
+                    <DialogFooter>
+                        {activeStep < steps.length - 1 ? (
+                            <Button onClick={handleNextStep}>
+                                {activeStep === 1 ? "Continue to " + selectedIntegration?.name : "Next"}
+                                <ArrowRight className="h-4 w-4 ml-2"/>
+                            </Button>
+                        ) : (
+                            <Button onClick={handleFinishConnection}>
+                                <CheckCircle className="h-4 w-4 mr-2"/>
+                                Finish & Enable
+                            </Button>
+                        )}
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

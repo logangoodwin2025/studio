@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import {
@@ -36,7 +37,7 @@ export function PlatformIntegrationsSettings() {
                         Zapier App Configuration
                     </CardTitle>
                     <CardDescription>
-                        Manage the client ID and secret for the PinnSight Zapier application. These values are obtained from the Zapier developer platform and are used to power all tenant integrations.
+                        Manage the client ID and secret for the PinnSight Zapier application. These values are obtained from the Zapier developer platform.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -61,12 +62,12 @@ export function PlatformIntegrationsSettings() {
                 <CardHeader>
                     <CardTitle className="font-headline">Webhook Endpoints</CardTitle>
                     <CardDescription>
-                        Use these URLs in the Zapier developer platform to subscribe to REST Hooks for performing actions and receiving data.
+                        Use these URLs in the Zapier developer platform to subscribe to REST Hooks for receiving data.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="webhookUrl">Data Intake URL</Label>
+                        <Label htmlFor="webhookUrl">Zap Intake API URL</Label>
                         <div className="flex gap-2">
                             <Input id="webhookUrl" value="https://www.pinnsight.com/api/zapier" readOnly />
                              <Button variant="outline" size="icon" onClick={() => handleCopy("https://www.pinnsight.com/api/zapier")}>
@@ -74,7 +75,7 @@ export function PlatformIntegrationsSettings() {
                             </Button>
                         </div>
                          <p className="text-xs text-muted-foreground">
-                            This endpoint receives all incoming data from active Zaps.
+                            This endpoint receives all incoming data from active Zaps and must be configured with HMAC signature validation.
                         </p>
                     </div>
                 </CardContent>
