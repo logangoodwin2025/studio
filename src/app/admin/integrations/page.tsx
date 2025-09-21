@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import * as React from "react";
@@ -117,6 +116,9 @@ function CompanyAdminIntegrationsView() {
         })
     }
     
+    const categories = Array.from(new Set(initialIntegrations.map(i => i.category)));
+    const statuses = Array.from(new Set(Object.keys(statusVariantMap)));
+
     const columns: ColumnDef<Integration>[] = [
         {
             accessorKey: "name",
@@ -164,6 +166,55 @@ function CompanyAdminIntegrationsView() {
         },
         {
             id: "actions",
+            header: ({table}) => (
+                <div className="text-right">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                                <Filter className="h-4 w-4" />
+                                <span className="sr-only">Filter</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-56">
+                            <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuSub>
+                                <DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
+                                <DropdownMenuPortal>
+                                    <DropdownMenuSubContent>
+                                        <DropdownMenuItem onClick={() => table.getColumn("status")?.setFilterValue(undefined)}>All</DropdownMenuItem>
+                                        {statuses.map(status => <DropdownMenuItem key={status} onClick={() => table.getColumn("status")?.setFilterValue(status)}>{status}</DropdownMenuItem>)}
+                                    </DropdownMenuSubContent>
+                                </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                                <DropdownMenuSub>
+                                <DropdownMenuSubTrigger>Category</DropdownMenuSubTrigger>
+                                    <DropdownMenuPortal>
+                                    <DropdownMenuSubContent>
+                                        <DropdownMenuItem onClick={() => table.getColumn("category")?.setFilterValue(undefined)}>All</DropdownMenuItem>
+                                        {categories.map(cat => <DropdownMenuItem key={cat} onClick={() => table.getColumn("category")?.setFilterValue(cat)}>{cat}</DropdownMenuItem>)}
+                                    </DropdownMenuSubContent>
+                                </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuLabel>Toggle Columns</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            {table.getAllColumns().filter((column) => column.getCanHide()).map((column) => {
+                                return (
+                                    <DropdownMenuCheckboxItem
+                                        key={column.id}
+                                        className="capitalize"
+                                        checked={column.getIsVisible()}
+                                        onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                                    >
+                                        {column.id}
+                                    </DropdownMenuCheckboxItem>
+                                )
+                            })}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+            ),
             cell: ({ row }) => {
                 const integration = row.original;
                 return (
@@ -205,77 +256,28 @@ function CompanyAdminIntegrationsView() {
         },
     });
 
-    const categories = Array.from(new Set(initialIntegrations.map(i => i.category)));
-    const statuses = Array.from(new Set(Object.keys(statusVariantMap)));
-
-
     return (
         <div className="space-y-6">
             <DashboardHeader
                 title="Integrations Hub"
                 description="Connect your tools to automate data synchronization."
             >
-                <Button onClick={handleSyncAll}>
-                    <RefreshCw className="h-4 w-4 mr-2" />
-                    Sync All Connections
-                </Button>
+                <div className="flex items-center gap-2">
+                     <Input
+                        placeholder="Filter integrations..."
+                        value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                        onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
+                        className="max-w-xs"
+                    />
+                    <Button onClick={handleSyncAll}>
+                        <RefreshCw className="h-4 w-4 mr-2" />
+                        Sync All
+                    </Button>
+                </div>
             </DashboardHeader>
 
             <Card>
                 <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                         <Input
-                            placeholder="Filter integrations..."
-                            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-                            onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-                            className="max-w-sm"
-                        />
-                         <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="outline" size="sm">
-                                    <Filter className="h-4 w-4 mr-2" />
-                                    Filter
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-56">
-                                <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuSub>
-                                    <DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
-                                    <DropdownMenuPortal>
-                                        <DropdownMenuSubContent>
-                                            <DropdownMenuItem onClick={() => table.getColumn("status")?.setFilterValue(undefined)}>All</DropdownMenuItem>
-                                            {statuses.map(status => <DropdownMenuItem key={status} onClick={() => table.getColumn("status")?.setFilterValue(status)}>{status}</DropdownMenuItem>)}
-                                        </DropdownMenuSubContent>
-                                    </DropdownMenuPortal>
-                                </DropdownMenuSub>
-                                 <DropdownMenuSub>
-                                    <DropdownMenuSubTrigger>Category</DropdownMenuSubTrigger>
-                                     <DropdownMenuPortal>
-                                        <DropdownMenuSubContent>
-                                            <DropdownMenuItem onClick={() => table.getColumn("category")?.setFilterValue(undefined)}>All</DropdownMenuItem>
-                                            {categories.map(cat => <DropdownMenuItem key={cat} onClick={() => table.getColumn("category")?.setFilterValue(cat)}>{cat}</DropdownMenuItem>)}
-                                        </DropdownMenuSubContent>
-                                    </DropdownMenuPortal>
-                                </DropdownMenuSub>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuLabel>Toggle Columns</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                {table.getAllColumns().filter((column) => column.getCanHide()).map((column) => {
-                                    return (
-                                        <DropdownMenuCheckboxItem
-                                            key={column.id}
-                                            className="capitalize"
-                                            checked={column.getIsVisible()}
-                                            onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                                        >
-                                            {column.id}
-                                        </DropdownMenuCheckboxItem>
-                                    )
-                                })}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
                     <div className="rounded-md border mt-4">
                         <Table>
                             <TableHeader>
@@ -473,7 +475,5 @@ export default function IntegrationsPage() {
         </>
     );
 }
-
-    
 
     
