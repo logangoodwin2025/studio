@@ -6,8 +6,8 @@ import * as React from "react";
 import { useUserRole } from "@/hooks/use-user-role";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Zap, CheckCircle, RefreshCw, AlertTriangle, ExternalLink, History, PlayCircle, ChevronsUpDown, ArrowRight } from "lucide-react";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Zap, CheckCircle, RefreshCw, ArrowRight, ExternalLink } from "lucide-react";
 import { Loading } from "@/components/loading";
 import { PlatformIntegrationsSettings } from "@/components/platform-integrations-settings";
 import { useToast } from "@/hooks/use-toast";
@@ -20,7 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { formatDistanceToNow } from "date-fns";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
-import { Stepper, StepperItem, StepperIndicator, StepperSeparator, StepperNumber, StepperContent } from "@/components/ui/stepper";
+import { Stepper, StepperItem, StepperIndicator, StepperNumber, StepperContent } from "@/components/ui/stepper";
 
 
 const initialIntegrations = [
@@ -162,21 +162,7 @@ function CompanyAdminIntegrationsView() {
                         <DialogDescription>Follow the steps to securely connect your account.</DialogDescription>
                     </DialogHeader>
                     <div className="py-6">
-                        <Stepper activeStep={activeStep}>
-                            {steps.map((step, index) => (
-                                <StepperItem key={step.id} step={index}>
-                                    <div className="flex items-center gap-2">
-                                         <StepperIndicator>
-                                            <StepperNumber />
-                                        </StepperIndicator>
-                                        <div>
-                                            <p className="font-semibold">{step.title}</p>
-                                        </div>
-                                    </div>
-                                    <StepperSeparator />
-                                </StepperItem>
-                            ))}
-                        </Stepper>
+                        <Stepper activeStep={activeStep} steps={steps} className="w-full" />
                          <div className="mt-8">
                             {activeStep === 0 && (
                                 <div>
