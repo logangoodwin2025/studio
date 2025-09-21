@@ -19,20 +19,20 @@ export default function IntegrationsPage() {
     const isPlatformAdmin = role === 'Platform Super Admin' || role === 'Platform Manager';
 
     return (
-        <>
-            <main className="flex-1">
-               {isPlatformAdmin ? (
-                    <>
-                         <DashboardHeader
-                            title="Integrations Hub"
-                            description="Manage platform-level integration settings."
-                        />
-                        <div className="p-4 sm:px-6 lg:px-8 mt-6">
-                            <PlatformIntegrationsSettings />
-                        </div>
-                    </>
-               ) : <CompanyAdminIntegrationsView />}
-            </main>
-        </>
+        <div className="flex-1 flex flex-col">
+            {isPlatformAdmin ? (
+                <>
+                        <DashboardHeader
+                        title="Integrations Hub"
+                        description="Manage platform-level integration settings."
+                    />
+                    <div className="p-4 sm:px-6 lg:px-8 mt-6">
+                        <PlatformIntegrationsSettings />
+                    </div>
+                </>
+            ) : <CompanyAdminIntegrationsView />}
+        </div>
     );
 }
+
+    
