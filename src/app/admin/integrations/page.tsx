@@ -7,7 +7,7 @@ import { useUserRole } from "@/hooks/use-user-role";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Zap, CheckCircle, RefreshCw, ArrowRight, ExternalLink } from "lucide-react";
+import { Zap, CheckCircle, RefreshCw, ArrowRight, ExternalLink, ChevronsUpDown, BarChart } from "lucide-react";
 import { Loading } from "@/components/loading";
 import { PlatformIntegrationsSettings } from "@/components/platform-integrations-settings";
 import { useToast } from "@/hooks/use-toast";
@@ -20,7 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { formatDistanceToNow } from "date-fns";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
-import { Stepper, StepperItem, StepperIndicator, StepperNumber, StepperContent } from "@/components/ui/stepper";
+import { Stepper, StepperItem } from "@/components/ui/stepper";
 
 
 const initialIntegrations = [
