@@ -61,14 +61,10 @@ const kpiOptions = [
 ];
 
 function getDefaultKpisForIndustry(industry: string): string[] {
-    const template = industryTemplates.find(t => t.name.toLowerCase().includes(industry.toLowerCase()));
-    if (template) {
-        // This dashboard shows charts, not stat cards, so we need a different default set.
-        // For now, we'll just enable all charts by default for any industry.
-        // In a real app, templates would define default charts too.
-        return kpiOptions.map(kpi => kpi.id);
-    }
-    return kpiOptions.map(k => k.id);
+    // This dashboard shows charts, not stat cards, so we need a different default set.
+    // For a real app, templates would define default charts too.
+    // For now, we'll just enable all charts by default for any industry.
+    return kpiOptions.map(kpi => kpi.id);
 }
 
 
