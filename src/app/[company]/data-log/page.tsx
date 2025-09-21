@@ -15,7 +15,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { MoreHorizontal, ChevronsUpDown, Edit, Upload, File, Bot } from "lucide-react";
-import { format } from "date-fns";
+import { format, formatISO } from "date-fns";
+import { useRouter, useParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -61,6 +62,9 @@ const sourceIconMap: Record<DataLogEntry['source'], React.ElementType> = {
 
 function DataLogPageContent() {
   const { toast } = useToast();
+  const router = useRouter();
+  const params = useParams();
+  const companySlug = params.company as string;
   const { role, isLoaded } = useUserRole();
   
   const filteredData = React.useMemo(() => {
@@ -90,6 +94,29 @@ function DataLogPageContent() {
   }, [filteredData]);
 
   const canViewAllDepartments = role === 'CEO/Executive' || role === 'Company Admin';
+
+  const handleRowClick = (entry: DataLogEntry) => {
+    let path = '';
+    switch (entry.department) {
+      case 'Financials':
+        path = `/${companySlug}/financial-dashboard`;
+        break;
+      case 'Membership':
+        path = `/${companySlug}/membership-dashboard`;
+        break;
+      case 'Sales & Marketing':
+        path = `/${companySlug}/sales-marketing-dashboard`;
+        break;
+      case 'Operations':
+        path = `/${companySlug}/operations-dashboard`;
+        break;
+      default:
+        return;
+    }
+
+    const isoDate = formatISO(entry.date, { representation: 'date' });
+    router.push(`${path}?period=CUSTOM&from=${isoDate}&to=${isoDate}`);
+  };
 
   const columns: ColumnDef<DataLogEntry>[] = [
     {
@@ -136,7 +163,10 @@ function DataLogPageContent() {
       cell: ({ row }) => {
         return (
           <div className="text-right">
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={(e) => {
+                e.stopPropagation(); // Prevent row click when editing
+                toast({ title: "Edit functionality coming soon."})
+            }}>
                 <Edit className="h-4 w-4 mr-2" />
                 Edit
             </Button>
@@ -235,7 +265,12 @@ function DataLogPageContent() {
               <TableBody>
                 {table.getRowModel().rows?.length ? (
                   table.getRowModel().rows.map((row) => (
-                    <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                    <TableRow 
+                        key={row.id} 
+                        data-state={row.getIsSelected() && "selected"}
+                        className="cursor-pointer"
+                        onClick={() => handleRowClick(row.original)}
+                    >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id}>
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
