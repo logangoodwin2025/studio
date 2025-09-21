@@ -40,7 +40,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { type DataLogEntry, dataLogEntries as initialData, departmentOptions } from "@/lib/mock-data";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/use-user-role";
 import { Loading } from "@/components/loading";
@@ -195,9 +195,17 @@ function DataLogPageContent() {
     },
   });
 
-  const uniqueMetrics = React.useMemo(() => {
-    const metrics = new Set(data.map(item => item.metric));
-    return ['all', ...Array.from(metrics)];
+  const metricsByDepartment = React.useMemo(() => {
+    const grouped: Record<string, string[]> = {};
+    data.forEach(item => {
+        if (!grouped[item.department]) {
+            grouped[item.department] = [];
+        }
+        if (!grouped[item.department].includes(item.metric)) {
+            grouped[item.department].push(item.metric);
+        }
+    });
+    return grouped;
   }, [data]);
   
   if (!isLoaded) {
@@ -214,14 +222,22 @@ function DataLogPageContent() {
         <Card>
           <CardContent className="p-4">
             <div className="flex flex-wrap items-center gap-4">
-              <Input
-                placeholder="Filter by metric..."
-                value={(table.getColumn("metric")?.getFilterValue() as string) ?? ""}
-                onChange={(event) =>
-                  table.getColumn("metric")?.setFilterValue(event.target.value)
-                }
-                className="max-w-sm"
-              />
+              <Select onValueChange={(value) => table.getColumn("metric")?.setFilterValue(value === 'all' ? undefined : value)}>
+                 <SelectTrigger className="w-full sm:w-[220px]">
+                    <SelectValue placeholder="Filter by metric..." />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="all">All Metrics</SelectItem>
+                    {Object.entries(metricsByDepartment).map(([department, metrics]) => (
+                        <SelectGroup key={department}>
+                            <SelectLabel>{department}</SelectLabel>
+                            {metrics.map(metric => (
+                                <SelectItem key={metric} value={metric}>{metric}</SelectItem>
+                            ))}
+                        </SelectGroup>
+                    ))}
+                </SelectContent>
+              </Select>
               <Select onValueChange={(value) => table.getColumn("source")?.setFilterValue(value === 'all' ? undefined : value)}>
                 <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Filter by source" />
