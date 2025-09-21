@@ -263,12 +263,6 @@ function CompanyAdminIntegrationsView() {
                 description="Connect your tools to automate data synchronization."
             >
                 <div className="flex items-center gap-2">
-                     <Input
-                        placeholder="Filter integrations..."
-                        value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-                        onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-                        className="max-w-xs"
-                    />
                     <Button onClick={handleSyncAll}>
                         <RefreshCw className="h-4 w-4 mr-2" />
                         Sync All
