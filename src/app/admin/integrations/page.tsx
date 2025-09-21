@@ -1,13 +1,12 @@
 
-
 "use client";
 
 import * as React from "react";
 import { useUserRole } from "@/hooks/use-user-role";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Zap, CheckCircle, RefreshCw, ArrowRight, ExternalLink, ChevronsUpDown, BarChart } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Zap, CheckCircle, RefreshCw, ArrowRight, ChevronsUpDown, MoreHorizontal, Download } from "lucide-react";
 import { Loading } from "@/components/loading";
 import { PlatformIntegrationsSettings } from "@/components/platform-integrations-settings";
 import { useToast } from "@/hooks/use-toast";
@@ -18,17 +17,29 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatDistanceToNow } from "date-fns";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { Stepper, StepperItem } from "@/components/ui/stepper";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 
 
 const initialIntegrations = [
-    { id: "qbo", name: "QuickBooks Online", category: "Accounting", status: "Not Connected", logo: "/logos/quickbooks.svg", description: "Sync invoices, payments, and customers." },
+    { id: "qbo", name: "QuickBooks Online", category: "Accounting", status: "Connected", logo: "/logos/quickbooks.svg", description: "Sync invoices, payments, and customers.", lastSynced: new Date(Date.now() - 1000 * 60 * 5) },
     { id: "sage", name: "Sage", category: "Accounting", status: "Not Connected", logo: "/logos/sage.svg", description: "Automate your accounting processes." },
-    { id: "stripe", name: "Stripe", category: "Payments", status: "Not Connected", logo: "/logos/stripe.svg", description: "Track payments and subscriptions." },
+    { id: "stripe", name: "Stripe", category: "Payments", status: "Connected", logo: "/logos/stripe.svg", description: "Track payments and subscriptions.", lastSynced: new Date(Date.now() - 1000 * 60 * 65) },
     { id: "hubspot", name: "HubSpot", category: "CRM", status: "Not Connected", logo: "/logos/hubspot.svg", description: "Sync contacts, deals, and companies." },
-    { id: "ga4", name: "Google Analytics 4", category: "Analytics", status: "Not Connected", logo: "/logos/ga4.svg", description: "Import web traffic and conversion data." },
+    { id: "ga4", name: "Google Analytics 4", category: "Analytics", status: "Error", logo: "/logos/ga4.svg", description: "Import web traffic and conversion data.", lastSynced: new Date(Date.now() - 1000 * 60 * 125) },
     { id: "fb", name: "Facebook Lead Ads", category: "Leads", status: "Not Connected", logo: "/logos/facebook.svg", description: "Capture leads directly from Facebook." },
 ];
 
@@ -64,11 +75,21 @@ function CompanyAdminIntegrationsView() {
     const [isConnectOpen, setConnectOpen] = React.useState(false);
     const [activeStep, setActiveStep] = React.useState(0);
 
+    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+
+
     const handleConnectClick = (integration: Integration) => {
         setSelectedIntegration(integration);
         setActiveStep(0);
         setConnectOpen(true);
     };
+    
+    const handleManageClick = (integration: Integration) => {
+        setSelectedIntegration(integration);
+        setManageOpen(true);
+    }
 
     const handleNextStep = () => {
         setActiveStep(prev => prev + 1);
@@ -94,6 +115,78 @@ function CompanyAdminIntegrationsView() {
             })
         })
     }
+    
+    const columns: ColumnDef<Integration>[] = [
+        {
+            accessorKey: "name",
+            header: "App",
+            cell: ({ row }) => (
+                <div className="flex items-center gap-3">
+                    <img src={row.original.logo} alt={row.original.name} className="h-8 w-8" />
+                    <span className="font-semibold">{row.original.name}</span>
+                </div>
+            )
+        },
+        {
+            accessorKey: "category",
+            header: "Category"
+        },
+        {
+            accessorKey: "status",
+            header: "Status",
+            cell: ({ row }) => <Badge variant={statusVariantMap[row.original.status]}>{row.original.status}</Badge>
+        },
+        {
+            accessorKey: "lastSynced",
+            header: "Last Synced",
+            cell: ({ row }) => row.original.lastSynced ? formatDistanceToNow(row.original.lastSynced, { addSuffix: true }) : 'N/A'
+        },
+        {
+            id: "actions",
+            cell: ({ row }) => {
+                const integration = row.original;
+                return (
+                     <div className="flex items-center gap-2 justify-end">
+                        {integration.status === 'Connected' && <Button size="sm" variant="outline" onClick={() => toast({ title: `Syncing ${integration.name}...`})}><RefreshCw className="h-4 w-4"/></Button>}
+                        {integration.status === 'Not Connected' && <Button size="sm" onClick={() => handleConnectClick(integration)}>Connect</Button>}
+                        {integration.status !== 'Not Connected' && (
+                             <DropdownMenu>
+                                <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-8 w-8"><MoreHorizontal className="h-4 w-4"/></Button></DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    <DropdownMenuItem onClick={() => handleManageClick(integration)}>Manage Connection</DropdownMenuItem>
+                                    <DropdownMenuItem>View Sync History</DropdownMenuItem>
+                                    <DropdownMenuItem>Edit Field Mappings</DropdownMenuItem>
+                                    <Separator />
+                                    <DropdownMenuItem className="text-destructive">Disconnect</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        )}
+                    </div>
+                )
+            }
+        }
+    ]
+
+     const table = useReactTable({
+        data: integrations,
+        columns,
+        onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        onColumnVisibilityChange: setColumnVisibility,
+        state: {
+            sorting,
+            columnFilters,
+            columnVisibility,
+        },
+    });
+
+    const categories = Array.from(new Set(initialIntegrations.map(i => i.category)));
+    const statuses = Array.from(new Set(initialIntegrations.map(i => i.status)));
+
 
     return (
         <div className="space-y-6">
@@ -106,27 +199,116 @@ function CompanyAdminIntegrationsView() {
                     Sync All Connections
                 </Button>
             </DashboardHeader>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {integrations.map(integration => (
-                    <Card key={integration.id}>
-                        <CardHeader className="flex flex-row items-start justify-between">
-                            <img src={integration.logo} alt={integration.name} className="h-10 w-10" />
-                            <Badge variant={statusVariantMap[integration.status]}>{integration.status}</Badge>
-                        </CardHeader>
-                        <CardContent>
-                            <h3 className="font-semibold font-headline text-lg">{integration.name}</h3>
-                            <p className="text-sm text-muted-foreground mt-1">{integration.description}</p>
-                        </CardContent>
-                        <CardFooter>
-                            {integration.status === "Not Connected" ? (
-                                <Button className="w-full" onClick={() => handleConnectClick(integration)}>Connect</Button>
-                            ) : (
-                                <Button variant="outline" className="w-full" onClick={() => { setSelectedIntegration(integration); setManageOpen(true)}}>Manage</Button>
-                            )}
-                        </CardFooter>
-                    </Card>
-                ))}
-            </div>
+
+            <Card>
+                <CardContent className="p-4">
+                    <div className="flex flex-wrap items-center gap-4">
+                        <Input
+                            placeholder="Filter integrations..."
+                            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                            onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
+                            className="max-w-sm"
+                        />
+                        <Select onValueChange={(value) => table.getColumn("category")?.setFilterValue(value === 'all' ? undefined : value)}>
+                            <SelectTrigger className="w-full sm:w-[180px]">
+                                <SelectValue placeholder="Filter by category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Categories</SelectItem>
+                                {categories.map(cat => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
+                            </SelectContent>
+                        </Select>
+                        <Select onValueChange={(value) => table.getColumn("status")?.setFilterValue(value === 'all' ? undefined : value)}>
+                            <SelectTrigger className="w-full sm:w-[180px]">
+                                <SelectValue placeholder="Filter by status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Statuses</SelectItem>
+                                {Object.keys(statusVariantMap).map(status => <SelectItem key={status} value={status}>{status}</SelectItem>)}
+                            </SelectContent>
+                        </Select>
+                         <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                            <Button variant="outline" className="ml-auto">
+                                Columns <ChevronsUpDown className="ml-2 h-4 w-4" />
+                            </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                            {table
+                                .getAllColumns()
+                                .filter((column) => column.getCanHide())
+                                .map((column) => {
+                                return (
+                                    <DropdownMenuCheckboxItem
+                                    key={column.id}
+                                    className="capitalize"
+                                    checked={column.getIsVisible()}
+                                    onCheckedChange={(value) =>
+                                        column.toggleVisibility(!!value)
+                                    }
+                                    >
+                                    {column.id}
+                                    </DropdownMenuCheckboxItem>
+                                )
+                                })}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardContent className="p-0">
+                    <Table>
+                        <TableHeader>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id}>
+                            {headerGroup.headers.map((header) => {
+                                return (
+                                <TableHead key={header.id}>
+                                    {header.isPlaceholder
+                                    ? null
+                                    : flexRender(
+                                        header.column.columnDef.header,
+                                        header.getContext()
+                                        )}
+                                </TableHead>
+                                )
+                            })}
+                            </TableRow>
+                        ))}
+                        </TableHeader>
+                        <TableBody>
+                        {table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                            <TableRow
+                                key={row.id}
+                                data-state={row.getIsSelected() && "selected"}
+                            >
+                                {row.getVisibleCells().map((cell) => (
+                                <TableCell key={cell.id}>
+                                    {flexRender(
+                                    cell.column.columnDef.cell,
+                                    cell.getContext()
+                                    )}
+                                </TableCell>
+                                ))}
+                            </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                            <TableCell
+                                colSpan={columns.length}
+                                className="h-24 text-center"
+                            >
+                                No results.
+                            </TableCell>
+                            </TableRow>
+                        )}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
 
             {/* Manage Dialog */}
             <Dialog open={isManageOpen} onOpenChange={setManageOpen}>
@@ -150,6 +332,10 @@ function CompanyAdminIntegrationsView() {
                                 </TableBody>
                             </Table>
                         </div>
+                         <div className="flex justify-end gap-2">
+                            <Button variant="destructive">Disconnect</Button>
+                            <Button variant="outline">Pause Syncing</Button>
+                         </div>
                     </div>
                 </DialogContent>
             </Dialog>
