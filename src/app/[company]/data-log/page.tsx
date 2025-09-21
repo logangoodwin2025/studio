@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -59,6 +60,18 @@ const sourceIconMap: Record<DataLogEntry['source'], React.ElementType> = {
     "Zapier": Bot,
     "Manual Correction": Edit,
 }
+
+// Client-side only component to prevent hydration mismatch on dates
+function DateCell({ date }: { date: Date }) {
+    const [formattedDate, setFormattedDate] = React.useState('');
+
+    React.useEffect(() => {
+        setFormattedDate(format(date, "PPP"));
+    }, [date]);
+
+    return <>{formattedDate || "..."}</>;
+}
+
 
 function DataLogPageContent() {
   const { toast } = useToast();
@@ -134,7 +147,7 @@ function DataLogPageContent() {
           Date <ChevronsUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => format(row.original.date, "PPP"),
+      cell: ({ row }) => <DateCell date={row.original.date} />,
     },
     {
         accessorKey: "department",
