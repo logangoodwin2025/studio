@@ -42,6 +42,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { formatDistanceToNow } from 'date-fns';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 
 const initialIntegrations = [
@@ -71,7 +72,7 @@ const statusVariantMap: Record<string, "secondary" | "destructive" | "outline"> 
     "Paused": "outline",
 }
 
-const activityStatusVariantMap: Record<string, "success" | "destructive" | "secondary"> = {
+const activityStatusVariantMap: Record<string, "secondary" | "destructive"> = {
     "Success": "secondary",
     "Failed": "destructive",
 }
@@ -88,6 +89,16 @@ const steps = [
     { id: "enable", title: "Test & Enable" },
 ]
 
+// Mock data for field mapping
+const defaultMappings = {
+  "Invoice ID": "Invoice ID",
+  "Customer Name": "Customer Name",
+  "Payment Amount": "Transaction Amount",
+};
+
+const pinnSightFields = ["Invoice ID", "Customer Name", "Transaction Amount", "Transaction Date", "Customer Email", "Invoice Status"];
+
+
 export function CompanyAdminIntegrationsView() {
     const { toast } = useToast();
     const [integrations, setIntegrations] = React.useState<Integration[]>(initialIntegrations);
@@ -97,15 +108,21 @@ export function CompanyAdminIntegrationsView() {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+    const [fieldMappings, setFieldMappings] = React.useState(defaultMappings);
 
     const handleConnectClick = (integration: Integration) => {
         setSelectedIntegration(integration);
         setActiveStep(0);
         setConnectOpen(true);
+        setFieldMappings(defaultMappings); // Reset mappings on open
     };
     
     const handleNextStep = () => {
         setActiveStep(prev => prev + 1);
+    }
+    
+    const handleMappingChange = (sourceField: string, destinationField: string) => {
+        setFieldMappings(prev => ({ ...prev, [sourceField]: destinationField }));
     }
 
     const handleFinishConnection = () => {
@@ -416,7 +433,7 @@ export function CompanyAdminIntegrationsView() {
                             {activeStep === 2 && (
                                 <div>
                                     <h3 className="font-semibold text-lg">Field Mapping</h3>
-                                    <p className="text-muted-foreground mt-2 mb-4">Default mappings are pre-filled. You can customize them later.</p>
+                                    <p className="text-muted-foreground mt-2 mb-4">Review the default mappings and adjust as needed.</p>
                                     <div className="border rounded-lg p-4 space-y-3">
                                         <div className="grid grid-cols-3 items-center gap-4 text-sm">
                                             <p className="font-medium text-muted-foreground col-span-1">Source Field (from {selectedIntegration?.name})</p>
@@ -424,23 +441,27 @@ export function CompanyAdminIntegrationsView() {
                                             <p className="font-medium text-muted-foreground col-span-1">Destination Field (in PinnSight)</p>
                                         </div>
                                         <Separator/>
-                                        <div className="grid grid-cols-3 items-center gap-4 text-sm">
-                                            <p className="col-span-1">Invoice ID</p>
-                                            <ArrowRight className="h-4 w-4 text-muted-foreground justify-self-center" />
-                                            <p className="col-span-1">Invoice ID</p>
-                                        </div>
-                                        <Separator/>
-                                        <div className="grid grid-cols-3 items-center gap-4 text-sm">
-                                            <p className="col-span-1">Customer Name</p>
-                                            <ArrowRight className="h-4 w-4 text-muted-foreground justify-self-center" />
-                                            <p className="col-span-1">Customer Name</p>
-                                        </div>
-                                        <Separator/>
-                                        <div className="grid grid-cols-3 items-center gap-4 text-sm">
-                                            <p className="col-span-1">Payment Amount</p>
-                                            <ArrowRight className="h-4 w-4 text-muted-foreground justify-self-center" />
-                                            <p className="col-span-1">Transaction Amount</p>
-                                        </div>
+                                        {Object.entries(fieldMappings).map(([source, dest]) => (
+                                            <React.Fragment key={source}>
+                                                <div className="grid grid-cols-3 items-center gap-4 text-sm">
+                                                    <p className="col-span-1 font-medium">{source}</p>
+                                                    <ArrowRight className="h-4 w-4 text-muted-foreground justify-self-center" />
+                                                    <div className="col-span-1">
+                                                        <Select value={dest} onValueChange={(value) => handleMappingChange(source, value)}>
+                                                            <SelectTrigger>
+                                                                <SelectValue />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                {pinnSightFields.map(field => (
+                                                                    <SelectItem key={field} value={field}>{field}</SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                </div>
+                                                <Separator />
+                                            </React.Fragment>
+                                        ))}
                                     </div>
                                 </div>
                             )}
@@ -473,3 +494,5 @@ export function CompanyAdminIntegrationsView() {
         </div>
     )
 }
+
+    
