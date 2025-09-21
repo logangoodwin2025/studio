@@ -9,64 +9,50 @@ import { MembershipForm } from "@/components/data-entry/membership-form";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { AccessDenied } from "@/components/access-denied";
 import { Suspense } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useSearchParams, useParams } from "next/navigation";
 
-const forms: Record<string, React.ComponentType> = {
-    "Finance Team": FinanceForm,
-    "Sales & Marketing": SalesForm,
-    "Operations Team": OperationsForm,
-    "Company Admin": FinanceForm, // Default for admin
-};
+// This is a router page. Based on the user role, it will redirect
+// to the appropriate data entry page.
 
-const titles: Record<string, string> = {
-    "Finance Team": "Finance Data Entry",
-    "Sales & Marketing": "Sales & Marketing Data Entry",
-    "Operations Team": "Operations Data Entry",
-    "Company Admin": "Finance Data Entry",
-}
-
-const descriptions: Record<string, string> = {
-    "Finance Team": "Input financial metrics and KPIs for a specific period",
-    "Sales & Marketing": "Input sales and marketing metrics",
-    "Operations Team": "Input operational metrics and KPIs",
-    "Company Admin": "Input financial metrics and KPIs",
-}
-
-
-function DataEntryPageContent() {
+function DataEntryRedirectPage() {
     const { role, isLoaded } = useUserRole();
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const params = useParams();
+    const companySlug = params.company;
 
-    if (!isLoaded) {
-        return null; // Or a loading spinner
-    }
+    useEffect(() => {
+        if (isLoaded && role) {
+            const query = searchParams.toString();
+            let path = "";
 
-    if (!role) {
-        return <AccessDenied />;
-    }
-
-    // A special case for Sales & Marketing who can also do membership entry.
-    // We could add a tab for this or a separate page. For now, we'll just show the main one.
-    let formRole = role;
-    if (role === "Sales & Marketing") {
-        // This is a placeholder for a potential sub-navigation if a role has multiple forms.
-        // For now, it just defaults to the main sales form.
-    }
-
-    const FormComponent = forms[formRole];
-    const title = titles[formRole] || "Data Entry";
-    const description = descriptions[formRole] || "Input data for your department.";
-
-
-    if (!FormComponent) {
-        return <AccessDenied />;
-    }
+            switch (role) {
+                case "Finance Team":
+                case "Company Admin":
+                    path = `/${companySlug}/data-entry/finance?${query}`;
+                    break;
+                case "Sales & Marketing":
+                    path = `/${companySlug}/data-entry/sales?${query}`;
+                    break;
+                case "Operations Team":
+                    path = `/${companySlug}/data-entry/operations?${query}`;
+                    break;
+                default:
+                    // Redirect to a safe page if no data entry is available
+                    path = `/${companySlug}/my-dashboard?${query}`;
+                    break;
+            }
+            router.replace(path);
+        }
+    }, [isLoaded, role, router, companySlug, searchParams]);
 
     return (
         <>
-            <DashboardHeader title={title} description={description} />
+            <DashboardHeader title="Loading Data Entry..." />
             <main className="flex-1 p-4 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-5xl">
-                    <FormComponent />
-                </div>
+                <p>Please wait...</p>
             </main>
         </>
     );
@@ -75,7 +61,7 @@ function DataEntryPageContent() {
 export default function DataEntryPage() {
     return (
         <Suspense>
-            <DataEntryPageContent />
+            <DataEntryRedirectPage />
         </Suspense>
     )
 }

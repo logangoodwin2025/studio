@@ -3,9 +3,9 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Check, Upload, Palette, Rocket, Users, Calendar, DollarSign } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
@@ -82,9 +82,11 @@ export function CompanyAdminSettings() {
                                                     ))}
                                                 </ul>
                                             </CardContent>
-                                            <div className="p-6 pt-0">
-                                                <Button className="w-full" disabled={selectedPlan !== plan.name}>Choose Plan</Button>
-                                            </div>
+                                            <CardFooter>
+                                                <DialogClose asChild>
+                                                    <Button className="w-full" disabled={selectedPlan !== plan.name}>Choose Plan</Button>
+                                                </DialogClose>
+                                            </CardFooter>
                                         </Card>
                                     ))}
                                 </div>
@@ -130,7 +132,9 @@ export function CompanyAdminSettings() {
                                 </div> 
                             </div>
                              <DialogFooter>
-                                <Button type="submit">Upload</Button>
+                                <DialogClose asChild>
+                                    <Button type="submit">Upload</Button>
+                                </DialogClose>
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
@@ -176,7 +180,9 @@ export function CompanyAdminSettings() {
                                 </Card>
                             </div>
                              <DialogFooter>
-                                <Button type="submit">Save Palette</Button>
+                                <DialogClose asChild>
+                                    <Button type="submit">Save Palette</Button>
+                                </DialogClose>
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>

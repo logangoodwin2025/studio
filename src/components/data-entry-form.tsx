@@ -110,11 +110,11 @@ export function DataEntryForm() {
 
   const handleNumericChange = (e: React.ChangeEvent<HTMLInputElement>, field: any) => {
     const value = e.target.value;
-    // Allow empty string to clear the field, otherwise convert to number
+    const numericValue = value.replace(/[^0-9.-]/g, '');
     if (value === '' || value === '-') {
       field.onChange(value);
     } else {
-      const num = Number(value);
+      const num = Number(numericValue);
       if (!isNaN(num)) {
         field.onChange(num);
       }

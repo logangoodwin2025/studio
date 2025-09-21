@@ -62,6 +62,7 @@ const financeFormSchema = z.object({
   opexDate: z.date().optional(),
   opexType: z.string().optional(),
   opexAmount: z.coerce.number().optional(),
+  opexDescription: z.string().optional(),
 
   // Depreciation & Amortization
   depreciationDate: z.date().optional(),
@@ -83,6 +84,7 @@ const financeFormSchema = z.object({
 
   // Accounts Receivable/Payable
   invoiceDate: z.date().optional(),
+  invoiceNumber: z.string().optional(),
   customerVendorName: z.string().optional(),
   invoiceAmount: z.coerce.number().optional(),
   dueDate: z.date().optional(),
@@ -163,10 +165,11 @@ export function FinanceForm() {
                      <Separator />
                     <div>
                         <h4 className="font-medium my-4">Operating Expenses</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                            <FormField control={form.control} name="opexDate" render={({ field }) => ( <FormItem className="flex flex-col"><FormLabel>Date</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : (<span>Pick a date</span>)}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)} />
                            <FormField control={form.control} name="opexType" render={({ field }) => ( <FormItem><FormLabel>Expense Type</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select a type" /></SelectTrigger></FormControl><SelectContent><SelectItem value="salaries">Salaries</SelectItem><SelectItem value="rent">Rent</SelectItem><SelectItem value="marketing">Marketing</SelectItem><SelectItem value="r-d">R&D</SelectItem><SelectItem value="other">Other</SelectItem></SelectContent></Select><FormMessage /></FormItem>)} />
                            <FormField control={form.control} name="opexAmount" render={({ field }) => ( <FormItem><FormLabel>Amount</FormLabel><FormControl><Input type="number" placeholder="e.g., 25000" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                            <FormField control={form.control} name="opexDescription" render={({ field }) => ( <FormItem><FormLabel>Description</FormLabel><FormControl><Input placeholder="e.g., Monthly office rent" {...field} /></FormControl><FormMessage /></FormItem>)} />
                         </div>
                     </div>
                 </AccordionContent>
@@ -244,8 +247,9 @@ export function FinanceForm() {
                     </div>
                 </AccordionTrigger>
                 <AccordionContent className="pt-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
                     <FormField control={form.control} name="invoiceDate" render={({ field }) => ( <FormItem className="flex flex-col"><FormLabel>Invoice Date</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : (<span>Pick a date</span>)}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)} />
+                    <FormField control={form.control} name="invoiceNumber" render={({ field }) => ( <FormItem><FormLabel>Invoice #</FormLabel><FormControl><Input placeholder="e.g., INV-2024-001" {...field} /></FormControl><FormMessage /></FormItem>)} />
                     <FormField control={form.control} name="customerVendorName" render={({ field }) => ( <FormItem><FormLabel>Customer/Vendor</FormLabel><FormControl><Input placeholder="e.g., Acme Inc." {...field} /></FormControl><FormMessage /></FormItem>)} />
                     <FormField control={form.control} name="invoiceAmount" render={({ field }) => ( <FormItem><FormLabel>Invoice Amount</FormLabel><FormControl><Input type="number" placeholder="e.g., 1200" {...field} /></FormControl><FormMessage /></FormItem>)} />
                     <FormField control={form.control} name="dueDate" render={({ field }) => ( <FormItem className="flex flex-col"><FormLabel>Due Date</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>{field.value ? format(field.value, "PPP") : (<span>Pick a date</span>)}<CalendarIcon className="ml-auto h-4 w-4 opacity-50" /></Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)} />
@@ -284,3 +288,5 @@ export function FinanceForm() {
     </Card>
   );
 }
+
+    

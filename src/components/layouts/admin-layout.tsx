@@ -5,7 +5,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams, useParams } from "next/navigation";
-import { LogOut, ChevronDown, Bell, LayoutDashboard, Users, Shield, User, Component, AlertCircle, CheckCircle, MessageSquare, Building, MessageSquarePlus } from "lucide-react";
+import { LogOut, ChevronDown, Bell, LayoutDashboard, Shield, User, Component, AlertCircle, CheckCircle, MessageSquare, Building, Zap, Settings, DollarSign, History, Package, Users2 } from "lucide-react";
 
 import {
   Sidebar,
@@ -15,7 +15,6 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarInset,
-  SidebarLabel,
   SidebarProvider,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -35,12 +34,18 @@ const allNavItems = {
     PLATFORM: [
         { href: "/admin/dashboard", icon: LayoutDashboard, label: "Platform Dashboard", roles: ["Platform Super Admin", "Platform Manager"] },
         { href: "/admin/tenants", icon: Component, label: "Tenants", roles: ["Platform Super Admin", "Platform Manager"] },
+        { href: "/admin/billing", icon: DollarSign, label: "Billing", roles: ["Platform Super Admin"] },
+        { href: "/admin/templates", icon: Package, label: "Industry Templates", roles: ["Platform Super Admin"] },
         { href: "/admin/support-tickets", icon: MessageSquare, label: "Support", roles: ["Platform Manager"] },
+        { href: "/admin/integrations", icon: Zap, label: "Integrations", roles: ["Platform Super Admin"] },
+        { href: "/admin/audit-logs", icon: History, label: "Audit Logs", roles: ["Platform Super Admin"] },
     ],
     COMPANY_ADMIN: [
         { href: "/admin/dashboard", icon: LayoutDashboard, label: "Admin Dashboard", roles: ["Company Admin"] },
-        { href: "/users", icon: Users, label: "Users", roles: ["Company Admin"] },
+        { href: "/admin/users", icon: Users2, label: "Users", roles: ["Company Admin"] },
+        { href: "/admin/settings", icon: Settings, label: "Settings", roles: ["Company Admin"] },
         { href: "/roles", icon: Shield, label: "Roles", roles: ["Company Admin"] },
+        { href: "/admin/integrations", icon: Zap, label: "Integrations", roles: ["Company Admin"] },
     ]
 };
 
@@ -73,7 +78,7 @@ function Header() {
   const avatarUrl = searchParams.get('avatar');
   const notifications = (role && adminNotifications[role as keyof typeof adminNotifications]) || [];
   const params = useParams();
-  const companySlug = params.company as string || "srisys";
+  const companySlug = params.company as string;
   
   const getHeaderText = () => {
     if (role === "Platform Super Admin" || role === "Platform Manager") {

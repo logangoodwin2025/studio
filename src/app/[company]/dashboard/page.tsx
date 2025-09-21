@@ -7,7 +7,7 @@ import { AccessDenied } from "@/components/access-denied";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { PeriodPicker } from "@/components/period-picker";
 import type { Period } from "@/lib/types";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams, useParams } from "next/navigation";
 import { DateRange } from "react-day-picker";
 import { formatISO, parseISO } from "date-fns";
 import { Loading } from "@/components/loading";
@@ -27,9 +27,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { tenants, industryTemplates, type Kpi } from "@/lib/mock-data";
 
-
-const REQUIRED_ROLES = ["CEO/Executive", "Company Admin"];
+const REQUIRED_ROLES = ["CEO/Executive"];
 
 const departmentOptions = [
     { id: 'financials', label: 'Financials' },
@@ -60,17 +60,29 @@ const kpiOptions = [
     { id: 'ops_service_delivery_chart', label: 'Service Delivery Chart', department: 'operations' },
 ];
 
+function getDefaultKpisForIndustry(industry: string): string[] {
+    // This dashboard shows charts, not stat cards, so we need a different default set.
+    // For a real app, templates would define default charts too.
+    // For now, we'll just enable all charts by default for any industry.
+    return kpiOptions.map(kpi => kpi.id);
+}
+
 
 function DashboardPageContent() {
     const { role, isLoaded } = useUserRole();
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
+    const params = useParams();
     const { data: allData } = useFinancialData();
+
+    const companySlug = params.company as string;
+    const tenant = tenants.find(t => t.id.includes(companySlug));
+    const industry = tenant ? tenant.industry : 'Generic';
 
     const [stats, setStats] = useState<FinancialStats | null>(null);
     const [chartData, setChartData] = useState<FinancialRecord[]>([]);
-    const [visibleKpis, setVisibleKpis] = useState<string[]>(kpiOptions.map(k => k.id));
+    const [visibleKpis, setVisibleKpis] = useState<string[]>(() => getDefaultKpisForIndustry(industry));
     const [tempVisibleKpis, setTempVisibleKpis] = useState<string[]>(visibleKpis);
 
     const period = (searchParams.get('period') as Period) || 'M';

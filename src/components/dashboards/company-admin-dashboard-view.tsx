@@ -3,8 +3,6 @@
 "use client";
 
 import { DashboardHeader } from "@/components/dashboard-header";
-import { UsersDataTable } from "../users-data-table";
-import { userList } from "@/lib/mock-data";
 import { CompanyAdminSettings } from "../company-admin-settings";
 import { StatCard } from "../stat-card";
 import { BadgeDollarSign, Users, PieChart as PieChartIcon, CalendarCheck2, UserPlus, Download } from "lucide-react";
@@ -15,6 +13,8 @@ import { BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Bar } from "recha
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { format } from "date-fns";
 import { InfoTooltip } from "../info-tooltip";
+import Link from "next/link";
+import { userList } from "@/lib/mock-data";
 
 const userLoginsData = [
     { name: 'Finance', logins: 120 },
@@ -127,7 +127,27 @@ export function CompanyAdminDashboardView() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
-                <UsersDataTable initialUsers={userList} />
+                 <Card>
+                    <CardHeader>
+                        <CardTitle className="font-headline flex items-center">
+                            User Logins by Department
+                            <InfoTooltip>Tracks login activity across different departments for the current month.</InfoTooltip>
+                        </CardTitle>
+                        <CardDescription>Team login activity for the current month.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="h-[300px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={userLoginsData}>
+                                    <XAxis dataKey="name" fontSize={12} />
+                                    <YAxis fontSize={12} />
+                                    <Tooltip />
+                                    <Bar dataKey="logins" fill="hsl(var(--chart-2))" radius={[4,4,0,0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
             <div className="space-y-6">
                  <Card>
@@ -135,38 +155,12 @@ export function CompanyAdminDashboardView() {
                         <CardTitle className="font-headline">Quick Actions</CardTitle>
                     </CardHeader>
                     <CardContent className="flex flex-col space-y-2">
-                        <Button variant="outline"><UserPlus className="mr-2 h-4 w-4" /> Add User</Button>
+                        <Button variant="outline" asChild><Link href="/admin/users"><UserPlus className="mr-2 h-4 w-4" /> Manage Users</Link></Button>
                         <Button variant="outline"><Download className="mr-2 h-4 w-4" /> Export Company Data</Button>
                     </CardContent>
                 </Card>
-                 <CompanyAdminSettings />
             </div>
         </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
-            <Card>
-                <CardHeader>
-                    <CardTitle className="font-headline flex items-center">
-                        User Logins by Department
-                        <InfoTooltip>Tracks login activity across different departments for the current month.</InfoTooltip>
-                    </CardTitle>
-                    <CardDescription>Team login activity for the current month.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="h-60">
-                       <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={userLoginsData}>
-                                <XAxis dataKey="name" fontSize={12} />
-                                <YAxis fontSize={12} />
-                                <Tooltip />
-                                <Bar dataKey="logins" fill="hsl(var(--chart-2))" radius={[4,4,0,0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
-        
       </main>
     </>
   );

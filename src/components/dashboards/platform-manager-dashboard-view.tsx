@@ -13,11 +13,12 @@ import { StatCard } from "../stat-card";
 import { UserPlus, Users, MessageSquareWarning, Clock, BarChart2, LineChart as LineChartIcon, Database, ExternalLink, AlertTriangle, CheckCircle, Info } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import { tenants, supportTickets, userList } from "@/lib/mock-data";
+import { tenants, supportTickets, userList, type SupportTicket } from "@/lib/mock-data";
 import { Badge } from "../ui/badge";
 import { PeriodPicker } from "../period-picker";
 import { BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Bar } from "recharts";
 import { InfoTooltip } from "../info-tooltip";
+import { useSearchParams } from "next/navigation";
 
 
 const alerts = [
@@ -68,14 +69,25 @@ const apiCallsData = newSignupsData.map((d, i) => ({
     calls: (d.signups * 1000 * (Math.random() + 0.5) * (i+1) * 5)
 }));
 
+const priorityVariantMap: Record<SupportTicket['priority'], "destructive" | "default" | "secondary"> = {
+    High: "destructive",
+    Medium: "default",
+    Low: "secondary"
+}
 
 const recentSignups = tenants.slice(0, 3);
 const activeUsers = userList.slice(0, 5);
-const openTickets = supportTickets.filter(t => t.status === 'Open').slice(0, 5);
+const openTickets = supportTickets.filter(t => t.status === 'Open');
 
 export function PlatformManagerDashboardView() {
+  const searchParams = useSearchParams();
   const [period, setPeriod] = useState<Period>('M');
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+
+  const createHref = (href: string) => {
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    return `${href}?${newSearchParams.toString()}`;
+  }
 
   const handlePeriodChange = useCallback((newPeriod: Period) => {
     setPeriod(newPeriod);
@@ -183,8 +195,8 @@ export function PlatformManagerDashboardView() {
                         <StatCard 
                             icon={MessageSquareWarning} 
                             title="Open Support Tickets" 
-                            value="23" 
-                            change="8 high priority"
+                            value={openTickets.length.toString()} 
+                            change={`${openTickets.filter(t => t.priority === 'High').length} high priority`}
                             tooltipText="Number of support tickets that are currently open."
                         />
                     </div>
@@ -201,15 +213,20 @@ export function PlatformManagerDashboardView() {
                     </DialogHeader>
                     <Table>
                         <TableHeader>
-                            <TableRow><TableHead>Ticket ID</TableHead><TableHead>Subject</TableHead><TableHead>Priority</TableHead><TableHead>Tenant</TableHead></TableRow>
+                            <TableRow><TableHead>Ticket ID</TableHead><TableHead>Subject</TableHead><TableHead>Priority</TableHead><TableHead>Tenant</TableHead><TableHead>Actions</TableHead></TableRow>
                         </TableHeader>
                         <TableBody>
                             {openTickets.map(ticket => (
                                 <TableRow key={ticket.id}>
-                                    <TableCell>{ticket.id}</TableCell>
+                                    <TableCell className="font-mono">{ticket.id}</TableCell>
                                     <TableCell>{ticket.subject}</TableCell>
-                                    <TableCell><Badge variant={ticket.priority === 'High' ? 'destructive' : 'secondary'}>{ticket.priority}</Badge></TableCell>
+                                    <TableCell><Badge variant={priorityVariantMap[ticket.priority]}>{ticket.priority}</Badge></TableCell>
                                     <TableCell>{ticket.tenant}</TableCell>
+                                    <TableCell>
+                                        <Button asChild size="sm" variant="outline">
+                                            <Link href={createHref(`/admin/support-tickets/${ticket.id}`)}>View</Link>
+                                        </Button>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

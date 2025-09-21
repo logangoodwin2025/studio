@@ -1,6 +1,6 @@
 
 
-import { FileText, Users, Lightbulb, Activity } from "lucide-react";
+import { FileText, Users, Lightbulb, Activity, Bot } from "lucide-react";
 
 export const userList = [
   // Srisys Inc. Users
@@ -132,18 +132,19 @@ export type Tenant = {
   id: string;
   name: string;
   plan: string;
+  industry: "SaaS" | "E-commerce" | "Services" | "Generic";
   users: number;
   lastActive: string;
   status: string;
 };
 
 export const tenants: Tenant[] = [
-    { id: "ten_srisys", name: "Srisys Inc.", plan: "Enterprise", users: 25, lastActive: "2 hours ago", status: "Active" },
-    { id: "ten_pigeon", name: "Pigeon-Tech", plan: "Enterprise", users: 6, lastActive: "5 minutes ago", status: "Active" },
-    { id: "ten_2", name: "Innovate Inc.", plan: "Paid", users: 10, lastActive: "1 day ago", status: "Active" },
-    { id: "ten_3", name: "Synergy Labs", plan: "Trial", users: 5, lastActive: "3 days ago", status: "Provisioning" },
-    { id: "ten_4", name: "QuantumLeap", plan: "Paid", users: 15, lastActive: "5 hours ago", status: "Active" },
-    { id: "ten_5", name: "DataWeavers", plan: "Free", users: 2, lastActive: "1 week ago", status: "Suspended" },
+    { id: "ten_srisys", name: "Srisys Inc.", plan: "Enterprise", industry: "SaaS", users: 25, lastActive: "2 hours ago", status: "Active" },
+    { id: "ten_pigeon", name: "Pigeon-Tech", plan: "Enterprise", industry: "SaaS", users: 6, lastActive: "5 minutes ago", status: "Active" },
+    { id: "ten_2", name: "Innovate Inc.", plan: "Paid", industry: "Services", users: 10, lastActive: "1 day ago", status: "Active" },
+    { id: "ten_3", name: "Synergy Labs", plan: "Trial", industry: "Generic", users: 5, lastActive: "3 days ago", status: "Provisioning" },
+    { id: "ten_4", name: "QuantumLeap", plan: "Paid", industry: "E-commerce", users: 15, lastActive: "5 hours ago", status: "Active" },
+    { id: "ten_5", name: "DataWeavers", plan: "Free", industry: "Generic", users: 2, lastActive: "1 week ago", status: "Suspended" },
 ];
 
 export type SupportTicket = {
@@ -198,6 +199,70 @@ export const availableReports = {
     ]
 }
 
+export const departmentOptions = [
+    { id: 'financials', label: 'Financials' },
+    { id: 'membership', label: 'Membership' },
+    { id: 'sales', label: 'Sales & Marketing' },
+    { id: 'operations', label: 'Operations' },
+];
+
+export type Kpi = {
+    id: string;
+    label: string;
+    department: string;
+    description: string;
+    formula?: string;
+}
+
+export type IndustryTemplate = {
+    id: string;
+    name: string;
+    kpis: Kpi[];
+}
+
+
+const saasKpis: Kpi[] = [
+    { id: 'fin_revenue', label: 'Revenue', department: 'Financials', description: 'Total income from sales.' },
+    { id: 'fin_net_margin', label: 'Net Margin', department: 'Financials', description: 'Percentage of revenue left after all expenses.' },
+    { id: 'fin_ltv', label: 'Customer LTV', department: 'Financials', description: 'Predicted net profit from a customer relationship.' },
+    { id: 'fin_cac', label: 'Customer CAC', department: 'Financials', description: 'Cost to acquire a new customer.' },
+    { id: 'mem_total', label: 'Total Members', department: 'Membership', description: 'Total number of active subscribers.' },
+    { id: 'mem_churn', label: 'Churn Rate', department: 'Membership', description: 'Percentage of members who cancel.' },
+    { id: 'sal_conversion_rate', label: 'Conversion Rate', department: 'Sales & Marketing', description: 'Percentage of leads converted to customers.' },
+];
+
+
+export const industryTemplates: IndustryTemplate[] = [
+    {
+        id: 'saas',
+        name: 'Standard SaaS',
+        kpis: saasKpis
+    },
+    {
+        id: 'ecommerce',
+        name: 'E-commerce',
+        kpis: [
+            { id: 'fin_revenue', label: 'Revenue', department: 'Financials', description: 'Total income from sales.' },
+            { id: 'fin_gross_margin', label: 'Gross Margin', department: 'Financials', description: 'Percentage of revenue left after COGS.' },
+            { id: 'sal_avg_revenue', label: 'Avg. Revenue per Client', department: 'Sales & Marketing', description: 'Average amount spent per customer.' },
+        ]
+    },
+    {
+        id: 'services',
+        name: 'Professional Services',
+        kpis: [
+            { id: 'fin_revenue', label: 'Revenue', department: 'Financials', description: 'Total income from services.' },
+            { id: 'ops_utilization', label: 'Utilization Rate', department: 'Operations', description: 'Percentage of employee time that is billable.' },
+        ]
+    },
+     {
+        id: 'generic',
+        name: 'Generic',
+        kpis: saasKpis // Default to SaaS KPIs for generic
+    }
+];
+
+
 
 export const monthlyRevenueData = [
   { month: "Jan", revenue: 4000 }, { month: "Feb", revenue: 3000 },
@@ -221,3 +286,25 @@ export const reportData = [
   { id: "TRX006", user: "Alice Johnson", amount: 120.00, date: "2023-10-05", status: "Paid" },
   { id: "TRX007", user: "Bob Williams", amount: 200.00, date: "2023-10-06", status: "Paid" },
 ];
+
+
+export type DataLogEntry = {
+    id: string;
+    metric: string;
+    value: string;
+    date: Date;
+    source: "Web Form" | "CSV Upload" | "Zapier" | "Manual Correction";
+    user: string;
+    department: 'Financials' | 'Membership' | 'Sales & Marketing' | 'Operations';
+};
+
+export let dataLogEntries: DataLogEntry[] = [
+    { id: 'log_1', metric: 'Monthly Recurring Revenue', value: '$550,000', date: new Date('2025-07-28T10:00:00Z'), source: 'Zapier', user: 'QuickBooks', department: 'Financials' },
+    { id: 'log_2', metric: 'New Members', value: '15', date: new Date('2025-07-28T09:30:00Z'), source: 'Web Form', user: 'sales@srisys.com', department: 'Membership' },
+    { id: 'log_3', metric: 'Operating Expenses', value: '$210,500', date: new Date('2025-07-28T09:00:00Z'), source: 'CSV Upload', user: 'finance@srisys.com', department: 'Financials' },
+    { id: 'log_4', metric: 'Customer Churn Rate', value: '1.8%', date: new Date('2025-07-27T14:00:00Z'), source: 'Zapier', user: 'Stripe', department: 'Membership' },
+    { id: 'log_5', metric: 'Monthly Recurring Revenue', value: '$545,000', date: new Date('2025-07-27T10:00:00Z'), source: 'Manual Correction', user: 'admin@srisys.com', department: 'Financials' },
+    { id: 'log_6', metric: 'Project Completion Rate', value: '98%', date: new Date('2025-07-26T12:00:00Z'), source: 'Web Form', user: 'ops@srisys.com', department: 'Operations' },
+    { id: 'log_7', metric: 'Lead Conversion Rate', value: '5.2%', date: new Date('2025-07-26T11:00:00Z'), source: 'Web Form', user: 'sales@srisys.com', department: 'Sales & Marketing' },
+];
+

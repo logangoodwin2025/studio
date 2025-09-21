@@ -18,6 +18,10 @@ import { useFinancialData } from "@/context/financial-data-context";
 
 
 const REQUIRED_ROLES = ["Sales & Marketing", "Company Admin", "CEO/Executive"];
+const ALL_MEMBERSHIP_KPIS = [
+    'mem_total', 'mem_new', 'mem_lost', 
+    'mem_retention', 'mem_churn', 'mem_csat', 'mem_nps'
+];
 
 function MembershipDashboardPageContent() {
     const { role, isLoaded } = useUserRole();
@@ -95,7 +99,7 @@ function MembershipDashboardPageContent() {
                 />
             </DashboardHeader>
             <main className="flex-1 space-y-6 p-4 sm:px-6 lg:px-8">
-               <MembershipMetrics stats={stats} />
+               <MembershipMetrics stats={stats} visibleKpis={ALL_MEMBERSHIP_KPIS} />
             </main>
         </>
     );
