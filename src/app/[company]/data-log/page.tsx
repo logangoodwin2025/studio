@@ -134,7 +134,7 @@ function DataLogPageContent() {
           Date <ChevronsUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => format(row.original.date, "PPpp"),
+      cell: ({ row }) => format(row.original.date, "PPP"),
     },
     {
         accessorKey: "department",
