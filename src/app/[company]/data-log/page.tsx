@@ -57,7 +57,7 @@ const sourceIconMap: Record<DataLogEntry['source'], React.ElementType> = {
     "Manual Correction": Edit,
 }
 
-export default function DataLogPage() {
+function DataLogPageContent() {
   const { toast } = useToast();
   const [data, setData] = React.useState(initialData);
   const [sorting, setSorting] = React.useState<SortingState>([ { id: 'date', desc: true }]);
@@ -217,4 +217,12 @@ export default function DataLogPage() {
       </main>
     </>
   );
+}
+
+export default function DataLogPage() {
+    return (
+        <React.Suspense>
+            <DataLogPageContent />
+        </React.Suspense>
+    )
 }
