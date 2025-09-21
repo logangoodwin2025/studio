@@ -1,6 +1,6 @@
 
 
-import { FileText, Users, Lightbulb, Activity } from "lucide-react";
+import { FileText, Users, Lightbulb, Activity, Bot } from "lucide-react";
 
 export const userList = [
   // Srisys Inc. Users
@@ -293,17 +293,18 @@ export type DataLogEntry = {
     metric: string;
     value: string;
     date: Date;
-    source: "Web Form" | "CSV Upload" | "QuickBooks" | "Manual Correction";
+    source: "Web Form" | "CSV Upload" | "Zapier" | "Manual Correction";
     user: string;
     department: 'Financials' | 'Membership' | 'Sales & Marketing' | 'Operations';
 };
 
-export const dataLogEntries: DataLogEntry[] = [
-    { id: 'log_1', metric: 'Monthly Recurring Revenue', value: '$550,000', date: new Date('2025-07-28T10:00:00Z'), source: 'QuickBooks', user: 'System', department: 'Financials' },
+export let dataLogEntries: DataLogEntry[] = [
+    { id: 'log_1', metric: 'Monthly Recurring Revenue', value: '$550,000', date: new Date('2025-07-28T10:00:00Z'), source: 'Zapier', user: 'QuickBooks', department: 'Financials' },
     { id: 'log_2', metric: 'New Members', value: '15', date: new Date('2025-07-28T09:30:00Z'), source: 'Web Form', user: 'sales@srisys.com', department: 'Membership' },
     { id: 'log_3', metric: 'Operating Expenses', value: '$210,500', date: new Date('2025-07-28T09:00:00Z'), source: 'CSV Upload', user: 'finance@srisys.com', department: 'Financials' },
-    { id: 'log_4', metric: 'Customer Churn Rate', value: '1.8%', date: new Date('2025-07-27T14:00:00Z'), source: 'QuickBooks', user: 'System', department: 'Membership' },
+    { id: 'log_4', metric: 'Customer Churn Rate', value: '1.8%', date: new Date('2025-07-27T14:00:00Z'), source: 'Zapier', user: 'Stripe', department: 'Membership' },
     { id: 'log_5', metric: 'Monthly Recurring Revenue', value: '$545,000', date: new Date('2025-07-27T10:00:00Z'), source: 'Manual Correction', user: 'admin@srisys.com', department: 'Financials' },
     { id: 'log_6', metric: 'Project Completion Rate', value: '98%', date: new Date('2025-07-26T12:00:00Z'), source: 'Web Form', user: 'ops@srisys.com', department: 'Operations' },
     { id: 'log_7', metric: 'Lead Conversion Rate', value: '5.2%', date: new Date('2025-07-26T11:00:00Z'), source: 'Web Form', user: 'sales@srisys.com', department: 'Sales & Marketing' },
 ];
+

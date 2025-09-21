@@ -49,14 +49,14 @@ import { Loading } from "@/components/loading";
 const sourceVariantMap: Record<DataLogEntry['source'], "secondary" | "default" | "outline"> = {
     "Web Form": "secondary",
     "CSV Upload": "default",
-    "QuickBooks": "outline",
+    "Zapier": "outline",
     "Manual Correction": "destructive",
 }
 
 const sourceIconMap: Record<DataLogEntry['source'], React.ElementType> = {
     "Web Form": Edit,
     "CSV Upload": Upload,
-    "QuickBooks": Bot,
+    "Zapier": Bot,
     "Manual Correction": Edit,
 }
 
@@ -146,10 +146,12 @@ function DataLogPageContent() {
       cell: ({ row }) => {
         const source = row.original.source;
         const Icon = sourceIconMap[source];
+        const user = row.original.user;
+        const displayLabel = source === "Zapier" ? user : source;
         return (
           <Badge variant={sourceVariantMap[source]}>
             <Icon className="mr-1.5 h-3 w-3" />
-            {source}
+            {displayLabel}
           </Badge>
         );
       },
@@ -228,7 +230,7 @@ function DataLogPageContent() {
                   <SelectItem value="all">All Sources</SelectItem>
                   <SelectItem value="Web Form">Web Form</SelectItem>
                   <SelectItem value="CSV Upload">CSV Upload</SelectItem>
-                  <SelectItem value="QuickBooks">QuickBooks</SelectItem>
+                  <SelectItem value="Zapier">Zapier</SelectItem>
                   <SelectItem value="Manual Correction">Manual Correction</SelectItem>
                 </SelectContent>
               </Select>
