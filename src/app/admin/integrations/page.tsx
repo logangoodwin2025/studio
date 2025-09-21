@@ -201,6 +201,28 @@ function CompanyAdminIntegrationsView() {
                                                             </AlertDialog>
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
+                                                    <DialogContent className="max-w-2xl">
+                                                        <DialogHeader>
+                                                            <DialogTitle>Manage {selectedIntegration?.name}</DialogTitle>
+                                                            <DialogDescription>Review sync history and manage your connection.</DialogDescription>
+                                                        </DialogHeader>
+                                                        <div className="py-4 space-y-6">
+                                                            <div className="border rounded-lg">
+                                                                <Table>
+                                                                    <TableHeader><TableRow><TableHead>Timestamp</TableHead><TableHead>Status</TableHead><TableHead>Details</TableHead></TableRow></TableHeader>
+                                                                    <TableBody>
+                                                                        {syncHistory.map(sync => (
+                                                                            <TableRow key={sync.id}>
+                                                                                <TableCell className="text-xs">{formatDistanceToNow(sync.timestamp, { addSuffix: true })}</TableCell>
+                                                                                <TableCell><Badge variant={sync.status === 'Success' ? 'secondary' : 'destructive'}>{sync.status}</Badge></TableCell>
+                                                                                <TableCell className="text-xs">{sync.description}</TableCell>
+                                                                            </TableRow>
+                                                                        ))}
+                                                                    </TableBody>
+                                                                </Table>
+                                                            </div>
+                                                        </div>
+                                                    </DialogContent>
                                                 </Dialog>
                                             ) : (
                                                 <Dialog>
@@ -232,28 +254,6 @@ function CompanyAdminIntegrationsView() {
                     </div>
                 </CardContent>
             </Card>
-            <DialogContent className="max-w-2xl">
-                <DialogHeader>
-                    <DialogTitle>Manage {selectedIntegration?.name}</DialogTitle>
-                    <DialogDescription>Review sync history and manage your connection.</DialogDescription>
-                </DialogHeader>
-                <div className="py-4 space-y-6">
-                    <div className="border rounded-lg">
-                        <Table>
-                            <TableHeader><TableRow><TableHead>Timestamp</TableHead><TableHead>Status</TableHead><TableHead>Details</TableHead></TableRow></TableHeader>
-                            <TableBody>
-                                {syncHistory.map(sync => (
-                                    <TableRow key={sync.id}>
-                                        <TableCell className="text-xs">{formatDistanceToNow(sync.timestamp, { addSuffix: true })}</TableCell>
-                                        <TableCell><Badge variant={sync.status === 'Success' ? 'secondary' : 'destructive'}>{sync.status}</Badge></TableCell>
-                                        <TableCell className="text-xs">{sync.description}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
-                </div>
-            </DialogContent>
         </div>
     )
 }
