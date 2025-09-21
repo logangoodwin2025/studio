@@ -24,6 +24,7 @@ import {
   User,
   Package,
   MessageSquare,
+  Database,
 } from "lucide-react";
 
 import {
@@ -62,16 +63,17 @@ const allNavItems = {
       { href: "/recent-activity", icon: History, label: "Recent Activity", roles: ["CEO/Executive", "Finance Team", "Sales & Marketing", "Operations Team", "Basic User"] },
     ],
     MANAGEMENT: [
-      { href: "/data-entry/finance", icon: ClipboardPlus, label: "Finance Data Entry", roles: ["Finance Team"] },
-      { href: "/data-entry/sales", icon: ClipboardPlus, label: "Sales Data Entry", roles: ["Sales & Marketing"] },
-      { href: "/data-entry/operations", icon: ClipboardPlus, label: "Operations Data Entry", roles: ["Operations Team"] },
-      { href: "/data-entry/membership", icon: ClipboardPlus, label: "Membership Data Entry", roles: ["Sales & Marketing"] },
+      { href: "/data-entry/finance", icon: ClipboardPlus, label: "Finance Data Entry", roles: ["Finance Team", "Company Admin"] },
+      { href: "/data-entry/sales", icon: ClipboardPlus, label: "Sales Data Entry", roles: ["Sales & Marketing", "Company Admin"] },
+      { href: "/data-entry/operations", icon: ClipboardPlus, label: "Operations Data Entry", roles: ["Operations Team", "Company Admin"] },
+      { href: "/data-entry/membership", icon: ClipboardPlus, label: "Membership Data Entry", roles: ["Sales & Marketing", "Company Admin"] },
+      { href: "/data-log", icon: Database, label: "Data Log", roles: ["Company Admin", "Finance Team"] },
       
       { href: "/reports/finance", icon: FileBarChart2, label: "Financial Reports", roles: ["Finance Team"] },
       { href: "/reports/sales", icon: FileBarChart2, label: "Sales Reports", roles: ["Sales & Marketing"] },
       { href: "/reports/operations", icon: FileBarChart2, label: "Operations Reports", roles: ["Operations Team"] },
       { href: "/reports/membership", icon: FileBarChart2, label: "Membership Reports", roles: ["Sales & Marketing"] },
-      { href: "/reports", icon: FileBarChart2, label: "All Reports", roles: ["CEO/Executive"] },
+      { href: "/reports", icon: FileBarChart2, label: "All Reports", roles: ["CEO/Executive", "Company Admin"] },
     ],
 };
 
@@ -94,6 +96,10 @@ const userNotifications = {
     ],
     "Basic User": [
       { icon: CheckCircle, text: "Welcome to the platform!", time: "1m ago", color: "text-green-500" },
+    ],
+    "Company Admin": [
+        { icon: CheckCircle, text: "User 'Jane Doe' has been added to the Finance Team.", time: "30m ago", color: "text-green-500" },
+        { icon: AlertCircle, text: "Your company subscription will renew in 7 days.", time: "1d ago", color: "text-orange-500" },
     ]
 }
 

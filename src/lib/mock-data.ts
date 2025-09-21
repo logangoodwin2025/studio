@@ -286,3 +286,21 @@ export const reportData = [
   { id: "TRX006", user: "Alice Johnson", amount: 120.00, date: "2023-10-05", status: "Paid" },
   { id: "TRX007", user: "Bob Williams", amount: 200.00, date: "2023-10-06", status: "Paid" },
 ];
+
+
+export type DataLogEntry = {
+    id: string;
+    metric: string;
+    value: string;
+    date: Date;
+    source: "Web Form" | "CSV Upload" | "QuickBooks" | "Manual Correction";
+    user: string;
+};
+
+export const dataLogEntries: DataLogEntry[] = [
+    { id: 'log_1', metric: 'Monthly Recurring Revenue', value: '$550,000', date: new Date('2025-07-28T10:00:00Z'), source: 'QuickBooks', user: 'System' },
+    { id: 'log_2', metric: 'New Members', value: '15', date: new Date('2025-07-28T09:30:00Z'), source: 'Web Form', user: 'sales@srisys.com' },
+    { id: 'log_3', metric: 'Operating Expenses', value: '$210,500', date: new Date('2025-07-28T09:00:00Z'), source: 'CSV Upload', user: 'finance@srisys.com' },
+    { id: 'log_4', metric: 'Customer Churn Rate', value: '1.8%', date: new Date('2025-07-27T14:00:00Z'), source: 'QuickBooks', user: 'System' },
+    { id: 'log_5', metric: 'Monthly Recurring Revenue', value: '$545,000', date: new Date('2025-07-27T10:00:00Z'), source: 'Manual Correction', user: 'admin@srisys.com' },
+];
