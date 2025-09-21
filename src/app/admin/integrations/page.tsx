@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -129,16 +130,31 @@ function CompanyAdminIntegrationsView() {
         },
         {
             accessorKey: "category",
-            header: "Category"
+            header: ({ column }) => (
+                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    Category
+                    <ChevronsUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            ),
         },
         {
             accessorKey: "status",
-            header: "Status",
+            header: ({ column }) => (
+                 <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    Status
+                    <ChevronsUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            ),
             cell: ({ row }) => <Badge variant={statusVariantMap[row.original.status]}>{row.original.status}</Badge>
         },
         {
             accessorKey: "lastSynced",
-            header: "Last Synced",
+            header: ({ column }) => (
+                 <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    Last Synced
+                    <ChevronsUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            ),
             cell: ({ row }) => row.original.lastSynced ? formatDistanceToNow(row.original.lastSynced, { addSuffix: true }) : 'N/A'
         },
         {
@@ -254,59 +270,56 @@ function CompanyAdminIntegrationsView() {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardContent className="p-0">
-                    <Table>
-                        <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => {
-                                return (
-                                <TableHead key={header.id}>
-                                    {header.isPlaceholder
-                                    ? null
-                                    : flexRender(
-                                        header.column.columnDef.header,
-                                        header.getContext()
+                    <div className="rounded-md border mt-4">
+                        <Table>
+                            <TableHeader>
+                            {table.getHeaderGroups().map((headerGroup) => (
+                                <TableRow key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => {
+                                    return (
+                                    <TableHead key={header.id}>
+                                        {header.isPlaceholder
+                                        ? null
+                                        : flexRender(
+                                            header.column.columnDef.header,
+                                            header.getContext()
+                                            )}
+                                    </TableHead>
+                                    )
+                                })}
+                                </TableRow>
+                            ))}
+                            </TableHeader>
+                            <TableBody>
+                            {table.getRowModel().rows?.length ? (
+                                table.getRowModel().rows.map((row) => (
+                                <TableRow
+                                    key={row.id}
+                                    data-state={row.getIsSelected() && "selected"}
+                                >
+                                    {row.getVisibleCells().map((cell) => (
+                                    <TableCell key={cell.id}>
+                                        {flexRender(
+                                        cell.column.columnDef.cell,
+                                        cell.getContext()
                                         )}
-                                </TableHead>
-                                )
-                            })}
-                            </TableRow>
-                        ))}
-                        </TableHeader>
-                        <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                            <TableRow
-                                key={row.id}
-                                data-state={row.getIsSelected() && "selected"}
-                            >
-                                {row.getVisibleCells().map((cell) => (
-                                <TableCell key={cell.id}>
-                                    {flexRender(
-                                    cell.column.columnDef.cell,
-                                    cell.getContext()
-                                    )}
+                                    </TableCell>
+                                    ))}
+                                </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                <TableCell
+                                    colSpan={columns.length}
+                                    className="h-24 text-center"
+                                >
+                                    No results.
                                 </TableCell>
-                                ))}
-                            </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                            <TableCell
-                                colSpan={columns.length}
-                                className="h-24 text-center"
-                            >
-                                No results.
-                            </TableCell>
-                            </TableRow>
-                        )}
-                        </TableBody>
-                    </Table>
+                                </TableRow>
+                            )}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </CardContent>
             </Card>
 
@@ -436,5 +449,7 @@ export default function IntegrationsPage() {
         </>
     );
 }
+
+    
 
     
