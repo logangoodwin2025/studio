@@ -38,7 +38,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { DashboardHeader } from "@/components/dashboard-header";
-import { type DataLogEntry, dataLogEntries as initialData } from "@/lib/mock-data";
+import { type DataLogEntry, dataLogEntries as initialData, departmentOptions } from "@/lib/mock-data";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/use-user-role";
@@ -89,6 +89,7 @@ function DataLogPageContent() {
     setData(filteredData);
   }, [filteredData]);
 
+  const canViewAllDepartments = role === 'CEO/Executive' || role === 'Company Admin';
 
   const columns: ColumnDef<DataLogEntry>[] = [
     {
@@ -201,6 +202,19 @@ function DataLogPageContent() {
                   <SelectItem value="Manual Correction">Manual Correction</SelectItem>
                 </SelectContent>
               </Select>
+               {canViewAllDepartments && (
+                <Select onValueChange={(value) => table.getColumn("department")?.setFilterValue(value === 'all' ? undefined : value)}>
+                    <SelectTrigger className="w-full sm:w-[180px]">
+                        <SelectValue placeholder="Filter by department" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">All Departments</SelectItem>
+                        {departmentOptions.map(dept => (
+                           <SelectItem key={dept.id} value={dept.label}>{dept.label}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+              )}
             </div>
           </CardContent>
         </Card>
